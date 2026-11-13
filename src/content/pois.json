@@ -1,0 +1,35 @@
+{
+  "updatedAt": "2026-11-13",
+  "campus": {
+    "name": "Trường Đại học Bách Khoa – ĐHQG TP.HCM (cơ sở Lý Thường Kiệt)",
+    "address": "268 Lý Thường Kiệt, Phường 14, Quận 10, TP.HCM",
+    "gate": { "lat": 10.772, "lng": 106.6578, "label": "Cổng chính 268 Lý Thường Kiệt" },
+    "mapSvg": { "width": 1000, "height": 700 }
+  },
+  "types": {
+    "hall": "Hội trường",
+    "restroom": "Nhà vệ sinh",
+    "parking": "Bãi xe",
+    "water": "Nước uống",
+    "rest": "Chỗ ngồi chờ",
+    "photo": "Góc chụp ảnh",
+    "gate": "Cổng",
+    "meeting": "Điểm hẹn gợi ý"
+  },
+  "items": [
+    { "id": "a5", "type": "hall", "name": "Hội trường A5", "x": 520, "y": 300, "image": "/images/poi/a5.jpg", "note": "Nơi tổ chức lễ. Khách vào từ cửa bên, có bậc thang." },
+    { "id": "gate-main", "type": "gate", "name": "Cổng chính Lý Thường Kiệt", "x": 500, "y": 660, "note": "Taxi/Grab dừng ở đây. Đi thẳng vào khoảng 150m là tới A5." },
+    { "id": "gate-tbt", "type": "gate", "name": "Cổng Tô Hiến Thành", "x": 120, "y": 100, "note": "Gần bãi xe máy, tiện cho bạn bè tự chạy xe." },
+    { "id": "wc-a5", "type": "restroom", "name": "WC cạnh A5", "x": 580, "y": 260, "note": "Tầng trệt, bên phải hội trường." },
+    { "id": "wc-a4", "type": "restroom", "name": "WC nhà A4", "x": 400, "y": 240 },
+    { "id": "parking-moto", "type": "parking", "name": "Bãi xe máy", "x": 180, "y": 160, "note": "Vào từ cổng Tô Hiến Thành. Ngày lễ đông, nên đến sớm 30 phút." },
+    { "id": "parking-car", "type": "parking", "name": "Chỗ đậu ô tô", "x": 700, "y": 600, "note": "Hạn chế. Nên thả khách ở cổng rồi đậu ngoài đường Tô Hiến Thành." },
+    { "id": "water-a5", "type": "water", "name": "Máy nước cạnh A5", "x": 560, "y": 350 },
+    { "id": "canteen", "type": "rest", "name": "Căn tin", "x": 300, "y": 420, "image": "/images/poi/canteen.jpg", "note": "Có bàn ghế, quạt, bán nước. Chỗ ngồi chờ thoải mái cho người lớn tuổi." },
+    { "id": "bench-a5", "type": "rest", "name": "Ghế đá hàng cây trước A5", "x": 480, "y": 380, "image": "/images/poi/bench-a5.jpg", "note": "Có bóng mát, dễ tìm." },
+    { "id": "photo-gate", "type": "photo", "name": "Bảng tên trường ở cổng chính", "x": 500, "y": 630, "image": "/images/poi/photo-gate.jpg", "note": "Ảnh kinh điển. Rất đông lúc tan lễ, nên chụp trước giờ lễ." },
+    { "id": "photo-h1", "type": "photo", "name": "Toà H1 (toà nhà cổ)", "x": 650, "y": 150, "image": "/images/poi/photo-h1.jpg", "note": "Nền vàng, hợp áo cử nhân." },
+    { "id": "photo-a5-steps", "type": "photo", "name": "Bậc thang trước A5", "x": 520, "y": 340, "note": "Chụp nhóm đông người." },
+    { "id": "photo-lake", "type": "photo", "name": "Hồ nước và hàng cây", "x": 800, "y": 400, "note": "Yên tĩnh, ít người." }
+  ]
+}

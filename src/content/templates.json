@@ -1,0 +1,10 @@
+{
+  "updatedAt": "2026-11-13",
+  "defaultId": "classic",
+  "items": [
+    { "id": "classic", "name": "Cổ điển Bách Khoa", "description": "Xanh dương đậm, chữ serif, trang trọng. Hợp gửi gia đình.", "tone": "formal", "ogImage": "/images/og/classic.jpg" },
+    { "id": "sunny", "name": "Nắng sân trường", "description": "Vàng ấm, ảnh toà H1, vui tươi.", "tone": "warm", "ogImage": "/images/og/sunny.jpg" },
+    { "id": "minimal", "name": "Tối giản", "description": "Trắng đen, nhiều khoảng trống, hiện đại.", "tone": "modern", "ogImage": "/images/og/minimal.jpg" },
+    { "id": "playful", "name": "Tốt nghiệp rồi!", "description": "Màu nổi, confetti, hợp gửi bạn bè.", "tone": "fun", "ogImage": "/images/og/playful.jpg" }
+  ]
+}

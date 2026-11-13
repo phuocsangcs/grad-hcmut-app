@@ -1,0 +1,16 @@
+{
+  "updatedAt": "2026-11-13",
+  "defaultGreeting": "Gửi bạn,",
+  "defaultMessage": "Sau bao năm đèn sách, con/mình cuối cùng cũng ra trường. Rất mong mọi người đến chung vui!",
+  "groups": [
+    { "key": "parents", "label": "Ba Mẹ", "greeting": "Gửi Ba Mẹ,", "message": "Con tốt nghiệp rồi! Cảm ơn Ba Mẹ đã luôn ở bên con suốt những năm tháng vừa qua. Con mong Ba Mẹ đến dự lễ để cùng con lưu lại khoảnh khắc này." },
+    { "key": "grandparents", "label": "Ông Bà", "greeting": "Gửi Ông Bà,", "message": "Cháu đã tốt nghiệp đại học rồi Ông Bà ơi. Cháu rất mong Ông Bà đến chung vui, cháu sẽ đón Ông Bà ở cổng trường." },
+    { "key": "family", "label": "Gia đình", "greeting": "Gửi cả nhà,", "message": "Con/em/cháu tốt nghiệp rồi! Mời cả nhà đến dự lễ và đi ăn mừng cùng con sau lễ nhé." },
+    { "key": "friends", "label": "Bạn bè", "greeting": "Ê bạn ơi,", "message": "Tao ra trường rồi! Tới chụp hình với tao nha, nhớ mang hoa 🌻. Xong lễ đi ăn." }
+  ],
+  "messageSuggestions": [
+    "Cảm ơn mọi người đã đồng hành cùng mình trong suốt 4 năm. Hẹn gặp ở lễ!",
+    "Ngày này quan trọng với mình lắm, có mọi người ở đó thì càng trọn vẹn.",
+    "Mời mọi người đến chung vui và chụp thật nhiều ảnh cùng mình nhé!"
+  ]
+}
