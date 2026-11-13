@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { vi } from '@/lib/i18n';
 
 export default function HomePage() {
@@ -5,7 +6,7 @@ export default function HomePage() {
     <main>
       <h1>{vi.app.name}</h1>
       <p>{vi.app.tagline}</p>
-      <a href="/create">Tạo thiệp</a>
+      <Link href="/create">Tạo thiệp</Link>
     </main>
   );
 }
