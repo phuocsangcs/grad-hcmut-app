@@ -13,6 +13,13 @@ import type { CreateCardInput, UpdateCardInput } from './card.validators';
 /** Thiệp tự xoá sau lễ bao nhiêu ngày (F5). */
 export const CARD_TTL_DAYS = 30;
 
+/** Bỏ key rỗng/undefined để lưu jsonb gọn. */
+function compactGreetings(g: Partial<Record<string, string>> | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(g ?? {})) if (v && v.trim()) out[k] = v.trim();
+  return out;
+}
+
 // ---------- Tạo thiệp ----------
 
 export type CreateCardResult = { card: Card; manageToken: string };
@@ -41,7 +48,7 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
     venue: input.venue ?? ceremony.venue,
     templateId: input.templateId,
     message: input.message,
-    greetings: input.greetings,
+    greetings: compactGreetings(input.greetings),
     meetingPoiId: input.meetingPoiId || null,
     meetingTime: input.meetingTime || null,
     meetingNote: input.meetingNote || null,
@@ -122,7 +129,7 @@ export async function getPublicCard(slug: string, opts: PublicViewOptions = {}):
   const now = opts.now ?? new Date();
   if (card.expiresAt.getTime() < now.getTime()) return { status: 'expired' };
 
-  if (!opts.skipView) void cardRepo.incrementView(card.id).catch(() => {});
+  if (!opts.skipView) await cardRepo.incrementView(card.id).catch((e) => console.error('incrementView(card) lỗi', e));
 
   return { status: 'ok', card: toPublicCard(card, opts, now) };
 }
@@ -173,7 +180,7 @@ export async function updateCard(cardId: string, patch: UpdateCardInput): Promis
   if (patch.venue !== undefined) data.venue = patch.venue;
   if (patch.templateId !== undefined) data.templateId = patch.templateId;
   if (patch.message !== undefined) data.message = patch.message;
-  if (patch.greetings !== undefined) data.greetings = patch.greetings;
+  if (patch.greetings !== undefined) data.greetings = compactGreetings(patch.greetings);
   if (patch.meetingPoiId !== undefined) data.meetingPoiId = patch.meetingPoiId || null;
   if (patch.meetingTime !== undefined) data.meetingTime = patch.meetingTime || null;
   if (patch.meetingNote !== undefined) data.meetingNote = patch.meetingNote || null;

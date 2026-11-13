@@ -77,8 +77,6 @@ describe('card.service', () => {
       expect(r2.card.greeting).toBe('Gửi bạn,');
       expect(r2.card.mode).toBe('dayof');
     }
-    // incrementView chạy nền, đợi 1 tick
-    await new Promise((res) => setTimeout(res, 20));
     expect((await cardRepo.findById(card.id))?.viewCount).toBe(2);
   });
 

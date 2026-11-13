@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { getPublicCard } from '@/modules/card';
 import { CardView, CardUnavailable } from './card-view';
 import { cardMetadata } from '@/modules/share';
@@ -23,6 +24,7 @@ export default async function CardPage({ params, searchParams }: Props) {
   const sp = await searchParams;
   const r = await getPublicCard(slug, { to: sp.to, modeOverride: sp.mode });
 
+  if (r.status === 'not_found') notFound();
   if (r.status !== 'ok') return <CardUnavailable status={r.status} />;
   return <CardView card={r.card} />;
 }

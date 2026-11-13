@@ -75,7 +75,6 @@ describe('invite.service', () => {
     expect(rs.inviteId).toBe(hoa.id);
     expect(rs.groupKey).toBe('family');
 
-    await new Promise((res) => setTimeout(res, 20));
     const list = await listInvites('inv-a', card.id);
     expect(list.map((i) => i.recipientName)).toEqual(['Ba Mẹ', 'Cô Hoa', 'Minh']);
     expect(list[1].rsvp?.headcount).toBe(2);

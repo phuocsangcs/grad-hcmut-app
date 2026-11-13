@@ -117,7 +117,7 @@ export async function getPublicCardByInvite(slug: string, code: string, opts: Om
   if (!card) return { status: 'not_found' };
   const inv = await inviteRepo.findByCode(card.id, code);
   if (!inv) return { status: 'not_found' };
-  if (!opts.skipView) void inviteRepo.incrementView(inv.id).catch(() => {});
+  if (!opts.skipView) await inviteRepo.incrementView(inv.id).catch((e) => console.error('incrementView(invite) lỗi', e));
   return getPublicCard(slug, {
     ...opts,
     invite: { recipientName: inv.recipientName, groupKey: inv.groupKey, greeting: inv.greeting, templateId: inv.templateId },

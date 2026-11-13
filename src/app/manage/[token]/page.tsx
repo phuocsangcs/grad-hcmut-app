@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { getOverview, listCardRsvps } from '@/modules/manage';
 import { HttpError } from '@/lib/http';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
+import { listTemplates } from '@/modules/content';
+import { CardActions } from './card-actions';
 
 type Props = { params: Promise<{ token: string }> };
 
@@ -53,6 +55,8 @@ export default async function ManagePage({ params }: Props) {
           ))}
         </ul>
       )}
+      <p><a href={`/api/cards/${card.slug}/qr?size=512`}>Tải QR</a></p>
+      <CardActions token={token} templates={listTemplates().map((t) => ({ id: t.id, name: t.name }))} current={{ templateId: card.templateId, message: card.message, displayName: card.displayName }} />
       <p>
         <small>Giữ link này riêng tư. Ai có link đều sửa hoặc xoá được thiệp.</small>
       </p>

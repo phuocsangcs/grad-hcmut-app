@@ -3,6 +3,9 @@ import type { PublicCard, PublicCardResult } from '@/modules/card';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
 import { vi } from '@/lib/i18n';
 import { shareLinks } from '@/modules/share';
+import { listPoisByType } from '@/modules/content';
+import { RsvpForm } from './rsvp-form';
+import { ReportButton } from './report-button';
 
 /** UI trần để test luồng. Toàn bộ sẽ thay bằng template thật ở giai đoạn UI. */
 export function CardUnavailable({ status }: { status: Exclude<PublicCardResult['status'], 'ok'> }) {
@@ -39,6 +42,19 @@ export function CardView({ card: c, inviteCode }: { card: PublicCard; inviteCode
         </section>
       )}
       {links.call && <p><a href={links.call}>Gọi cho {c.displayName}</a></p>}
+      {c.mode !== 'after' && (
+        <RsvpForm slug={c.slug} groupKey={c.groupKey} recipientName={c.recipientName} inviteCode={inviteCode} icsUrl={links.ics} googleCalendarUrl={links.googleCalendar} />
+      )}
+      {c.mode === 'dayof' && (
+        <section>
+          <h3>Gần {c.venue}</h3>
+          <ul>
+            {(['restroom', 'parking', 'water', 'rest', 'photo'] as const).flatMap((t) => listPoisByType(t)).map((poi) => (
+              <li key={poi.id}>{poi.name}{poi.note ? ` — ${poi.note}` : ''}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section>
         <h3>Hành động</h3>
         <ul>
@@ -55,7 +71,18 @@ export function CardView({ card: c, inviteCode }: { card: PublicCard; inviteCode
           <p>{vi.card.willDelete(formatDateVi(new Date(c.expiresAt)))}</p>
         </section>
       )}
-      <footer><Link href="/create">{vi.card.createYourOwn}</Link></footer>
+      <section>
+        <h3>Khám phá</h3>
+        <ul>
+          <li><Link href="/guide/map">Bản đồ trong trường</Link></li>
+          <li><Link href="/eat">Ăn gì sau lễ</Link></li>
+          <li><Link href="/guide">Cẩm nang lễ tốt nghiệp</Link></li>
+        </ul>
+      </section>
+      <footer>
+        <p><Link href="/create">{vi.card.createYourOwn}</Link></p>
+        <ReportButton slug={c.slug} />
+      </footer>
     </main>
   );
 }

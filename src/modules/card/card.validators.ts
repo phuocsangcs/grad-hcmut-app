@@ -13,7 +13,7 @@ export const createCardSchema = z.object({
   venue: z.string().trim().min(1).max(80).optional(),
   templateId: z.string().min(1),
   message: z.string().trim().max(500).default(''),
-  greetings: z.record(z.enum(groupKeys), z.string().trim().max(200)).default({}),
+  greetings: z.partialRecord(z.enum(groupKeys), z.string().trim().max(200)).default({}),
   meetingPoiId: z.string().optional().nullable(),
   meetingTime: z.string().trim().max(20).optional().nullable(),
   meetingNote: z.string().trim().max(200).optional().nullable(),
