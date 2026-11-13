@@ -1,0 +1,3 @@
+/* UI trần cho giai đoạn backend. Sẽ thay toàn bộ khi làm UI. */
+:root { color-scheme: light; }
+body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; line-height: 1.5; }
