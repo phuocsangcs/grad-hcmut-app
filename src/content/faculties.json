@@ -1,20 +1,24 @@
 {
-  "source": "Lịch lễ tốt nghiệp đợt 2/2026 – cập nhật theo thông báo của Phòng Đào tạo. Sửa ngày giờ tại đây khi trường công bố lịch chính thức.",
+  "source": "Lịch Lễ tốt nghiệp 26–29/11/2026 tại Hội trường A5, theo thông báo chính thức của Trường ĐH Bách Khoa (HCMUT).",
   "updatedAt": "2026-11-13",
   "defaultVenue": "Hội trường A5",
   "items": [
+    { "id": "grad", "name": "Lễ tốt nghiệp bậc Sau đại học", "shortName": "Sau đại học", "date": "2026-11-26", "time": "13:30", "note": "Thứ Năm" },
+
+    { "id": "university", "name": "Lễ tốt nghiệp cấp Trường (bậc Đại học)", "shortName": "Cấp Trường", "date": "2026-11-27", "time": "07:00", "note": "Thứ Sáu, lễ chung toàn trường" },
+    { "id": "che", "name": "Khoa Kỹ thuật Hoá học", "shortName": "Hoá học", "date": "2026-11-27", "time": "10:00" },
+    { "id": "im", "name": "Khoa Quản lý Công nghiệp", "shortName": "Quản lý Công nghiệp", "date": "2026-11-27", "time": "12:30" },
+    { "id": "eee", "name": "Khoa Điện – Điện tử", "shortName": "Điện – Điện tử", "date": "2026-11-27", "time": "15:00" },
+
+    { "id": "ce", "name": "Khoa Kỹ thuật Xây dựng", "shortName": "Xây dựng", "date": "2026-11-28", "time": "07:00" },
+    { "id": "me", "name": "Khoa Cơ khí", "shortName": "Cơ khí", "date": "2026-11-28", "time": "09:30" },
+    { "id": "env", "name": "Khoa Môi trường và Tài nguyên", "shortName": "Môi trường", "date": "2026-11-28", "time": "12:00", "note": "Lễ chung 5 khoa" },
+    { "id": "fas", "name": "Khoa Khoa học Ứng dụng", "shortName": "KH Ứng dụng", "date": "2026-11-28", "time": "12:00", "note": "Lễ chung 5 khoa" },
+    { "id": "ges", "name": "Khoa Kỹ thuật Địa chất và Dầu khí", "shortName": "Địa chất – Dầu khí", "date": "2026-11-28", "time": "12:00", "note": "Lễ chung 5 khoa" },
+    { "id": "mt", "name": "Khoa Công nghệ Vật liệu", "shortName": "Vật liệu", "date": "2026-11-28", "time": "12:00", "note": "Lễ chung 5 khoa" },
+    { "id": "te", "name": "Khoa Kỹ thuật Giao thông", "shortName": "Giao thông", "date": "2026-11-28", "time": "12:00", "note": "Lễ chung 5 khoa" },
     { "id": "cse", "name": "Khoa Khoa học và Kỹ thuật Máy tính", "shortName": "KH&KT Máy tính", "date": "2026-11-28", "time": "14:30" },
-    { "id": "eee", "name": "Khoa Điện – Điện tử", "shortName": "Điện – Điện tử", "date": "2026-11-28", "time": "08:00" },
-    { "id": "me", "name": "Khoa Cơ khí", "shortName": "Cơ khí", "date": "2026-11-27", "time": "14:30" },
-    { "id": "ce", "name": "Khoa Kỹ thuật Xây dựng", "shortName": "Xây dựng", "date": "2026-11-27", "time": "08:00" },
-    { "id": "che", "name": "Khoa Kỹ thuật Hoá học", "shortName": "Hoá học", "date": "2026-11-29", "time": "08:00" },
-    { "id": "fas", "name": "Khoa Khoa học Ứng dụng", "shortName": "KH Ứng dụng", "date": "2026-11-29", "time": "14:30" },
-    { "id": "ges", "name": "Khoa Kỹ thuật Địa chất và Dầu khí", "shortName": "Địa chất – Dầu khí", "date": "2026-11-30", "time": "08:00" },
-    { "id": "te", "name": "Khoa Kỹ thuật Giao thông", "shortName": "Giao thông", "date": "2026-11-30", "time": "14:30" },
-    { "id": "env", "name": "Khoa Môi trường và Tài nguyên", "shortName": "Môi trường", "date": "2026-12-01", "time": "08:00" },
-    { "id": "mt", "name": "Khoa Công nghệ Vật liệu", "shortName": "Vật liệu", "date": "2026-12-01", "time": "14:30" },
-    { "id": "im", "name": "Khoa Quản lý Công nghiệp", "shortName": "Quản lý Công nghiệp", "date": "2026-12-02", "time": "08:00" },
-    { "id": "oisp", "name": "Chương trình Quốc tế (OISP)", "shortName": "Chương trình Quốc tế", "date": "2026-11-29", "time": "07:00", "note": "Buổi sáng Chủ nhật, có khách nước ngoài" },
-    { "id": "grad", "name": "Sau đại học (Thạc sĩ, Tiến sĩ)", "shortName": "Sau đại học", "date": "2026-11-26", "time": "13:30", "note": "Thứ Năm" }
+
+    { "id": "oisp", "name": "Văn phòng Đào tạo Quốc tế (OISP)", "shortName": "Đào tạo Quốc tế", "date": "2026-11-29", "time": "07:00", "note": "Chủ nhật, có thể có khách nước ngoài" }
   ]
 }
