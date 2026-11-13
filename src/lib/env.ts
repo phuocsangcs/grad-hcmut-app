@@ -10,6 +10,7 @@ const schema = z.object({
   DIRECT_URL: z.string().optional(),
   NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
   RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().optional(),
   ADMIN_EMAIL: z.string().email().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
 });
