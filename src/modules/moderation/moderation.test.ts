@@ -35,7 +35,6 @@ describe('report', () => {
   const sent: EmailMessage[] = [];
   beforeEach(() => {
     sent.length = 0;
-    process.env.ADMIN_EMAIL = 'admin@example.com';
     setEmailAdapterForTests({ send: async (m) => void sent.push(m) });
   });
 

@@ -6,7 +6,7 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
     setupFiles: ['src/test/setup.ts'],
-    env: { DATABASE_URL: 'postgres://test', NEXT_PUBLIC_SITE_URL: 'http://localhost:3000' },
+    env: { DATABASE_URL: 'postgres://test', NEXT_PUBLIC_SITE_URL: 'http://localhost:3000', ADMIN_EMAIL: 'admin@example.com' },
   },
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },
