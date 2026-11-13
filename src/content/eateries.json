@@ -1,0 +1,16 @@
+{
+  "updatedAt": "2026-11-13",
+  "budgets": { "low": "Dưới 100k/người", "mid": "100k–200k/người", "high": "Trên 200k/người" },
+  "items": [
+    { "id": "com-tam-ba-ghien", "name": "Cơm tấm Ba Ghiền", "cuisine": "Cơm tấm", "budget": "low", "bigGroup": false, "carParking": false, "distanceMin": 5, "address": "84 Đặng Văn Ngữ, Phú Nhuận", "mapsQuery": "Cơm tấm Ba Ghiền Đặng Văn Ngữ", "note": "Phần ăn to, nổi tiếng. Nhóm 4–6 người." },
+    { "id": "pho-phu-vuong", "name": "Phở Phú Vương", "cuisine": "Phở", "budget": "low", "bigGroup": true, "carParking": false, "distanceMin": 7, "address": "120 Nguyễn Thái Bình, Tân Bình", "mapsQuery": "Phở Phú Vương Nguyễn Thái Bình", "note": "Rộng, phục vụ nhanh, hợp người lớn tuổi." },
+    { "id": "bun-bo-ganh", "name": "Bún bò Gánh", "cuisine": "Bún bò Huế", "budget": "low", "bigGroup": false, "carParking": false, "distanceMin": 6, "address": "Lý Thường Kiệt, Quận 10", "mapsQuery": "Bún bò Gánh Lý Thường Kiệt", "note": "Gần trường, đi bộ được." },
+    { "id": "quan-an-ngon-138", "name": "Quán Ăn Ngon 138", "cuisine": "Món Việt đủ loại", "budget": "mid", "bigGroup": true, "carParking": true, "distanceMin": 15, "address": "138 Nam Kỳ Khởi Nghĩa, Quận 1", "mapsQuery": "Quán Ăn Ngon 138 Nam Kỳ Khởi Nghĩa", "note": "Hợp gia đình nhiều thế hệ, ai cũng có món để chọn. Nên đặt trước." },
+    { "id": "lang-nuong-nam-bo", "name": "Làng Nướng Nam Bộ", "cuisine": "Nướng, lẩu", "budget": "mid", "bigGroup": true, "carParking": true, "distanceMin": 12, "address": "302 Tô Hiến Thành, Quận 10", "mapsQuery": "Làng Nướng Nam Bộ Tô Hiến Thành", "note": "Sân rộng, nhóm 10–20 người thoải mái." },
+    { "id": "ganh-khai-vi", "name": "Gánh Khai Vị", "cuisine": "Món Việt, bún đậu", "budget": "mid", "bigGroup": true, "carParking": false, "distanceMin": 8, "address": "Cách Mạng Tháng Tám, Quận 10", "mapsQuery": "Gánh Khai Vị Cách Mạng Tháng Tám", "note": "Không gian sạch, giá vừa." },
+    { "id": "hai-san-ba-khia", "name": "Hải sản Ba Khía", "cuisine": "Hải sản", "budget": "high", "bigGroup": true, "carParking": true, "distanceMin": 10, "address": "Thành Thái, Quận 10", "mapsQuery": "Ba Khía Thành Thái", "note": "Tiệc gia đình, có phòng riêng." },
+    { "id": "kichi-kichi-su-van-hanh", "name": "Kichi Kichi Sư Vạn Hạnh", "cuisine": "Lẩu băng chuyền", "budget": "mid", "bigGroup": true, "carParking": true, "distanceMin": 8, "address": "Vạn Hạnh Mall, 11 Sư Vạn Hạnh, Quận 10", "mapsQuery": "Vạn Hạnh Mall", "note": "Trong trung tâm thương mại, có máy lạnh, bãi xe lớn. Nhiều lựa chọn khác cùng toà." },
+    { "id": "banh-xeo-an-la-ghien", "name": "Bánh xèo Ăn Là Ghiền", "cuisine": "Bánh xèo miền Tây", "budget": "low", "bigGroup": true, "carParking": false, "distanceMin": 10, "address": "74 Sương Nguyệt Ánh, Quận 1", "mapsQuery": "Bánh xèo Ăn Là Ghiền Sương Nguyệt Ánh", "note": "Vui, hợp bạn bè." },
+    { "id": "cafe-ut-ut", "name": "Cà phê Út Út", "cuisine": "Cà phê, bánh", "budget": "low", "bigGroup": false, "carParking": false, "distanceMin": 5, "address": "Lý Thường Kiệt, Quận 10", "mapsQuery": "cà phê gần Đại học Bách Khoa Lý Thường Kiệt", "note": "Ngồi chờ, chụp ảnh thêm sau lễ." }
+  ]
+}
