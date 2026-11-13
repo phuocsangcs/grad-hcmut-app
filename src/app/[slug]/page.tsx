@@ -1,24 +1,20 @@
 import type { Metadata } from 'next';
 import { getPublicCard } from '@/modules/card';
 import { CardView, CardUnavailable } from './card-view';
-import { formatDateVi, formatTimeVi } from '@/lib/time';
+import { cardMetadata } from '@/modules/share';
 import { vi } from '@/lib/i18n';
 
 export const dynamic = 'force-dynamic';
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | undefined>> };
 
+
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;
   const sp = await searchParams;
   const r = await getPublicCard(slug, { to: sp.to, skipView: true });
-  if (r.status !== 'ok') return { title: vi.card.notFound };
-  const c = r.card;
-  return {
-    title: `${c.displayName} mời bạn dự lễ tốt nghiệp`,
-    description: `${formatDateVi(new Date(c.ceremonyAt))} · ${formatTimeVi(new Date(c.ceremonyAt))} · ${c.venue}`,
-    openGraph: { images: [c.template.ogImage] },
-  };
+  if (r.status !== 'ok') return { title: vi.card.notFound, robots: { index: false } };
+  return cardMetadata(r.card, `/${slug}`);
 }
 
 /** UI trần để test luồng. Toàn bộ sẽ thay bằng template thật ở giai đoạn UI. */

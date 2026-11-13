@@ -1,21 +1,17 @@
 import type { Metadata } from 'next';
 import { getPublicCardByInvite } from '@/modules/invite';
-import { formatDateVi, formatTimeVi } from '@/lib/time';
 import { vi } from '@/lib/i18n';
 import { CardView, CardUnavailable } from '../card-view';
+import { cardMetadata } from '@/modules/share';
 
 type Props = { params: Promise<{ slug: string; code: string }>; searchParams: Promise<Record<string, string | undefined>> };
+
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, code } = await params;
   const r = await getPublicCardByInvite(slug, code, { skipView: true });
-  if (r.status !== 'ok') return { title: vi.card.notFound };
-  const c = r.card;
-  return {
-    title: `${c.displayName} gửi thiệp tốt nghiệp cho ${c.recipientName}`,
-    description: `${formatDateVi(new Date(c.ceremonyAt))} · ${formatTimeVi(new Date(c.ceremonyAt))} · ${c.venue}`,
-    openGraph: { images: [c.template.ogImage] },
-  };
+  if (r.status !== 'ok') return { title: vi.card.notFound, robots: { index: false } };
+  return cardMetadata(r.card, `/${slug}/${code}`);
 }
 
 /** Thiệp cá nhân hoá cho một người nhận. */

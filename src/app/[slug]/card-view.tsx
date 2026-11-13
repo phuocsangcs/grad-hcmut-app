@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { PublicCard, PublicCardResult } from '@/modules/card';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
 import { vi } from '@/lib/i18n';
+import { shareLinks } from '@/modules/share';
 
 /** UI trần để test luồng. Toàn bộ sẽ thay bằng template thật ở giai đoạn UI. */
 export function CardUnavailable({ status }: { status: Exclude<PublicCardResult['status'], 'ok'> }) {
@@ -16,6 +17,7 @@ export function CardUnavailable({ status }: { status: Exclude<PublicCardResult['
 
 export function CardView({ card: c, inviteCode }: { card: PublicCard; inviteCode?: string }) {
   const at = new Date(c.ceremonyAt);
+  const links = shareLinks(c, inviteCode);
   return (
     <main data-template={c.template.id} data-mode={c.mode} data-invite={inviteCode}>
       <p><small>mode: {c.mode} · template: {c.template.name}</small></p>
@@ -36,7 +38,17 @@ export function CardView({ card: c, inviteCode }: { card: PublicCard; inviteCode
           {c.meeting.note && <p>{c.meeting.note}</p>}
         </section>
       )}
-      {c.phone && <p><a href={`tel:${c.phone}`}>Gọi cho {c.displayName}</a></p>}
+      {links.call && <p><a href={links.call}>Gọi cho {c.displayName}</a></p>}
+      <section>
+        <h3>Hành động</h3>
+        <ul>
+          <li><a href={links.googleCalendar} target="_blank" rel="noreferrer">Thêm vào Google Calendar</a></li>
+          <li><a href={links.ics}>Tải file lịch (.ics)</a></li>
+          <li><a href={links.directions} target="_blank" rel="noreferrer">Chỉ đường đến cổng trường</a></li>
+          {links.meetingPoi && <li><a href={links.meetingPoi} target="_blank" rel="noreferrer">Điểm hẹn trên Maps</a></li>}
+          <li><a href={links.qr}>Mã QR của thiệp</a></li>
+        </ul>
+      </section>
       {c.mode === 'after' && (
         <section>
           <h3>{vi.card.thankYou}</h3>
