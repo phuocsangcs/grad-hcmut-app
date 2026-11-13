@@ -3,17 +3,12 @@ import { notFound } from '@/lib/http';
 import { cardRepo } from '@/modules/card/card.repo';
 import { normalizeSlug } from '@/modules/card/slug';
 import type { Rsvp } from '@/db/schema';
+import { inviteRepo } from '@/modules/invite/invite.repo';
+import { isInviteCode } from '@/modules/invite/code';
 import { rsvpRepo } from './rsvp.repo';
 import type { SubmitRsvpInput } from './rsvp.validators';
 
 export type RsvpSummary = { responses: number; guests: number; wishes: number };
-
-/** Hook để module invite gắn vào mà rsvp không phải import ngược. */
-export type InviteResolver = (cardId: string, code: string) => Promise<{ id: string; groupKey: string | null } | undefined>;
-let resolveInvite: InviteResolver = async () => undefined;
-export function setInviteResolver(fn: InviteResolver) {
-  resolveInvite = fn;
-}
 
 /** Khách xác nhận tham dự. Gửi lại với cùng clientId → cập nhật. */
 export async function submitRsvp(slug: string, input: SubmitRsvpInput): Promise<Rsvp> {
@@ -22,8 +17,8 @@ export async function submitRsvp(slug: string, input: SubmitRsvpInput): Promise<
 
   let inviteId: string | null = null;
   let groupKey = input.groupKey ?? null;
-  if (input.inviteCode) {
-    const inv = await resolveInvite(card.id, input.inviteCode);
+  if (input.inviteCode && isInviteCode(input.inviteCode)) {
+    const inv = await inviteRepo.findByCode(card.id, input.inviteCode);
     if (inv) {
       inviteId = inv.id;
       groupKey = groupKey ?? inv.groupKey;
