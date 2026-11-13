@@ -1,6 +1,7 @@
 import { requireCardByToken } from '@/modules/manage';
 import { bulkCreateInvites, bulkCreateSchema, listInvites } from '@/modules/invite';
-import { handle, ok, readJson } from '@/lib/http';
+import { handle, ok, readJson, tooMany } from '@/lib/http';
+import { clientIp, limiter, RULES } from '@/modules/moderation';
 
 type Ctx = { params: Promise<{ token: string }> };
 
@@ -12,6 +13,7 @@ export const GET = handle(async (_req: Request, ctx: Ctx) => {
 
 /** Tạo hàng loạt: body { text } hoặc { rows }. Có lỗi dòng → 400 kèm danh sách lỗi, không tạo gì. */
 export const POST = handle(async (req: Request, ctx: Ctx) => {
+  if (!limiter.hit(`bulk:${clientIp(req)}`, RULES.bulkInvite).allowed) throw tooMany();
   const { token } = await ctx.params;
   const card = await requireCardByToken(token);
   const input = await readJson(req, (raw) => bulkCreateSchema.parse(raw));

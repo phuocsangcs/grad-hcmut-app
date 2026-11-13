@@ -13,6 +13,7 @@ const schema = z.object({
   EMAIL_FROM: z.string().optional(),
   ADMIN_EMAIL: z.string().email().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
+  CRON_SECRET: z.string().optional(),
 });
 
 export type Env = z.infer<typeof schema>;

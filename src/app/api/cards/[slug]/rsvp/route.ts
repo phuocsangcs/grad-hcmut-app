@@ -1,10 +1,12 @@
 import { getMyRsvp, submitRsvp, submitRsvpSchema } from '@/modules/rsvp';
-import { badRequest, handle, ok, readJson } from '@/lib/http';
+import { badRequest, handle, ok, readJson, tooMany } from '@/lib/http';
+import { clientIp, limiter, RULES } from '@/modules/moderation';
 
 type Ctx = { params: Promise<{ slug: string }> };
 
 /** Khách xác nhận tham dự. */
 export const POST = handle(async (req: Request, ctx: Ctx) => {
+  if (!limiter.hit(`rsvp:${clientIp(req)}`, RULES.rsvp).allowed) throw tooMany();
   const { slug } = await ctx.params;
   const input = await readJson(req, (raw) => submitRsvpSchema.parse(raw));
   const r = await submitRsvp(slug, input);
