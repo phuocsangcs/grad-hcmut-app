@@ -1,15 +1,37 @@
-import Link from 'next/link';
+import Image from 'next/image';
+import { site } from '@/config/site';
+import { Page, PageHeading, Prose, Surface } from '@/ui';
+import { RecoverForm } from './recover-form';
 
 export const metadata = { title: 'Về dự án' };
 
 export default function AboutPage() {
   return (
-    <main>
-      <h1>Về dự án</h1>
-      <p>Dự án cá nhân, phi lợi nhuận, làm bởi một cựu sinh viên. <strong>Không phải sản phẩm chính thức của Trường Đại học Bách Khoa.</strong> Lịch lễ lấy từ thông báo công khai của trường, có thể thay đổi; hãy đối chiếu với thông báo chính thức.</p>
-      <p>Nội dung bản đồ, quán ăn do cộng đồng góp. Thấy sai thì báo qua email ở chân trang.</p>
-      <p>Nếu thấy hữu ích, bạn có thể mời một ly cà phê (QR donate sẽ đặt ở đây).</p>
-      <p><Link href="/privacy">Quyền riêng tư</Link> · <Link href="/">Trang chủ</Link></p>
-    </main>
+    <Page width="narrow">
+      <PageHeading eyebrow="Về dự án" title="Một món quà nhỏ cho ngày ra trường" lead="Dự án cá nhân, phi lợi nhuận, làm bởi một sinh viên Bách Khoa cho các bạn cùng khoá." />
+      <Prose>
+        <p><strong>Không phải sản phẩm chính thức của Trường Đại học Bách Khoa – ĐHQG-HCM.</strong> Tên trường và hình ảnh chỉ dùng để mô tả sự kiện. Lịch lễ lấy từ thông báo công khai của trường và có thể thay đổi; hãy đối chiếu với thông báo chính thức.</p>
+        <p>
+          Bản đồ và danh sách quán ăn do cộng đồng góp. Thấy sai, thiếu, hoặc muốn gỡ nội dung liên quan đến bạn,{' '}
+          {site.contactEmail ? <>gửi email về <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.</> : <>bấm “Báo nội dung” ở cuối mỗi thiệp.</>}
+        </p>
+
+        <h2 id="recover">Lỡ mất link quản lý?</h2>
+        <p>Nếu lúc tạo thiệp bạn có nhập email, nhập lại bên dưới để nhận link quản lý mới. Link cũ sẽ hết hiệu lực.</p>
+      </Prose>
+      <RecoverForm />
+
+      <Prose>
+        <h2 id="donate">Mời dev ly cà phê</h2>
+        <p>{site.donate.note}</p>
+      </Prose>
+      <Surface tone="tint" style={{ display: 'grid', placeItems: 'center', gap: 12, maxWidth: 320, textAlign: 'center' }}>
+        {site.donate.qrImage ? (
+          <Image src={site.donate.qrImage} alt="Mã QR chuyển khoản mời cà phê" width={240} height={240} />
+        ) : (
+          <p style={{ color: 'var(--fg-muted)' }}>Mã QR sẽ được cập nhật sớm.</p>
+        )}
+      </Surface>
+    </Page>
   );
 }
