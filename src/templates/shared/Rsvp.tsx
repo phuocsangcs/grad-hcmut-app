@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, getClientId } from '@/components/api';
+import { api, ApiError, getClientId } from '@/components/api';
 import { vi } from '@/lib/i18n';
 import { Button, Field, Icon, Input, Textarea } from '@/ui';
 import s from './blocks.module.css';
@@ -13,6 +13,8 @@ type Props = {
   inviteCode?: string;
   /** Nhãn nút theo nhóm khách: "Ba Mẹ sẽ đến", "Ông Bà sẽ đến", "Mình sẽ đến". */
   cta: string;
+  /** Số người tối đa mỗi lần báo, do chủ thiệp đặt. */
+  maxHeadcount?: number;
   preview?: boolean;
 };
 
@@ -26,7 +28,8 @@ export function Rsvp(p: Props) {
   const [mine, setMine] = useState<Mine | null>(p.preview ? { confirmed: false } : null);
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(p.recipientName ?? '');
-  const [headcount, setHeadcount] = useState(2);
+  const max = p.maxHeadcount ?? 20;
+  const [headcount, setHeadcount] = useState(Math.min(2, max));
   const [wish, setWish] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -52,8 +55,9 @@ export function Rsvp(p: Props) {
         json: { clientId: getClientId(), guestName: name, headcount, wish: wish || null, groupKey: p.groupKey, inviteCode: p.inviteCode ?? null },
       });
       setMine({ confirmed: true, guestName: name, headcount, wish });
-    } catch {
-      setErr(vi.errors.server);
+    } catch (e) {
+      const code = e instanceof ApiError ? e.code : '';
+      setErr(code === 'rsvp_closed' ? 'Thiệp này đã đóng nhận xác nhận.' : code === 'headcount_exceeded' ? `Mỗi lần báo tối đa ${max} người.` : vi.errors.server);
     } finally {
       setBusy(false);
     }
@@ -99,7 +103,7 @@ export function Rsvp(p: Props) {
             −
           </button>
           <output>{headcount}</output>
-          <button type="button" aria-label="Thêm một người" onClick={() => setHeadcount((n) => Math.min(20, n + 1))}>
+          <button type="button" aria-label="Thêm một người" onClick={() => setHeadcount((n) => Math.min(max, n + 1))}>
             +
           </button>
         </div>

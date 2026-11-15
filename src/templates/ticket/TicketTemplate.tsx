@@ -103,8 +103,10 @@ export function TicketTemplate({ card, faculty, blocks, message, preview }: Temp
 
         <div className={s.stack}>
           {blocks.rsvp}
+          {blocks.guestbook}
           {blocks.after}
           {blocks.countdown}
+          {blocks.times}
           {blocks.meeting}
           {blocks.gallery}
           {blocks.actions}

@@ -35,11 +35,13 @@ export function GlassTemplate({ card, faculty, blocks, message, preview }: Templ
           <div className={s.wells}>{blocks.ceremony}</div>
           <p className={s.message}>{message}</p>
           {blocks.rsvp}
+          {blocks.guestbook}
           {blocks.after}
         </section>
       </div>
 
       <div className={s.rest}>
+        {blocks.times}
         {blocks.meeting}
         {blocks.gallery}
         {blocks.actions}

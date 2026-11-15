@@ -28,6 +28,10 @@ export type TemplateBlocks = {
   countdown: ReactNode;
   /** Form RSVP hoặc trạng thái đã xác nhận. null ở chế độ after. */
   rsvp: ReactNode | null;
+  /** Giờ trước lễ / sau lễ, null nếu người tạo không điền. */
+  times: ReactNode | null;
+  /** Lưu bút: lời chúc công khai, null nếu không bật hoặc chưa có. */
+  guestbook: ReactNode | null;
   /** Điểm hẹn sau lễ, null nếu người tạo không chọn. */
   meeting: ReactNode | null;
   /** Ảnh người tạo thiệp tải lên (ảnh bìa + album), null nếu không có. */

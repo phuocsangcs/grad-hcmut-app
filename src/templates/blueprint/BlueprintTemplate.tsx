@@ -71,8 +71,10 @@ export function BlueprintTemplate({ card, faculty, blocks, message, preview }: T
 
         <div className={s.stack}>
           {blocks.rsvp}
+          {blocks.guestbook}
           {blocks.after}
           {blocks.countdown}
+          {blocks.times}
           {blocks.meeting}
           {blocks.gallery}
           {blocks.actions}

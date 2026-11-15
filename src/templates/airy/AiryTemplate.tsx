@@ -54,8 +54,10 @@ export function AiryTemplate({ card, faculty, blocks, message, preview }: Templa
         <p className={s.message}>{message}</p>
         <div className={s.stack}>
           {blocks.rsvp}
+          {blocks.guestbook}
           {blocks.after}
           {blocks.countdown}
+          {blocks.times}
           {blocks.meeting}
           {blocks.gallery}
           {blocks.actions}

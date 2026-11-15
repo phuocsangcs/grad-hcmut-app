@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import type { PublicCard } from '@/modules/card/card.service';
 import { countdown, resolveMode } from '@/modules/card/mode';
 import { resolveGreeting } from '@/modules/card/greeting';
-import { getFaculty, getPoi, getTemplate, type Faculty, type Template } from '@/modules/content';
+import { getFaculty, getMusic, getPoi, getTemplate, type Faculty, type Template } from '@/modules/content';
 import { vnDate } from '@/lib/time';
 import { InvitationCard, type TemplateLinks } from '@/templates';
 import { PhoneFrame } from '@/ui';
@@ -21,6 +21,14 @@ export type PreviewDraft = {
   greetings: Record<string, string>;
   /** URL ảnh để xem trước (đã tải lên R2). */
   photos?: string[];
+  beforeTime?: string;
+  afterTime?: string;
+  musicId?: string;
+  rsvpEnabled?: boolean;
+  /** ISO hoặc rỗng. */
+  rsvpDeadline?: string;
+  rsvpMaxHeadcount?: number;
+  guestbookEnabled?: boolean;
 };
 
 const LINKS: TemplateLinks = { card: '#', ics: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: '#', call: null, messenger: '#' };
@@ -48,6 +56,19 @@ export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string 
     meeting: poi ? { poi, time: d.meetingTime || null, note: null } : null,
     phone: d.phone || null,
     photos: d.photos ?? [],
+    beforeTime: d.beforeTime?.trim() || null,
+    afterTime: d.afterTime?.trim() || null,
+    music: (() => {
+      const m = d.musicId ? getMusic(d.musicId) : undefined;
+      return m ? { id: m.id, title: m.title, artist: m.artist, src: m.src } : null;
+    })(),
+    rsvp: {
+      open: d.rsvpEnabled !== false && !(d.rsvpDeadline && new Date(d.rsvpDeadline).getTime() < now.getTime()),
+      reason: d.rsvpEnabled === false ? 'disabled' : d.rsvpDeadline && new Date(d.rsvpDeadline).getTime() < now.getTime() ? 'deadline' : null,
+      deadline: d.rsvpDeadline || null,
+      maxHeadcount: d.rsvpMaxHeadcount ?? 20,
+    },
+    wishes: d.guestbookEnabled ? [{ id: 'sample', name: 'Cô Hai', wish: 'Chúc mừng con tốt nghiệp, ba mẹ tự hào về con!' }] : [],
     mode: resolveMode(at, now, opts.mode),
     countdown: countdown(at, now),
     expiresAt: new Date(at.getTime() + 30 * 86_400_000).toISOString(),
