@@ -2,10 +2,14 @@ import Link from 'next/link';
 import { getOverview, listCardRsvps } from '@/modules/manage';
 import { HttpError } from '@/lib/http';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
-import { getGreetingGroup, listMeetingPois, listTemplates } from '@/modules/content';
+import { toVnLocalInput } from '@/lib/time';
+import { publicUrl } from '@/lib/storage';
+import { getGreetingGroup, listMeetingPois, listMusic, listTemplates } from '@/modules/content';
 import { InvitationCard, type TemplateLinks } from '@/templates';
 import { Button, Chip, CopyButton, Icon, Page, PageHeading, PhoneFrame, ShareButton, Surface } from '@/ui';
+import { isStorageEnabled } from '@/lib/storage';
 import { CardActions } from './card-actions';
+import { WishToggle } from './wish-toggle';
 import s from './manage.module.css';
 
 type Props = { params: Promise<{ token: string }> };
@@ -82,6 +86,7 @@ export default async function ManagePage({ params }: Props) {
                       <strong>{r.guestName}</strong>
                       {r.groupKey ? <> · <small>{getGreetingGroup(r.groupKey)?.label ?? r.groupKey}</small></> : null}
                       {r.wish ? <p>“{r.wish}”</p> : null}
+                      {r.wish && card.guestbookEnabled ? <WishToggle token={token} id={r.id} hidden={r.hidden} /> : null}
                     </div>
                     <span className={s.count}>{r.headcount} người</span>
                   </li>
@@ -101,7 +106,17 @@ export default async function ManagePage({ params }: Props) {
               meetingPoiId: card.meetingPoiId ?? '',
               meetingTime: card.meetingTime ?? '',
               phone: card.phone ?? '',
+              uploads: (card.photos ?? []).map((key) => ({ key, url: publicUrl(key) })),
+              beforeTime: card.beforeTime ?? '',
+              afterTime: card.afterTime ?? '',
+              musicId: card.musicId ?? '',
+              rsvpEnabled: card.rsvpEnabled,
+              rsvpDeadline: card.rsvpDeadline ? toVnLocalInput(card.rsvpDeadline) : '',
+              rsvpMaxHeadcount: card.rsvpMaxHeadcount,
+              guestbookEnabled: card.guestbookEnabled,
             }}
+            music={listMusic().map((m) => ({ id: m.id, title: m.artist ? `${m.title} · ${m.artist}` : m.title }))}
+            photosEnabled={isStorageEnabled()}
           />
         </div>
 
