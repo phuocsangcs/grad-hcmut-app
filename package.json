@@ -18,6 +18,10 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@fontsource-variable/dancing-script": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/playfair-display": "^5.3.0",
+    "@fontsource/be-vietnam-pro": "^5.3.0",
     "drizzle-orm": "^0.45.4",
     "nanoid": "^5.1.5",
     "next": "16.4.6",

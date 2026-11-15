@@ -1,0 +1,44 @@
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--text-md);
+  line-height: var(--leading);
+  color: var(--bk-900);
+  max-width: 68ch;
+}
+.prose h2 {
+  margin-top: var(--space-6);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--bk-700);
+  scroll-margin-top: 96px;
+}
+.prose ul {
+  display: grid;
+  gap: var(--space-3);
+}
+.prose li {
+  position: relative;
+  padding-left: 26px;
+}
+.prose li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.62em;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--bk-500);
+  transform: rotate(45deg);
+}
+.prose a {
+  color: var(--bk-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose strong {
+  color: var(--bk-700);
+}

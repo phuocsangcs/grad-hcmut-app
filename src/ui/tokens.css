@@ -1,0 +1,101 @@
+/**
+ * Design tokens – nguồn sự thật cho màu, chữ, bo góc, bóng.
+ *
+ * Đổi diện mạo toàn site: sửa giá trị ở đây. Phong cách duy nhất: phẳng.
+ * Mọi component chỉ dùng biến, không hard-code.
+ */
+:root {
+  /* ---- Màu thương hiệu Bách Khoa (bộ nhận diện: #032B91 + #1488DB) ---- */
+  --bk-950: #061244;
+  --bk-900: #0a1a3d; /* mực: chữ thân bài */
+  --bk-800: #0a2a7a;
+  --bk-700: #032b91; /* xanh BK đậm: tiêu đề, nút chính */
+  --bk-600: #0e6fb8; /* xanh an toàn cho chữ nhỏ trên nền sáng (5.3:1) */
+  --bk-500: #1488db; /* xanh BK sáng: mảng màu, highlight */
+  --bk-200: #cfe7fa;
+  --bk-100: #e8f3fc;
+  --bk-50: #f3f6fa;
+
+  /* ---- Điểm nhấn (liều lượng nhỏ) ---- */
+  --leaf: #1f9d68;
+  --leaf-ink: #13784f;
+  --leaf-soft: #e3f4ec;
+  --sun: #f4b740;
+  --sun-ink: #b7791f;
+  --sun-soft: #fff4dc;
+  --sun-pale: #ffe3a3;
+  --rose: #f3a6be;
+  --rose-ink: #d9577f;
+  --rose-soft: #fce7f1;
+
+  /* ---- Trung tính ---- */
+  --paper: #f7f5ef; /* nền giấy cho thiệp "in ấn" */
+  --cream: #fbf7ec;
+  --muted: #3d5a80;
+  --line: rgba(3, 43, 145, 0.12);
+  --line-strong: rgba(3, 43, 145, 0.28);
+  --white: #ffffff;
+
+  /* ---- Vai trò ---- */
+  --bg: var(--bk-50);
+  --fg: var(--bk-900);
+  --fg-muted: var(--muted);
+  --primary: var(--bk-700);
+  --primary-fg: #ffffff;
+  --accent: var(--sun);
+  --surface: #ffffff;
+  --surface-tint: var(--bk-100);
+  --focus: 0 0 0 3px rgba(20, 136, 219, 0.45);
+
+  /* ---- Chữ ---- */
+  --font-sans: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --font-script: 'Dancing Script Variable', 'Dancing Script', cursive;
+  --text-xs: 0.8125rem; /* 13 */
+  --text-sm: 0.9375rem; /* 15 */
+  --text-md: 1.0625rem; /* 17 – thân bài, đủ to cho người lớn tuổi */
+  --text-lg: 1.25rem;
+  --text-xl: 1.625rem;
+  --text-2xl: 2.125rem;
+  --text-3xl: clamp(2.5rem, 5vw, 4.5rem);
+  --leading: 1.6;
+
+  /* ---- Khoảng cách & bo góc ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-xs: 4px;
+  --radius-s: 6px;
+  --radius-m: 6px;
+  --radius-l: 8px;
+  --radius-pill: 6px;
+  --container: 1180px;
+  --tap: 44px; /* vùng chạm tối thiểu */
+
+  /* ---- Phẳng: không bóng, không kính mờ. Giữ biến để component cũ vẫn chạy. ---- */
+  --shadow-1: none;
+  --shadow-2: none;
+  --shadow-primary: none;
+  --glass-bg: #ffffff;
+  --glass-border: 1px solid var(--line);
+  --glass-blur: none;
+  --glass-highlight: none;
+  --motion-fast: 160ms;
+  --motion-slow: 700ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-slow: 0ms;
+  }
+}

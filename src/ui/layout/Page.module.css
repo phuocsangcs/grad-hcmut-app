@@ -1,0 +1,30 @@
+.main {
+  width: min(var(--container), calc(100% - 2 * var(--space-4)));
+  margin-inline: auto;
+  padding: var(--space-6) 0 var(--space-10);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+.narrow {
+  max-width: 760px;
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+}
+.title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--bk-700);
+}
+.lead {
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  color: var(--fg-muted);
+  max-width: 62ch;
+}
