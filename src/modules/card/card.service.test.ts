@@ -7,7 +7,7 @@ import { vnDate } from '@/lib/time';
 const base = {
   displayName: 'Phước Sang',
   facultyId: 'cse',
-  templateId: 'classic',
+  templateId: 'print',
   message: 'Mời mọi người!',
   greetings: {},
 };
@@ -91,8 +91,8 @@ describe('card.service', () => {
   it('update đổi giờ lễ thì expires_at đổi theo; delete', async () => {
     const { card } = await createCard({ ...base, slug: 'edit-me' });
     const newAt = vnDate('2026-12-05', '09:00');
-    const u = await updateCard(card.id, { ceremonyAt: newAt, templateId: 'sunny', phone: '' });
-    expect(u.templateId).toBe('sunny');
+    const u = await updateCard(card.id, { ceremonyAt: newAt, templateId: 'glass', phone: '' });
+    expect(u.templateId).toBe('glass');
     expect(u.ceremonyAt.toISOString()).toBe(newAt.toISOString());
     expect(u.expiresAt.getTime()).toBe(newAt.getTime() + 30 * 86_400_000);
     expect(u.phone).toBeNull();

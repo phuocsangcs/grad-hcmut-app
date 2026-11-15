@@ -3,7 +3,7 @@ import { createCard, cardRepo } from '@/modules/card';
 import { getMyRsvp, listRsvps, removeRsvp, rsvpSummary, submitRsvp } from './rsvp.service';
 
 const mk = (slug: string) =>
-  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'classic', message: '', greetings: {}, slug });
+  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {}, slug });
 
 describe('rsvp.service', () => {
   it('upsert theo clientId: gửi 2 lần chỉ có 1 dòng, số liệu đúng', async () => {

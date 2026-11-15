@@ -1,10 +1,12 @@
 {
-  "updatedAt": "2026-11-13",
-  "defaultId": "classic",
+  "updatedAt": "2026-11-15",
+  "defaultId": "print",
   "items": [
-    { "id": "classic", "name": "Cổ điển Bách Khoa", "description": "Xanh dương đậm, chữ serif, trang trọng. Hợp gửi gia đình.", "tone": "formal", "ogImage": "/images/og/classic.jpg" },
-    { "id": "sunny", "name": "Nắng sân trường", "description": "Vàng ấm, ảnh toà H1, vui tươi.", "tone": "warm", "ogImage": "/images/og/sunny.jpg" },
-    { "id": "minimal", "name": "Tối giản", "description": "Trắng đen, nhiều khoảng trống, hiện đại.", "tone": "modern", "ogImage": "/images/og/minimal.jpg" },
-    { "id": "playful", "name": "Tốt nghiệp rồi!", "description": "Màu nổi, confetti, hợp gửi bạn bè.", "tone": "fun", "ogImage": "/images/og/playful.jpg" }
+    { "id": "print", "name": "In ấn", "description": "Giấy sáng, nét vẽ theo khoa, khối thông tin kiểu bản vẽ. Rõ ràng, hợp mọi người.", "tone": "modern", "ogImage": "/images/og/print.png" },
+    { "id": "glass", "name": "Kính", "description": "Tấm kính mờ nổi trên hình vẽ của khoa, có chiều sâu nhưng tiết chế. Sang và hiện đại.", "tone": "modern", "ogImage": "/images/og/glass.png" },
+    { "id": "airy", "name": "Bay bổng", "description": "Chữ Tân Cử nhân thật lớn, mảng màu cắt giấy, hình vẽ trôi nhẹ. Nghệ và thoáng.", "tone": "warm", "ogImage": "/images/og/airy.png" },
+    { "id": "blueprint", "name": "Bản vẽ kỹ thuật", "description": "Giấy xanh Bách Khoa, lưới ô, khung tên bản vẽ, mục Duyệt là chữ ký của Ba Mẹ.", "tone": "formal", "ogImage": "/images/og/blueprint.png" },
+    { "id": "ticket", "name": "Vé mời", "description": "Vé hạng gia đình: đường xé răng cưa, mã vé tổ ong, dấu mộc Đã mời.", "tone": "fun", "ogImage": "/images/og/ticket.png" },
+    { "id": "riso", "name": "Risograph", "description": "In hai màu lệch lớp, chữ TÂN CỬ NHÂN thật to, ghi chú viết tay. Trẻ, hợp gửi bạn bè.", "tone": "fun", "ogImage": "/images/og/riso.png" }
   ]
 }

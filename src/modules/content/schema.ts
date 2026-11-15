@@ -4,14 +4,44 @@ const idSchema = z.string().regex(/^[a-z0-9-]+$/, 'id chỉ gồm a-z, 0-9, -');
 const dateKey = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'dạng YYYY-MM-DD');
 const timeKey = z.string().regex(/^\d{2}:\d{2}$/, 'dạng HH:mm');
 
+const hexColor = z.string().regex(/^#[0-9a-f]{6}$/i, 'màu dạng #rrggbb');
+
+/** Hình vẽ nét đặc trưng của khoa (xem src/templates/motifs). */
+export const facultyMotifSchema = z.enum([
+  'generic',
+  'chemistry',
+  'gantt',
+  'circuit',
+  'building',
+  'gears',
+  'leaf',
+  'wave',
+  'strata',
+  'lattice',
+  'route',
+  'terminal',
+]);
+
 export const facultySchema = z.object({
   id: idSchema,
   name: z.string().min(1),
   shortName: z.string().min(1),
+  /** Mã ngắn in trên thiệp, ví dụ "CSE". */
+  code: z.string().min(1).max(6),
   date: dateKey,
   time: timeKey,
   venue: z.string().optional(),
   note: z.string().optional(),
+  /** "Tân Kỹ sư" / "Tân Cử nhân" / "Tân Thạc sĩ" – người dùng vẫn sửa được trên thiệp. */
+  degreeTitle: z.string().min(1).max(30),
+  /** Câu chủ đề ngắn theo chất ngành. */
+  tagline: z.string().min(1).max(80),
+  /** Lời mời mặc định theo khoa, dùng khi người tạo chưa viết gì. */
+  invitation: z.string().min(1).max(300),
+  /** Màu nhấn và màu nền nhạt của khoa (template đọc qua CSS variable). */
+  accent: hexColor,
+  soft: hexColor,
+  motif: facultyMotifSchema,
 });
 export const facultiesFileSchema = z.object({
   source: z.string(),
@@ -89,6 +119,7 @@ export const greetingsFileSchema = z.object({
 });
 
 export type Faculty = z.infer<typeof facultySchema>;
+export type FacultyMotif = z.infer<typeof facultyMotifSchema>;
 export type Poi = z.infer<typeof poiSchema>;
 export type PoiType = z.infer<typeof poiTypeSchema>;
 export type Eatery = z.infer<typeof eaterySchema>;
