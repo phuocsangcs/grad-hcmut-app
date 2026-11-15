@@ -1,0 +1,331 @@
+/*
+ * Block dùng chung của thiệp. Chỉ dùng biến --t-* do template đặt ở root:
+ *   --t-accent  màu nhấn khoa      --t-soft   nền nhạt theo khoa
+ *   --t-ink     màu chữ chính      --t-muted  chữ phụ
+ *   --t-paper   nền thiệp          --t-surface nền ô/thẻ
+ *   --t-line    đường kẻ           --t-radius bo góc ô
+ */
+
+/* ---- Countdown ---- */
+.countdown {
+  display: flex;
+  gap: var(--space-2);
+}
+.cell {
+  flex: 1;
+  min-width: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: var(--t-radius, 14px);
+  background: var(--t-surface, rgba(255, 255, 255, 0.7));
+}
+.cell b {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--t-ink, var(--bk-700));
+  line-height: 1;
+}
+.cell small {
+  font-size: var(--text-xs);
+  color: var(--t-muted, var(--fg-muted));
+}
+
+/* ---- Ceremony ---- */
+.ceremony {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 2px solid var(--t-ink, var(--bk-700));
+  border-bottom: 2px solid var(--t-ink, var(--bk-700));
+}
+.ceremonyCell {
+  padding: 12px 0 12px 12px;
+  border-left: 1px solid var(--t-line, var(--line-strong));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ceremonyCell:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.ceremony dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t-muted, var(--fg-muted));
+}
+.ceremony dd {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--t-ink, var(--bk-700));
+  letter-spacing: -0.01em;
+}
+.ceremony dd.accent {
+  color: var(--t-accent, var(--bk-600));
+}
+.ceremonyCell small {
+  font-size: 11px;
+  color: var(--t-muted, var(--fg-muted));
+}
+.ceremonyRows {
+  grid-template-columns: 1fr;
+  border: 0;
+}
+.ceremonyRows .ceremonyCell {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 11px 0;
+  border-left: 0;
+  border-top: 1px solid var(--t-line, var(--line));
+}
+.ceremonyRows .ceremonyCell small {
+  display: none;
+}
+
+/* ---- Meeting point ---- */
+.meeting {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--t-radius, 14px);
+  background: var(--t-surface, #fff);
+  border: 1px solid var(--t-line, var(--line));
+}
+.meetingImg {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.meetingBody {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--t-accent, var(--leaf-ink));
+}
+.meetingName {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--t-ink, var(--bk-700));
+}
+.meetingMeta {
+  font-size: var(--text-sm);
+  color: var(--t-muted, var(--fg-muted));
+}
+.meetingMeta b {
+  color: var(--t-ink, var(--bk-700));
+}
+.inlineLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--t-accent, var(--bk-600));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: var(--tap);
+}
+
+/* ---- Actions ---- */
+.actionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.actionsGrid > a:nth-child(3) {
+  grid-column: span 2;
+}
+.actionsGrid > .inlineLink {
+  grid-column: span 2;
+  justify-content: center;
+}
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* ---- RSVP ---- */
+.rsvpCta {
+  box-shadow: var(--shadow-primary);
+}
+.rsvpSkeleton {
+  height: 58px;
+  border-radius: var(--radius-pill);
+  background: var(--t-surface, rgba(255, 255, 255, 0.6));
+}
+.rsvpDone {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 58px;
+  padding: 10px 14px;
+  border-radius: var(--t-radius, 18px);
+  background: var(--leaf-soft);
+  color: var(--leaf-ink);
+}
+.rsvpDone b {
+  display: block;
+  font-size: var(--text-md);
+}
+.rsvpDone small {
+  font-size: var(--text-xs);
+}
+.rsvpCheck {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #fff;
+}
+.textBtn {
+  margin-left: auto;
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.rsvpForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--t-radius, 18px);
+  background: var(--t-surface, #fff);
+  border: 1px solid var(--t-line, var(--line));
+  color: var(--bk-900);
+}
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  background: #fff;
+}
+.stepper button {
+  width: 52px;
+  height: 48px;
+  font-size: 1.4rem;
+  color: var(--bk-700);
+}
+.stepper button:hover {
+  background: var(--bk-100);
+}
+.stepper output {
+  min-width: 48px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.formError {
+  color: #b42318;
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+.rsvpBtns {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.rsvpBtns > :first-child {
+  flex: 1;
+}
+
+/* ---- After ---- */
+.after {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  border-radius: var(--t-radius, 18px);
+  background: var(--t-soft, var(--rose-soft));
+  color: var(--t-ink, var(--bk-700));
+}
+.after h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+.after p {
+  font-size: var(--text-sm);
+  color: var(--t-muted, var(--fg-muted));
+}
+
+/* ---- Explore ---- */
+.explore {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.exploreList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.exploreItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 64px;
+  padding: 10px 14px;
+  border-radius: var(--t-radius, 16px);
+  background: var(--t-surface, #fff);
+  border: 1px solid var(--t-line, var(--line));
+  color: var(--t-ink, var(--bk-900));
+}
+.exploreItem > span:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.exploreItem small {
+  font-size: var(--text-xs);
+  color: var(--t-muted, var(--fg-muted));
+}
+.exploreIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--t-soft, var(--bk-100));
+  color: var(--t-accent, var(--bk-700));
+}
+.exploreFoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--t-muted, var(--fg-muted));
+}
+.exploreFoot a {
+  font-weight: 700;
+  color: var(--t-accent, var(--bk-700));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

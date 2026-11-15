@@ -1,0 +1,101 @@
+.root {
+  --t-ink: var(--bk-700);
+  --t-muted: var(--fg-muted);
+  --t-paper: var(--paper);
+  --t-surface: #ffffff;
+  --t-line: rgba(3, 43, 145, 0.3);
+  --t-radius: 6px;
+  --m-ink: var(--bk-700);
+  --m-paper: var(--paper);
+  --m-sun: var(--sun);
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--bk-900);
+  padding: 0 0 var(--space-12);
+}
+.sheet {
+  width: min(560px, 100%);
+  margin: 0 auto;
+  padding: 0 var(--space-5) var(--space-6);
+  border-top: 6px solid var(--t-accent);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.code {
+  padding: 6px 10px;
+  background: var(--t-soft);
+  color: var(--t-accent);
+  font-weight: 600;
+}
+.to {
+  color: var(--fg-muted);
+}
+.facultyName {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--bk-700);
+}
+.motif {
+  background: var(--t-soft);
+  padding: var(--space-2);
+}
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.degree {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.8rem, 12vw, 3.4rem);
+  line-height: 0.98;
+  color: var(--bk-700);
+}
+.name {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.tagline {
+  margin-top: 6px;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--t-accent);
+}
+.message {
+  font-size: var(--text-md);
+  line-height: 1.65;
+}
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.explore {
+  width: min(560px, 100%);
+  margin: var(--space-6) auto 0;
+  padding: 0 var(--space-5);
+}
+@media (min-width: 720px) {
+  .root {
+    padding-top: var(--space-10);
+  }
+  .sheet {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-top-width: 6px;
+    padding: 0 var(--space-8) var(--space-8);
+  }
+}

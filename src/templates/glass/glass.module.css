@@ -1,0 +1,141 @@
+.root {
+  --t-ink: var(--bk-700);
+  --t-muted: var(--fg-muted);
+  --t-surface: rgba(243, 246, 250, 0.85);
+  --t-line: rgba(3, 43, 145, 0.12);
+  --t-radius: 16px;
+  --m-ink: var(--bk-700);
+  --m-paper: #f3f6fa;
+  --m-sun: var(--sun);
+  min-height: 100dvh;
+  background: #f3f6fa;
+  color: var(--bk-900);
+  padding-bottom: var(--space-12);
+}
+.stage {
+  position: relative;
+  width: min(560px, 100%);
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) 0;
+}
+.tint {
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  top: var(--space-4);
+  height: 400px;
+  border-radius: 34px;
+  background: var(--t-soft);
+}
+.motif {
+  position: relative;
+  width: 88%;
+  margin: var(--space-6) auto 0;
+  transform: scale(1.08);
+  transform-origin: 50% 40%;
+}
+.pill {
+  position: absolute;
+  right: var(--space-8);
+  top: var(--space-8);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  box-shadow: var(--glass-highlight), var(--shadow-1);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--bk-700);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--t-accent);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+.glass {
+  position: relative;
+  margin-top: -64px;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  border-radius: 30px;
+  background: #fff;
+  border: var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.glass::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), #fff, rgba(255, 255, 255, 0));
+}
+.faculty {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--t-accent);
+}
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lead {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+.degree {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(2.8rem, 12vw, 3.4rem);
+  line-height: 0.98;
+  color: var(--bk-700);
+  letter-spacing: -0.01em;
+}
+.name {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+.tagline {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-lg);
+  color: var(--t-accent);
+}
+/* Ba ô ngày-giờ-nơi thành "giếng" lõm nhẹ */
+.wells dl {
+  border: 0;
+  gap: 8px;
+}
+.wells dl > div {
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(243, 246, 250, 0.8);
+}
+.message {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--fg-muted);
+}
+.rest {
+  width: min(560px, 100%);
+  margin: var(--space-4) auto 0;
+  padding: 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

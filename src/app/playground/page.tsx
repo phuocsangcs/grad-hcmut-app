@@ -1,0 +1,17 @@
+import { notFound } from 'next/navigation';
+import { InvitationCard, SAMPLE_LINKS, sampleCard } from '@/templates';
+
+export const dynamic = 'force-dynamic';
+
+type Props = { searchParams: Promise<Record<string, string | undefined>> };
+
+/**
+ * Sân chơi UI (chỉ ngoài production): xem mọi template với dữ liệu mẫu, không cần DB.
+ *   /playground?template=glass&faculty=che&mode=dayof&to=parents&name=Cô%20Hoa
+ */
+export default async function PlaygroundPage({ searchParams }: Props) {
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_PLAYGROUND !== '1') notFound();
+  const sp = await searchParams;
+  const card = sampleCard({ templateId: sp.template, facultyId: sp.faculty, to: sp.to, recipientName: sp.name, message: sp.message, mode: sp.mode });
+  return <InvitationCard card={card} links={SAMPLE_LINKS} preview />;
+}

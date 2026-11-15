@@ -29,3 +29,12 @@ pnpm dev
 - `src/db` – Drizzle schema + migrations
 - `src/content` – dữ liệu tĩnh dạng JSON (khoa, POI, quán ăn, mẫu, lời chào)
 - `src/lib` – hạ tầng dùng chung (env, time, i18n, http)
+- `src/ui` – design system: tokens CSS, primitives (Button, Field, Surface…), layout (Page, SiteHeader…)
+- `src/templates` – các mẫu thiệp (mỗi mẫu một thư mục) + block dùng chung + hoạ tiết theo khoa
+- `src/config/site.ts` – cấu hình hiển thị (email liên hệ, ảnh QR mời cà phê)
+
+## Giao diện
+
+Xem `docs/UI.md`: đổi màu/chữ, thêm mẫu thiệp mới.
+Xem nhanh mọi mẫu không cần DB: `NEXT_PUBLIC_ENABLE_PLAYGROUND=1 pnpm dev` rồi mở
+`/playground?template=glass&faculty=che&mode=before&to=parents` (`mode`: `before` | `dayof` | `after`).
