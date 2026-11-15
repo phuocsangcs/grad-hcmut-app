@@ -25,10 +25,9 @@ export function Page({ children, width = 'default', bare, className }: Props) {
   );
 }
 
-export function PageHeading({ eyebrow, title, lead }: { eyebrow?: string; title: ReactNode; lead?: ReactNode }) {
+export function PageHeading({ title, lead }: { title: ReactNode; lead?: ReactNode }) {
   return (
     <header className={s.heading}>
-      {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
       <h1 className={s.title}>{title}</h1>
       {lead ? <p className={s.lead}>{lead}</p> : null}
     </header>

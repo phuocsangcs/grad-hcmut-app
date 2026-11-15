@@ -50,7 +50,7 @@ export function SiteHeader({ overlay, className }: Props) {
               </Link>
             </div>
           </details>
-          <Button href="/create" size="md">
+          <Button href="/templates" size="md">
             Tạo thiệp
           </Button>
         </div>

@@ -21,7 +21,7 @@ const FAQ = [
 export default function GuidePage() {
   return (
     <Page>
-      <PageHeading eyebrow="Cẩm nang" title="Lễ tốt nghiệp 26–29.11.2026" lead="Lịch từng khoa tại Hội trường A5, mẹo cho người nhà, bản đồ và quán ăn quanh trường." />
+      <PageHeading title="Lễ tốt nghiệp 26–29.11.2026" lead="Lịch từng khoa tại Hội trường A5, mẹo cho người nhà, bản đồ và quán ăn quanh trường." />
 
       <section aria-labelledby="h-schedule">
         <h2 id="h-schedule" className={s.h2}>Lịch theo khoa</h2>
@@ -72,7 +72,7 @@ export default function GuidePage() {
         <div className={s.links}>
           <Button href="/guide/map" variant="secondary" leading={<Icon name="map" size={16} />}>Bản đồ trong trường</Button>
           <Button href="/eat" variant="secondary" leading={<Icon name="fork" size={16} />}>Ăn gì sau lễ</Button>
-          <Button href="/create" trailing={<Icon name="arrow" size={16} />}>Sắp tốt nghiệp? Tạo thiệp</Button>
+          <Button href="/templates" trailing={<Icon name="arrow" size={16} />}>Sắp tốt nghiệp? Tạo thiệp</Button>
         </div>
       </Surface>
     </Page>

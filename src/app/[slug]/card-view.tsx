@@ -14,7 +14,7 @@ export function CardUnavailable({ status }: { status: Exclude<PublicCardResult['
       <LogoMark size={40} />
       <h1>{msg}</h1>
       <p>Thiệp tốt nghiệp tự xoá 30 ngày sau lễ để giữ riêng tư cho gia đình.</p>
-      <Button href="/create">{vi.card.createYourOwn}</Button>
+      <Button href="/templates">{vi.card.createYourOwn}</Button>
       <Link href="/" className={s.home}>
         Về trang chủ
       </Link>

@@ -10,7 +10,7 @@ export default function MapPage() {
   const { width, height } = poisFile.campus.mapSvg;
   return (
     <Page>
-      <PageHeading eyebrow="Bản đồ" title="Trong trường, đi đâu?" lead="Cổng, bãi xe, nhà vệ sinh, chỗ ngồi chờ và góc chụp ảnh quanh Hội trường A5." />
+      <PageHeading title="Trong trường, đi đâu?" lead="Cổng, bãi xe, nhà vệ sinh, chỗ ngồi chờ và góc chụp ảnh quanh Hội trường A5." />
       <div className={s.meta}>
         <Chip tone="primary"><Icon name="pin" size={14} /> {poisFile.campus.address}</Chip>
         <Button href={directionsToCampusUrl()} target="_blank" rel="noreferrer" size="sm" trailing={<Icon name="external" size={14} />}>Chỉ đường đến cổng</Button>

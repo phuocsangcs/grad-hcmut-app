@@ -24,7 +24,7 @@ export default async function ManagePage({ params }: Props) {
         <Page width="narrow">
           <PageHeading title="Không tìm thấy thiệp" lead="Link quản lý không đúng, hoặc thiệp đã bị xoá / hết hạn." />
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Button href="/create">Tạo thiệp mới</Button>
+            <Button href="/templates">Tạo thiệp mới</Button>
             <Button href="/about#recover" variant="ghost">Lấy lại link bằng email</Button>
           </div>
         </Page>
@@ -40,7 +40,6 @@ export default async function ManagePage({ params }: Props) {
     <Page>
       <header className={s.head}>
         <div>
-          <p className="eyebrow">Trang quản lý</p>
           <h1>Thiệp của {card.displayName}</h1>
           <div className={s.meta}>
             <Chip tone="primary" dot>{formatDateVi(card.ceremonyAt)} · {formatTimeVi(card.ceremonyAt)}</Chip>

@@ -33,9 +33,8 @@ export function DayOfView({ card, faculty, links, blocks, preview }: Props) {
           Hôm nay
         </span>
         <h1>
-          Lễ của {card.displayName}
-          <br />
-          bắt đầu lúc {formatTimeVi(at)}
+          <span>Lễ của {card.displayName}</span>
+          <span>bắt đầu lúc {formatTimeVi(at)}</span>
         </h1>
         <p>
           {card.venue} · <Countdown ceremonyAt={card.ceremonyAt} initial={card.countdown} variant="inline" />
@@ -70,7 +69,7 @@ export function DayOfView({ card, faculty, links, blocks, preview }: Props) {
           </Button>
           {links.call ? (
             <Button href={links.call} size="lg" variant="secondary" leading={<Icon name="phone" size={18} />}>
-              Gọi {card.displayName}
+              Gọi điện
             </Button>
           ) : (
             <Button href={links.googleCalendar} target="_blank" size="lg" variant="secondary" leading={<Icon name="calendar" size={18} />}>

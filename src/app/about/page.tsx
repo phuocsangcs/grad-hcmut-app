@@ -8,7 +8,7 @@ export const metadata = { title: 'Về dự án' };
 export default function AboutPage() {
   return (
     <Page width="narrow">
-      <PageHeading eyebrow="Về dự án" title="Một món quà nhỏ cho ngày ra trường" lead="Dự án cá nhân, phi lợi nhuận, làm bởi một sinh viên Bách Khoa cho các bạn cùng khoá." />
+      <PageHeading title="Một món quà nhỏ cho ngày ra trường" lead="Dự án cá nhân, phi lợi nhuận, làm bởi một sinh viên Bách Khoa cho các bạn cùng khoá." />
       <Prose>
         <p><strong>Không phải sản phẩm chính thức của Trường Đại học Bách Khoa – ĐHQG-HCM.</strong> Tên trường và hình ảnh chỉ dùng để mô tả sự kiện. Lịch lễ lấy từ thông báo công khai của trường và có thể thay đổi; hãy đối chiếu với thông báo chính thức.</p>
         <p>

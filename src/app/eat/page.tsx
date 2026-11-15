@@ -22,7 +22,7 @@ export default async function EatPage({ searchParams }: Props) {
 
   return (
     <Page>
-      <PageHeading eyebrow="Sau lễ" title="Ăn gì, ở đâu?" lead="Quán quanh trường cho cả nhà sau buổi lễ. Lọc theo túi tiền, nhóm đông, chỗ đậu ô tô." />
+      <PageHeading title="Ăn gì, ở đâu?" lead="Quán quanh trường cho cả nhà sau buổi lễ. Lọc theo túi tiền, nhóm đông, chỗ đậu ô tô." />
 
       <nav className={s.filters} aria-label="Bộ lọc">
         <Link href={link({ budget: undefined })} className={s.pill} aria-current={!budget}>Mọi mức giá</Link>

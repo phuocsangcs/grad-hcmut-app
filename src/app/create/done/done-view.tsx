@@ -26,7 +26,7 @@ export function DoneView({ groups }: { groups: { key: string; label: string }[] 
     return (
       <Page width="narrow">
         <PageHeading title="Không có thiệp vừa tạo" lead="Trang này chỉ hiện ngay sau khi bạn tạo thiệp." />
-        <div><Button href="/create" trailing={<Icon name="arrow" size={16} />}>Tạo thiệp</Button></div>
+        <div><Button href="/templates" trailing={<Icon name="arrow" size={16} />}>Tạo thiệp</Button></div>
       </Page>
     );
   }
@@ -36,7 +36,6 @@ export function DoneView({ groups }: { groups: { key: string; label: string }[] 
       <div className={s.wrap}>
         <div className={s.col}>
           <header className={s.hero}>
-            <p className="eyebrow">Xong rồi</p>
             <h1>Thiệp của bạn <em>đã sẵn sàng</em></h1>
             <p className={s.lead}>Gửi link cho mọi người. Thiệp tự đếm ngược, tự đổi sang chỉ dẫn trong ngày lễ.</p>
           </header>

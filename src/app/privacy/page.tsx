@@ -6,7 +6,7 @@ export const metadata = { title: 'Quyền riêng tư' };
 export default function PrivacyPage() {
   return (
     <Page width="narrow">
-      <PageHeading eyebrow="Quyền riêng tư" title="Dữ liệu của bạn và người thân" lead="Ngắn gọn: lưu ít nhất có thể, tự xoá sau lễ, không bán, không quảng cáo." />
+      <PageHeading title="Dữ liệu của bạn và người thân" lead="Ngắn gọn: lưu ít nhất có thể, tự xoá sau lễ, không bán, không quảng cáo." />
       <Prose>
         <h2>Chúng tôi lưu gì</h2>
         <ul>

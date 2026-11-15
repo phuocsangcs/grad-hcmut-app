@@ -21,6 +21,11 @@
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+/* Mỗi ý một dòng; tên dài thì tự ngắt cân đối, không rớt một chữ lẻ */
+.hero h1 span {
+  display: block;
 }
 .hero p {
   font-size: var(--text-md);

@@ -24,7 +24,7 @@ export default async function InvitesPage({ params }: Props) {
       return (
         <Page width="narrow">
           <PageHeading title="Link quản lý không đúng" lead="Kiểm tra lại link, hoặc tạo thiệp mới." />
-          <div><Button href="/create">Tạo thiệp</Button></div>
+          <div><Button href="/templates">Tạo thiệp</Button></div>
         </Page>
       );
     }
@@ -40,9 +40,8 @@ export default async function InvitesPage({ params }: Props) {
       <div>
         <Link href={`/manage/${token}`} className={s.back}><Icon name="arrow" size={14} style={{ transform: 'rotate(180deg)' }} /> Trang quản lý</Link>
         <PageHeading
-          eyebrow={`${list.length}/${MAX} người nhận · ${confirmed} đã xác nhận`}
           title="Gửi riêng từng người"
-          lead="Mỗi người một link, mở ra thấy đúng tên mình và lời chào riêng. Bạn biết ai đã mở, ai sẽ đến."
+          lead={`Mỗi người một link, mở ra thấy đúng tên mình và lời chào riêng. Đã mời ${list.length}/${MAX} người, ${confirmed} đã xác nhận.`}
         />
       </div>
 
