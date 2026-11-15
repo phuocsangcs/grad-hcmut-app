@@ -41,6 +41,7 @@ export function GlassTemplate({ card, faculty, blocks, message, preview }: Templ
 
       <div className={s.rest}>
         {blocks.meeting}
+        {blocks.gallery}
         {blocks.actions}
         {blocks.explore}
       </div>

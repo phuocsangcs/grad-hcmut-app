@@ -74,6 +74,7 @@ export function BlueprintTemplate({ card, faculty, blocks, message, preview }: T
           {blocks.after}
           {blocks.countdown}
           {blocks.meeting}
+          {blocks.gallery}
           {blocks.actions}
         </div>
       </article>

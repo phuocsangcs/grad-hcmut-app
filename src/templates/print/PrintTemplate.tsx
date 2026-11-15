@@ -38,6 +38,7 @@ export function PrintTemplate({ card, faculty, blocks, message, preview }: Templ
           {blocks.after}
           {blocks.countdown}
           {blocks.meeting}
+          {blocks.gallery}
           {blocks.actions}
         </div>
       </article>

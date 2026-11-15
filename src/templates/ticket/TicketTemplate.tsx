@@ -106,6 +106,7 @@ export function TicketTemplate({ card, faculty, blocks, message, preview }: Temp
           {blocks.after}
           {blocks.countdown}
           {blocks.meeting}
+          {blocks.gallery}
           {blocks.actions}
           {blocks.explore}
         </div>

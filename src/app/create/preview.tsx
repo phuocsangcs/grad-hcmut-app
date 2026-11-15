@@ -19,6 +19,8 @@ export type PreviewDraft = {
   meetingTime: string;
   phone: string;
   greetings: Record<string, string>;
+  /** URL ảnh để xem trước (đã tải lên R2). */
+  photos?: string[];
 };
 
 const LINKS: TemplateLinks = { card: '#', ics: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: '#', call: null, messenger: '#' };
@@ -45,6 +47,7 @@ export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string 
     recipientName: null,
     meeting: poi ? { poi, time: d.meetingTime || null, note: null } : null,
     phone: d.phone || null,
+    photos: d.photos ?? [],
     mode: resolveMode(at, now, opts.mode),
     countdown: countdown(at, now),
     expiresAt: new Date(at.getTime() + 30 * 86_400_000).toISOString(),

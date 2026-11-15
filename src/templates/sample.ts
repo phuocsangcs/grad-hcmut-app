@@ -40,6 +40,7 @@ export function sampleCard(o: SampleOptions = {}): PublicCard {
     recipientName: o.recipientName ?? null,
     meeting: poi ? { poi, time: '16h00', note: null } : null,
     phone: '0901234567',
+    photos: [],
     mode: resolveMode(ceremony.at, now, o.mode),
     countdown: countdown(ceremony.at, now),
     expiresAt: new Date(ceremony.at.getTime() + 30 * 86_400_000).toISOString(),

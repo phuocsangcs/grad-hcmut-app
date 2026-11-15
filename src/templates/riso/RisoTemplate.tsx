@@ -71,6 +71,7 @@ export function RisoTemplate({ card, faculty, blocks, message, preview }: Templa
           {blocks.after}
           {blocks.countdown}
           {blocks.meeting}
+          {blocks.gallery}
           {blocks.actions}
           {blocks.explore}
         </div>

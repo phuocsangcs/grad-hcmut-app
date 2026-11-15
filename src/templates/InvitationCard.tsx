@@ -9,6 +9,7 @@ import { CeremonyInfo } from './shared/CeremonyInfo';
 import { Countdown } from './shared/Countdown';
 import { DayOfView } from './shared/DayOfView';
 import { Explore } from './shared/Explore';
+import { Gallery } from './shared/Gallery';
 import { MeetingPoint } from './shared/MeetingPoint';
 import { Rsvp } from './shared/Rsvp';
 
@@ -69,6 +70,7 @@ export function InvitationCard({ card, links, inviteCode, preview, templateId }:
         <Rsvp slug={card.slug} groupKey={card.groupKey} recipientName={card.recipientName} inviteCode={inviteCode} cta={rsvpCta(card.groupKey, card.recipientName)} preview={preview} />
       ),
     meeting: card.meeting ? <MeetingPoint meeting={card.meeting} mapsUrl={meetingPoi ? poiSearchUrl(meetingPoi) : links.meetingPoi} /> : null,
+    gallery: card.photos.length > 0 ? <Gallery photos={card.photos} name={card.displayName} /> : null,
     actions: <Actions links={links} displayName={card.displayName} />,
     after: card.mode === 'after' ? <After displayName={card.displayName} expiresAt={card.expiresAt} /> : null,
     explore: <Explore slug={card.slug} preview={preview} />,

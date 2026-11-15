@@ -30,6 +30,8 @@ export type TemplateBlocks = {
   rsvp: ReactNode | null;
   /** Điểm hẹn sau lễ, null nếu người tạo không chọn. */
   meeting: ReactNode | null;
+  /** Ảnh người tạo thiệp tải lên (ảnh bìa + album), null nếu không có. */
+  gallery: ReactNode | null;
   /** Hàng nút: chỉ đường, thêm lịch, gọi. */
   actions: ReactNode;
   /** Lời cảm ơn + ngày tự xoá; chỉ có ở chế độ after. */
