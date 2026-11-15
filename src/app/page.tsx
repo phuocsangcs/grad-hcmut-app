@@ -1,22 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { countdown } from '@/modules/card/mode';
-import { nextCeremony, scheduleByDay } from '@/modules/content';
+import { listTemplates, nextCeremony, scheduleByDay } from '@/modules/content';
 import { formatTimeVi } from '@/lib/time';
 import { Countdown } from '@/templates/shared/Countdown';
 import { InvitationCard, SAMPLE_LINKS, sampleCard } from '@/templates';
 import { Button, Icon, PhoneFrame, SiteFooter, SiteHeader, type IconName } from '@/ui';
 import { ParallaxLayer } from './parallax-layer';
+import { LiveCountdown } from './live-countdown';
+import { TemplateCarousel } from './template-carousel';
+import { sampleOptionsFor } from './templates/samples';
 import s from './home.module.css';
 
 export const revalidate = 3600;
-
-/** Ba mẫu tiêu biểu cho phần "Mẫu thiệp" – mỗi mẫu một khoa để thấy màu/hoạ tiết đổi theo khoa. */
-const SHOWCASE = [
-  { templateId: 'print', facultyId: 'cse', displayName: 'Nguyễn Minh Anh', caption: 'In ấn · KH&KT Máy tính' },
-  { templateId: 'glass', facultyId: 'che', displayName: 'Trần Thu Hà', caption: 'Kính · Kỹ thuật Hoá học' },
-  { templateId: 'riso', facultyId: 'me', displayName: 'Lê Quốc Bảo', caption: 'Riso · Cơ khí' },
-];
 
 /**
  * Hai thiệp hiện trên điện thoại ở hero.
@@ -27,6 +23,15 @@ const SHOWCASE = [
 const HERO = [
   { templateId: 'riso', facultyId: 'me', displayName: 'Lê Quốc Bảo', scale: 0.56, speed: 0.1, max: 60 },
   { templateId: 'print', facultyId: 'cse', displayName: 'Nguyễn Minh Anh', scale: 0.62, speed: 0.35, max: 150 },
+];
+
+/** Danh sách "mỗi thiệp là một trang riêng". Thêm/bớt dòng ở đây. */
+const PAGE_FEATURES: { icon: IconName; title: string; body: string }[] = [
+  { icon: 'calendar', title: 'Giờ lễ chính thức', body: 'Tự điền theo lịch của khoa, kèm thêm vào Google Calendar.' },
+  { icon: 'map', title: 'Chỉ đường vào Hội trường A5', body: 'Cổng nào, gửi xe ở đâu, đi bộ bao xa.' },
+  { icon: 'sparkle', title: 'Đếm ngược, rồi đổi thành chỉ dẫn trong ngày', body: 'Trước lễ là đếm ngược, đúng ngày lễ là lịch trình và việc cần mang.' },
+  { icon: 'check', title: 'Điểm hẹn chụp ảnh sau lễ', body: 'Chọn một chỗ trong trường, ghi giờ hẹn, có đường đi tới đó.' },
+  { icon: 'fork', title: 'Quán ăn quanh trường', body: 'Gợi ý cho cả nhà, lọc theo nhóm đông và chỗ đậu ô tô.' },
 ];
 
 const STEPS = [
@@ -45,6 +50,10 @@ const GUIDES: { href: string; icon: IconName; title: string; body: string }[] = 
 export default function HomePage() {
   const next = nextCeremony();
   const days = scheduleByDay();
+  const templates = listTemplates();
+  // cùng một người, ba mẫu khác nhau -> minh hoạ "đổi mẫu không cần nhập lại"
+  const SAME = { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' };
+  const SWAP = ['print', 'glass', 'riso'].map((id) => ({ id, name: templates.find((t) => t.id === id)?.name ?? id }));
 
   return (
     <>
@@ -66,7 +75,7 @@ export default function HomePage() {
               <p className={s.lead}>Thiệp mời online gửi bằng một đường link: đếm ngược, chỉ đường vào trường, điểm hẹn sau lễ.</p>
               <p className={s.meta}>Miễn phí · Không cần tài khoản · Tự xoá 30 ngày sau lễ</p>
               <div>
-                <Button href="/create" size="lg">Tạo thiệp ngay</Button>
+                <Button href="/templates" size="lg">Tạo thiệp ngay</Button>
               </div>
             </div>
 
@@ -120,27 +129,77 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ---------- Mẫu thiệp ---------- */}
+        {/* ---------- Mẫu thiệp: carousel ---------- */}
         <section className={s.section} aria-labelledby="h-templates">
           <div className="container">
-            <header className={s.sectionHead}>
-              <p className="eyebrow">Mẫu thiệp</p>
+            <header className={s.sectionHeadCenter}>
               <h2 id="h-templates" className={s.h2}>Mỗi khoa một <em>dáng vẻ</em></h2>
-              <p className={s.sectionLead}>Hoá học có bình cầu, Máy tính có terminal, Xây dựng có bản vẽ. Chọn mẫu, màu và hoạ tiết tự theo khoa.</p>
+              <p className={s.sectionLead}>Hoá học có bình cầu, Máy tính có terminal, Xây dựng có bản vẽ. Màu và hoạ tiết tự đổi theo khoa của bạn.</p>
             </header>
-            <ul className={s.phones}>
-              {SHOWCASE.map((x, i) => (
-                <li key={x.templateId} className={s.phoneItem} data-i={i}>
-                  <PhoneFrame scale={0.78} interactive={false}>
-                    <InvitationCard card={sampleCard(x)} links={SAMPLE_LINKS} preview />
+            <TemplateCarousel
+              slides={templates.map((t) => ({
+                id: t.id,
+                label: t.name,
+                node: (
+                  <PhoneFrame bare scale={0.64} interactive={false}>
+                    <InvitationCard card={sampleCard(sampleOptionsFor(t.id))} links={SAMPLE_LINKS} preview />
                   </PhoneFrame>
-                  <span className={s.phoneCaption}>{x.caption}</span>
+                ),
+              }))}
+            />
+            <div className={s.center}>
+              <Button href="/templates" variant="secondary" trailing={<Icon name="arrow" size={16} />}>Xem tất cả mẫu thiệp</Button>
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- Đổi mẫu không cần nhập lại (nền xanh đậm) ---------- */}
+        <section className={s.band} aria-labelledby="h-swap">
+          <div className={`container ${s.bandInner}`}>
+            <div className={s.bandText}>
+              <h2 id="h-swap" className={s.bandTitle}>Đổi mẫu, <em>không cần nhập lại</em></h2>
+              <p className={s.bandLead}>
+                Tên, khoa, lời nhắn, điểm hẹn bạn điền một lần. Thử mẫu nào cũng giữ nguyên thông tin,
+                chọn lại thoải mái cho tới khi ưng ý.
+              </p>
+              <ul className={s.swapNames}>
+                {SWAP.map((x) => <li key={x.id}>{x.name}</li>)}
+              </ul>
+            </div>
+            <div className={s.swapPhones} aria-hidden="true">
+              {SWAP.map((x, k) => (
+                <div key={x.id} className={s.swapPhone} data-i={k}>
+                  <PhoneFrame scale={0.46} interactive={false}>
+                    <InvitationCard card={sampleCard({ templateId: x.id, ...SAME })} links={SAMPLE_LINKS} preview />
+                  </PhoneFrame>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ---------- Mỗi thiệp là một trang web riêng ---------- */}
+        <section className={`container ${s.pageSec}`} aria-labelledby="h-page">
+          <div className={s.howBody}>
+            <h2 id="h-page" className={s.h2}>Mỗi thiệp là một <em>trang web riêng</em></h2>
+            <p className={s.sectionLead}>Không chỉ là một tấm ảnh. Người nhà mở link là có sẵn mọi thứ về buổi lễ của bạn.</p>
+            <ul className={s.features}>
+              {PAGE_FEATURES.map((f) => (
+                <li key={f.title} className={s.feature}>
+                  <span className={s.featureIcon}><Icon name={f.icon} size={20} /></span>
+                  <div>
+                    <h3>{f.title}</h3>
+                    <p>{f.body}</p>
+                  </div>
                 </li>
               ))}
             </ul>
-            <div className={s.center}>
-              <Button href="/create" variant="secondary" trailing={<Icon name="arrow" size={16} />}>Xem đủ 6 mẫu</Button>
-            </div>
+          </div>
+          {/* Hình minh hoạ: thiệp thật ở chế độ "trong ngày lễ". Thay bằng ảnh/video khác ở đây. */}
+          <div className={s.pageVisual} aria-hidden="true">
+            <PhoneFrame scale={0.7} interactive={false}>
+              <InvitationCard card={sampleCard({ ...sampleOptionsFor('print'), mode: 'dayof' })} links={SAMPLE_LINKS} preview />
+            </PhoneFrame>
           </div>
         </section>
 
@@ -150,7 +209,6 @@ export default function HomePage() {
             <Image src="/images/site/yellow-carpet.jpg" alt="Sân trường Bách Khoa phủ hoa vàng" fill sizes="(max-width: 900px) 100vw, 560px" />
           </div>
           <div className={s.howBody}>
-            <p className="eyebrow">Hai phút là xong</p>
             <h2 id="h-how" className={s.h2}>Ba bước, <em>một đường link</em></h2>
             <ol className={s.steps}>
               {STEPS.map((st, i) => (
@@ -163,7 +221,7 @@ export default function HomePage() {
                 </li>
               ))}
             </ol>
-            <Button href="/create" trailing={<Icon name="arrow" size={16} />}>Bắt đầu tạo thiệp</Button>
+            <Button href="/templates" trailing={<Icon name="arrow" size={16} />}>Bắt đầu tạo thiệp</Button>
           </div>
         </section>
 
@@ -171,7 +229,6 @@ export default function HomePage() {
         <section className={s.section} aria-labelledby="h-guide">
           <div className="container">
             <header className={s.sectionHead}>
-              <p className="eyebrow">Cho người nhà</p>
               <h2 id="h-guide" className={s.h2}>Người dẫn đường <em>ngày lễ</em></h2>
               <p className={s.sectionLead}>Ông bà, ba mẹ lần đầu vào trường? Mọi thứ cần biết nằm gọn ở đây, mở được cả khi mạng chậm.</p>
             </header>
@@ -190,14 +247,20 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ---------- CTA cuối ---------- */}
+        {/* ---------- CTA cuối: mỗi lễ một thiệp + đếm ngược lễ gần nhất ---------- */}
         <section className="container">
           <div className={s.final}>
-            <div>
-              <h2 className={s.finalTitle}>Lễ của {next.faculty.shortName} lúc {formatTimeVi(next.at)}, <Countdown ceremonyAt={next.at.toISOString()} initial={countdown(next.at)} variant="inline" />.</h2>
-              <p>Gửi thiệp sớm để Ba Mẹ kịp sắp xếp.</p>
+            <div className={s.finalText}>
+              <h2 className={s.finalTitle}>Mỗi lễ một thiệp, gửi sớm để Ba Mẹ kịp sắp xếp.</h2>
+              <p>Tạo xong là có link gửi ngay, thiệp tự cập nhật theo ngày lễ.</p>
+              <div>
+                <Button href="/templates" variant="white" size="lg" trailing={<Icon name="arrow" size={18} />}>Tạo thiệp ngay</Button>
+              </div>
             </div>
-            <Button href="/create" variant="white" size="lg" trailing={<Icon name="arrow" size={18} />}>Tạo thiệp ngay</Button>
+            <div className={s.finalClock}>
+              <p className={s.finalClockLabel}>Lễ gần nhất: {next.faculty.name}, {formatTimeVi(next.at)}</p>
+              <LiveCountdown at={next.at.toISOString()} />
+            </div>
           </div>
         </section>
       </main>

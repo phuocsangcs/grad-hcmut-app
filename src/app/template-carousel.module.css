@@ -1,0 +1,98 @@
+.root {
+  position: relative;
+  outline: none;
+  touch-action: pan-y;
+  user-select: none;
+}
+.root:focus-visible {
+  outline: 3px solid var(--bk-500);
+  outline-offset: 4px;
+  border-radius: var(--radius-m);
+}
+
+/* Sân khấu 3D: chiều cao = chiều cao điện thoại (390×780 × scale 0.64 ≈ 500) + chút đệm */
+.stage {
+  position: relative;
+  height: 520px;
+  perspective: 1400px;
+  overflow: hidden;
+}
+.slide {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transition: transform 520ms var(--ease-out), opacity 520ms var(--ease-out);
+  cursor: pointer;
+  will-change: transform, opacity;
+}
+.slide[data-active='true'] {
+  cursor: default;
+}
+/* Thẻ hai bên mờ bớt cho đỡ rối */
+.slide[data-active='false'] {
+  filter: saturate(0.85);
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-top: -40px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--bk-900);
+}
+.arrow:hover {
+  border-color: var(--bk-500);
+}
+.prev {
+  left: 0;
+}
+.next {
+  right: 0;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--line-strong);
+  transition: width var(--motion-fast), background var(--motion-fast);
+}
+.dot[data-on='true'] {
+  width: 24px;
+  border-radius: 4px;
+  background: var(--bk-700);
+}
+.caption {
+  margin-top: var(--space-3);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+
+@media (max-width: 640px) {
+  .stage {
+    height: 470px;
+  }
+  .arrow {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slide {
+    transition: none;
+  }
+}
