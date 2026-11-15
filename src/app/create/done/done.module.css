@@ -1,0 +1,118 @@
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-8);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.hero h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--bk-700);
+}
+.hero h1 em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--bk-500);
+}
+.link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.url {
+  flex: 1;
+  min-width: 220px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--bk-700);
+  padding: 12px 16px;
+  border-radius: var(--radius-s);
+  background: var(--surface-tint);
+  word-break: break-all;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.groupList {
+  display: grid;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.groupRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+}
+.groupRow strong {
+  display: block;
+  color: var(--bk-900);
+}
+.groupRow small {
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  font-size: var(--text-xs);
+}
+.groupBtns {
+  display: flex;
+  gap: var(--space-1);
+  flex: none;
+}
+.manage {
+  border: 1.5px solid var(--sun);
+  background: var(--sun-soft);
+}
+.manage h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--sun-ink);
+  font-size: var(--text-lg);
+}
+.qrCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+.qrCard img {
+  width: 220px;
+  height: 220px;
+  border-radius: var(--radius-s);
+  background: #fff;
+}
+.h2 {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--bk-900);
+  letter-spacing: -0.01em;
+}
+.lead {
+  color: var(--fg-muted);
+}
