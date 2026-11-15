@@ -1,0 +1,440 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-bottom: var(--space-16);
+}
+
+/* ================= Hero ================= */
+.hero {
+  position: relative;
+  overflow: hidden;
+  /* không nền riêng: dùng nền trang để ảnh hoà vào */
+}
+/*
+ * Ảnh nền tung mũ: mờ, và tan dần vào nền trang ở mép trên/dưới.
+ * Dùng mask (không phủ gradient màu) nên hoà đúng với bất cứ nền nào phía sau.
+ * Chỉnh độ tan: hai mốc % (10% / 90%). Chỉnh độ mờ ảnh: opacity.
+ */
+.heroBg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  filter: grayscale(0.35);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 78%, transparent 100%);
+}
+.heroBg img {
+  object-fit: cover;
+  object-position: center 35%;
+}
+.heroInner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-8);
+  min-height: 640px;
+  padding-block: var(--space-12);
+}
+.heroText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+}
+.heroKicker {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-lg);
+  color: var(--bk-600);
+}
+.title {
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  line-height: 1.06;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--bk-900);
+  max-width: 15ch;
+}
+.quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-lg);
+  color: var(--fg-muted);
+  margin-top: var(--space-2);
+}
+.meta {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  margin-bottom: var(--space-2);
+}
+
+/* Hai điện thoại nghiêng, chồng lên nhau như trong ảnh tham khảo */
+/* Chiều cao vùng chứa hai điện thoại: tăng/giảm cùng lúc đổi scale ở page.tsx (HERO). */
+.heroPhones {
+  position: relative;
+  height: 520px;
+}
+/* Lớp parallax: đặt vị trí + trôi theo cuộn (biến --py do ParallaxLayer ghi). */
+.phoneBack,
+.phoneFront {
+  position: absolute;
+  top: 50%;
+  translate: 0 var(--py, 0px);
+  will-change: translate;
+}
+.phoneBack {
+  left: 6%;
+}
+.phoneFront {
+  right: 4%;
+  z-index: 1;
+}
+/* Góc nghiêng của từng điện thoại */
+.phoneBack .phoneTilt {
+  transform: translateY(-54%) rotate(-9deg);
+}
+.phoneFront .phoneTilt {
+  transform: translateY(-44%) rotate(7deg);
+}
+@media (max-width: 960px) {
+  .heroInner {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    padding-block: var(--space-10) 0;
+  }
+  /*
+   * Mobile: thu cả cụm điện thoại bằng scale (đổi 0.7 ở đây để to/nhỏ), cắt phần thừa
+   * để điện thoại không tràn lên đè chữ/nút CTA ở trên, và giảm độ trôi khi cuộn.
+   * Khi đổi scale: width ≈ 100% / scale; margin-bottom = chiều cao × (scale − 1).
+   */
+  .heroPhones {
+    height: 460px;
+    width: 143%;
+    justify-self: center;
+    overflow: hidden;
+    /* dùng `scale` (không phải transform) vì animation .rise-2 đang chiếm thuộc tính transform */
+    scale: 0.7;
+    transform-origin: top center;
+    margin-top: var(--space-4);
+    margin-bottom: -138px;
+  }
+  .phoneBack,
+  .phoneFront {
+    top: 8%;
+    translate: 0 calc(var(--py, 0px) * 0.25);
+  }
+  .phoneBack {
+    left: 11%;
+  }
+  .phoneFront {
+    right: 9%;
+  }
+  .phoneBack .phoneTilt {
+    transform: rotate(-9deg);
+  }
+  .phoneFront .phoneTilt {
+    transform: rotate(7deg);
+  }
+}
+.title em,
+.h2 em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--bk-500);
+}
+.lead {
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  color: var(--fg-muted);
+  max-width: 52ch;
+}
+/* ================= Lịch lễ: bảng thông tin trơn ================= */
+.schedule {
+  display: grid;
+  grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+  gap: var(--space-8);
+}
+.scheduleHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.scheduleTitle {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--bk-900);
+  letter-spacing: -0.01em;
+}
+.scheduleNote {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  line-height: 1.6;
+}
+.days {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+.day {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+.dayLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dayLabel b {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--bk-900);
+  font-variant-numeric: tabular-nums;
+}
+.dayLabel span {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+}
+.dayItems {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.dayItem {
+  display: flex;
+  gap: var(--space-3);
+  color: var(--bk-900);
+}
+.dayTime {
+  flex: none;
+  width: 3.2em;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 760px) {
+  .schedule {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+  .day {
+    grid-template-columns: 84px 1fr;
+  }
+}
+
+/* ================= Khối chung ================= */
+.section {
+  display: block;
+}
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 640px;
+  margin-bottom: var(--space-8);
+}
+.h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--bk-700);
+}
+.sectionLead {
+  font-size: var(--text-lg);
+  color: var(--fg-muted);
+  line-height: 1.55;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-8);
+}
+
+/* ================= Mẫu thiệp ================= */
+.phones {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: var(--space-8);
+}
+.phoneItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.phoneItem[data-i='1'] {
+  transform: translateY(-28px);
+}
+.phoneCaption {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+@media (max-width: 1060px) {
+  .phones {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 32px var(--space-4) var(--space-4);
+    margin-inline: calc(-1 * var(--space-4));
+    scrollbar-width: none;
+  }
+  .phoneItem {
+    scroll-snap-align: center;
+  }
+  .phoneItem[data-i='1'] {
+    transform: none;
+  }
+}
+
+/* ================= Cách làm ================= */
+.how {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--space-12);
+  align-items: center;
+}
+.photo {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  background: var(--bk-100);
+}
+.photo img {
+  object-fit: cover;
+}
+.howBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+.steps {
+  display: grid;
+  gap: var(--space-4);
+}
+.step {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: var(--space-4);
+  align-items: start;
+}
+.stepNum {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bk-700);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-xl);
+  color: var(--bk-700);
+}
+.step h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--bk-900);
+}
+.step p {
+  color: var(--fg-muted);
+}
+@media (max-width: 900px) {
+  .how {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+/* ================= Dẫn đường ================= */
+.guides {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+@media (max-width: 960px) {
+  .guides {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 520px) {
+  .guides {
+    grid-template-columns: 1fr;
+  }
+}
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-5);
+  border-radius: var(--radius-l);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--motion-fast) var(--ease-out), border-color var(--motion-fast);
+}
+.guide:hover {
+  transform: translateY(-3px);
+  border-color: var(--bk-500);
+}
+.guideIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-m);
+  background: var(--surface-tint);
+  color: var(--bk-700);
+  margin-bottom: var(--space-2);
+}
+.guide h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--bk-900);
+}
+.guide p {
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  flex: 1;
+}
+.guideMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--bk-600);
+}
+
+/* ================= CTA cuối ================= */
+.final {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-10) var(--space-8);
+  border-radius: var(--radius-l);
+  background: var(--bk-700);
+  color: #fff;
+}
+.finalTitle {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  max-width: 26ch;
+}
+.final p {
+  margin-top: var(--space-2);
+  opacity: 0.85;
+}
