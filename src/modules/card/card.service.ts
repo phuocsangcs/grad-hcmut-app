@@ -1,6 +1,7 @@
 import { newId } from '@/lib/id';
 import { badRequest, conflict, notFound } from '@/lib/http';
 import { addDays } from '@/lib/time';
+import { adoptPending, deleteKeys, isStorageEnabled, publicUrl, verifyPending } from '@/lib/storage';
 import { getFaculty, getFacultyCeremony, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
 import { generateManageToken, hashToken } from '@/modules/manage/token';
 import type { Card } from '@/db/schema';
@@ -38,9 +39,20 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
   const ceremony = getFacultyCeremony(faculty.id)!;
   const ceremonyAt = input.ceremonyAt ?? ceremony.at;
   const manageToken = generateManageToken();
+  const id = newId();
+
+  // Ảnh: kiểm tra file đã lên R2 rồi chuyển vào thư mục của thiệp.
+  const pending = [...new Set(input.photos ?? [])];
+  let photos: string[] = [];
+  if (pending.length > 0) {
+    if (!isStorageEnabled()) throw badRequest('storage_disabled');
+    const okAll = await Promise.all(pending.map(verifyPending));
+    if (okAll.some((v) => !v)) throw badRequest('photo_missing');
+    photos = await Promise.all(pending.map((k) => adoptPending(k, id)));
+  }
 
   const card = await cardRepo.insert({
-    id: newId(),
+    id,
     slug,
     displayName: input.displayName,
     facultyId: faculty.id,
@@ -53,6 +65,7 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
     meetingTime: input.meetingTime || null,
     meetingNote: input.meetingNote || null,
     phone: input.phone || null,
+    photos,
     manageTokenHash: hashToken(manageToken),
     ownerEmail: input.ownerEmail || null,
     expiresAt: addDays(ceremonyAt, CARD_TTL_DAYS),
@@ -103,6 +116,8 @@ export type PublicCard = {
   recipientName: string | null;
   meeting: { poi: Poi; time: string | null; note: string | null } | null;
   phone: string | null;
+  /** URL công khai của ảnh; phần tử đầu là ảnh bìa. */
+  photos: string[];
   mode: CardMode;
   countdown: Countdown;
   expiresAt: string;
@@ -159,6 +174,7 @@ export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date): Pu
     recipientName: opts.invite?.recipientName ?? null,
     meeting: poi ? { poi, time: card.meetingTime, note: card.meetingNote } : null,
     phone: card.phone,
+    photos: (card.photos ?? []).map(publicUrl).filter(Boolean),
     mode: resolveMode(card.ceremonyAt, now, opts.modeOverride),
     countdown: countdown(card.ceremonyAt, now),
     expiresAt: card.expiresAt.toISOString(),
@@ -193,6 +209,8 @@ export async function updateCard(cardId: string, patch: UpdateCardInput): Promis
 }
 
 export async function deleteCard(cardId: string): Promise<void> {
+  const card = await cardRepo.findById(cardId);
   const ok = await cardRepo.delete(cardId);
   if (!ok) throw notFound('card_not_found');
+  if (card?.photos?.length) await deleteKeys(card.photos);
 }

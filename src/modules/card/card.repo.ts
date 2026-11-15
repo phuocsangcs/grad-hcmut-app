@@ -46,11 +46,12 @@ export const cardRepo = {
 
   setLocked: (id: string, locked: boolean) => db.update(cards).set({ locked }).where(eq(cards.id, id)),
 
-  deleteExpired: async (now: Date): Promise<number> => {
+  /** Xoá thiệp hết hạn, trả về số thiệp và khoá ảnh cần xoá khỏi R2. */
+  deleteExpired: async (now: Date): Promise<{ count: number; photoKeys: string[] }> => {
     const rows = await db
       .delete(cards)
       .where(and(sql`${cards.expiresAt} < ${now}`))
-      .returning({ id: cards.id });
-    return rows.length;
+      .returning({ id: cards.id, photos: cards.photos });
+    return { count: rows.length, photoKeys: rows.flatMap((r) => r.photos ?? []) };
   },
 };

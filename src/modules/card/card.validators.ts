@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { greetingGroupKeys } from '@/modules/content';
+import { MAX_PHOTOS, PENDING_KEY_RE } from '@/lib/storage-keys';
 import { SLUG_MAX, SLUG_MIN } from './slug';
 
 const phone = z.string().trim().regex(/^(\+84|0)\d{9,10}$/, 'Số điện thoại không hợp lệ');
@@ -19,6 +20,8 @@ export const createCardSchema = z.object({
   meetingNote: z.string().trim().max(200).optional().nullable(),
   phone: phone.optional().nullable().or(z.literal('')),
   slug: z.string().trim().min(SLUG_MIN).max(SLUG_MAX),
+  /** Khoá ảnh đã tải lên R2 (pending/...). Phần tử đầu là ảnh bìa. */
+  photos: z.array(z.string().regex(PENDING_KEY_RE, 'Khoá ảnh không hợp lệ')).max(MAX_PHOTOS).optional(),
   ownerEmail: z.string().trim().email().optional().nullable().or(z.literal('')),
   /** Phase 5: token Turnstile. Hiện tuỳ chọn. */
   turnstileToken: z.string().optional(),
@@ -26,7 +29,7 @@ export const createCardSchema = z.object({
 export type CreateCardInput = z.infer<typeof createCardSchema>;
 
 export const updateCardSchema = createCardSchema
-  .omit({ slug: true, turnstileToken: true, facultyId: true })
+  .omit({ slug: true, turnstileToken: true, facultyId: true, photos: true })
   .partial();
 export type UpdateCardInput = z.infer<typeof updateCardSchema>;
 

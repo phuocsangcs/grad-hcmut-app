@@ -5,6 +5,7 @@ import { reports, type Report } from '@/db/schema';
 import { getEnv } from '@/lib/env';
 import { getEmail } from '@/lib/email';
 import { newId } from '@/lib/id';
+import { deleteKeys } from '@/lib/storage';
 import { notFound } from '@/lib/http';
 import { cardRepo } from '@/modules/card/card.repo';
 import { normalizeSlug } from '@/modules/card/slug';
@@ -64,5 +65,7 @@ export const listReports = (cardId: string) => db.query.reports.findMany({ where
 
 /** Dọn thiệp hết hạn (F5). Gọi từ cron hoặc chạy tay. RSVP/invite/report xoá theo cascade. */
 export async function cleanupExpiredCards(now = new Date()): Promise<number> {
-  return cardRepo.deleteExpired(now);
+  const { count, photoKeys } = await cardRepo.deleteExpired(now);
+  await deleteKeys(photoKeys);
+  return count;
 }

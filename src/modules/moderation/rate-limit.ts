@@ -38,6 +38,8 @@ export const RULES = {
   report: { limit: 5, windowMs: 60 * 60_000 } satisfies RateLimitRule,
   recover: { limit: 3, windowMs: 60 * 60_000 } satisfies RateLimitRule,
   bulkInvite: { limit: 30, windowMs: 60 * 60_000 } satisfies RateLimitRule,
+  /** Xin link tải ảnh lên: mỗi thiệp tối đa vài ảnh, chừa dư cho thử lại. */
+  upload: { limit: 40, windowMs: 60 * 60_000 } satisfies RateLimitRule,
 };
 
 const globalForRl = globalThis as unknown as { __rl?: MemoryRateLimiter };

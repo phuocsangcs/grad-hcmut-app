@@ -30,6 +30,8 @@ export const cards = pgTable(
     meetingTime: text('meeting_time'),
     meetingNote: text('meeting_note'),
     phone: text('phone'),
+    /** Khoá file ảnh trên R2 (cards/<id>/...), phần tử đầu là ảnh bìa. */
+    photos: jsonb('photos').$type<string[]>().notNull().default([]),
     manageTokenHash: text('manage_token_hash').notNull().unique(),
     ownerEmail: text('owner_email'),
     locked: boolean('locked').notNull().default(false),

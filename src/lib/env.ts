@@ -14,6 +14,13 @@ const schema = z.object({
   ADMIN_EMAIL: z.string().email().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
   CRON_SECRET: z.string().optional(),
+  // Cloudflare R2 (ảnh thiệp). Thiếu một biến thì tính năng ảnh tự tắt.
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET: z.string().optional(),
+  /** URL công khai của bucket (r2.dev hoặc tên miền riêng), không có dấu / ở cuối. */
+  R2_PUBLIC_URL: z.string().url().optional(),
 });
 
 export type Env = z.infer<typeof schema>;
