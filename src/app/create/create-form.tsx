@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { api, ApiError } from '@/components/api';
 import type { Faculty, GreetingGroup, Poi, Template } from '@/modules/content';
 import { vi } from '@/lib/i18n';
-import { formatDateVi, formatTimeVi, vnDate } from '@/lib/time';
+import { formatDateVi, formatTimeVi, fromVnLocalInput, vnDate } from '@/lib/time';
 import { Button, Field, FormSection, Icon, Input, Select, Textarea } from '@/ui';
 import { PhotoUploader, type UploadedPhoto } from './photo-uploader';
 import { PhonePreview, type PreviewDraft } from './preview';
@@ -23,12 +23,25 @@ type Props = {
   initialTemplateId?: string;
   /** Đã cấu hình R2 chưa. Chưa thì ẩn khối Ảnh. */
   photosEnabled?: boolean;
+  /** Danh sách nhạc nền có sẵn. Rỗng thì ẩn khối Nhạc nền. */
+  music?: { id: string; title: string }[];
 };
 
 /** Công tắc của các khối tuỳ chọn. Tắt = không gửi và không hiện trên thiệp. */
-type Sections = { message: boolean; meeting: boolean; contact: boolean; photos: boolean };
-type SectionKey = 'basic' | 'ceremony' | 'message' | 'photos' | 'meeting' | 'contact' | 'link';
-type Draft = PreviewDraft & { ownerEmail: string; sections: Sections; uploads: UploadedPhoto[] };
+type Sections = { message: boolean; meeting: boolean; contact: boolean; photos: boolean; times: boolean; music: boolean; rsvp: boolean };
+type SectionKey = 'basic' | 'ceremony' | 'message' | 'photos' | 'times' | 'meeting' | 'music' | 'contact' | 'rsvp' | 'link';
+type Draft = PreviewDraft & {
+  ownerEmail: string;
+  sections: Sections;
+  uploads: UploadedPhoto[];
+  beforeTime: string;
+  afterTime: string;
+  musicId: string;
+  /** Giờ Việt Nam dạng YYYY-MM-DDTHH:mm, rỗng = không đặt hạn. */
+  rsvpDeadline: string;
+  rsvpMaxHeadcount: number;
+  guestbookEnabled: boolean;
+};
 
 const DRAFT_KEY = 'grad.createDraft';
 type SlugState = { available: true; slug: string } | { available: false; slug: string; reason: string; suggestions: string[] } | null;
@@ -57,10 +70,10 @@ export function CreateForm(p: Props) {
   const [d, setD] = useState<Draft>({
     displayName: '', facultyId: p.faculties[0]?.id ?? '', templateId: p.initialTemplateId ?? p.defaultTemplateId, message: '',
     slug: '', meetingPoiId: '', meetingTime: '', phone: '', ownerEmail: '', greetings: {},
-    sections: { message: false, meeting: false, contact: false, photos: false },
-    uploads: [],
+    sections: { message: false, meeting: false, contact: false, photos: false, times: false, music: false, rsvp: true },
+    uploads: [], beforeTime: '', afterTime: '', musicId: '', rsvpDeadline: '', rsvpMaxHeadcount: 20, guestbookEnabled: false,
   });
-  const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, ceremony: false, message: false, photos: false, meeting: false, contact: false, link: true });
+  const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, ceremony: false, message: false, photos: false, times: false, meeting: false, music: false, contact: false, rsvp: false, link: true });
   const [slugResult, setSlugResult] = useState<{ q: string; r: SlugState } | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -75,7 +88,8 @@ export function CreateForm(p: Props) {
         const raw = localStorage.getItem(DRAFT_KEY);
         if (raw) {
           const saved = JSON.parse(raw) as Partial<Draft>;
-          setD((cur) => ({ ...cur, ...saved, ...(p.initialTemplateId ? { templateId: p.initialTemplateId } : {}) }));
+          // Gộp công tắc để nháp cũ (thiếu khoá mới) vẫn giữ giá trị mặc định của khoá mới.
+          setD((cur) => ({ ...cur, ...saved, sections: { ...cur.sections, ...saved.sections }, ...(p.initialTemplateId ? { templateId: p.initialTemplateId } : {}) }));
           if (saved.slug) setSlugTouched(true);
         }
       } catch {}
@@ -117,6 +131,12 @@ export function CreateForm(p: Props) {
     meetingTime: d.sections.meeting ? d.meetingTime : '',
     phone: d.sections.contact ? d.phone : '',
     photos: p.photosEnabled && d.sections.photos ? d.uploads.map((u) => u.url) : [],
+    beforeTime: d.sections.times ? d.beforeTime : '',
+    afterTime: d.sections.times ? d.afterTime : '',
+    musicId: d.sections.music ? d.musicId : '',
+    rsvpEnabled: d.sections.rsvp,
+    rsvpDeadline: d.sections.rsvp ? fromVnLocalInput(d.rsvpDeadline) ?? '' : '',
+    guestbookEnabled: d.sections.rsvp && d.guestbookEnabled,
   }), [d, p.photosEnabled]);
   const setSection = (k: keyof Sections, on: boolean) => {
     setD((cur) => ({ ...cur, sections: { ...cur.sections, [k]: on } }));
@@ -140,6 +160,10 @@ export function CreateForm(p: Props) {
           meetingPoiId: eff.meetingPoiId || null, meetingTime: eff.meetingTime || null,
           phone: eff.phone || null, ownerEmail: eff.ownerEmail || null,
           photos: p.photosEnabled && d.sections.photos ? d.uploads.map((u) => u.key) : [],
+          beforeTime: eff.beforeTime || null, afterTime: eff.afterTime || null,
+          musicId: eff.musicId || null,
+          rsvpEnabled: d.sections.rsvp, rsvpDeadline: d.sections.rsvp ? fromVnLocalInput(d.rsvpDeadline) : null, rsvpMaxHeadcount: d.rsvpMaxHeadcount,
+          guestbookEnabled: eff.guestbookEnabled ?? false,
         },
       });
       try { localStorage.removeItem(DRAFT_KEY); sessionStorage.setItem('grad.created', JSON.stringify(r)); } catch {}
@@ -227,6 +251,20 @@ export function CreateForm(p: Props) {
         ) : null}
 
         <FormSection
+          id="sec-times" title="Giờ trước lễ và sau lễ" icon="clock" hint={d.sections.times ? 'Hiện trên thiệp' : 'Không bắt buộc'}
+          open={open.times} onOpenChange={openSection('times')} enabled={d.sections.times} onEnabledChange={(v) => setSection('times', v)} switchLabel="Hiện"
+        >
+          <div className={s.row}>
+            <Field label="Trước lễ" optional hint="Giờ đón khách, ví dụ 07h00 – 07h30">
+              <Input maxLength={30} placeholder="07h00 – 07h30" value={d.beforeTime} onChange={(e) => set('beforeTime', e.target.value)} />
+            </Field>
+            <Field label="Sau lễ" optional hint="Giờ chụp ảnh, gặp gỡ">
+              <Input maxLength={30} placeholder="10h30 – 11h30" value={d.afterTime} onChange={(e) => set('afterTime', e.target.value)} />
+            </Field>
+          </div>
+        </FormSection>
+
+        <FormSection
           id="sec-meeting" title="Điểm hẹn sau lễ" icon="pin" hint={d.sections.meeting ? 'Nơi gặp nhau để chụp ảnh' : 'Không hiện trên thiệp'}
           open={open.meeting} onOpenChange={openSection('meeting')} enabled={d.sections.meeting} onEnabledChange={(v) => setSection('meeting', v)} switchLabel="Hiện"
         >
@@ -243,6 +281,20 @@ export function CreateForm(p: Props) {
           </div>
         </FormSection>
 
+        {p.music && p.music.length > 0 ? (
+          <FormSection
+            id="sec-music" title="Nhạc nền" icon="sparkle" hint={d.sections.music ? p.music.find((m) => m.id === d.musicId)?.title ?? 'Chọn một bài' : 'Không dùng nhạc'}
+            open={open.music} onOpenChange={openSection('music')} enabled={d.sections.music} onEnabledChange={(v) => setSection('music', v)} switchLabel="Bật"
+          >
+            <Field label="Bài nhạc" hint="Khách bấm vào thiệp thì nhạc bắt đầu phát, tắt được bất cứ lúc nào.">
+              <Select value={d.musicId} onChange={(e) => set('musicId', e.target.value)}>
+                <option value="">— Chọn bài —</option>
+                {p.music.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
+              </Select>
+            </Field>
+          </FormSection>
+        ) : null}
+
         <FormSection
           id="sec-contact" title="Liên hệ" icon="phone" hint={d.sections.contact ? 'Hiện nút Gọi trên thiệp' : 'Không hiện trên thiệp'}
           open={open.contact} onOpenChange={openSection('contact')} enabled={d.sections.contact} onEnabledChange={(v) => setSection('contact', v)} switchLabel="Hiện"
@@ -250,6 +302,26 @@ export function CreateForm(p: Props) {
           <Field label="Số điện thoại" hint="Hiện nút Gọi trên thiệp cho người lớn tuổi.">
             <Input inputMode="tel" placeholder="09xxxxxxxx" value={d.phone} onChange={(e) => set('phone', e.target.value)} />
           </Field>
+        </FormSection>
+
+        <FormSection
+          id="sec-rsvp" title="Xác nhận tham dự và lưu bút" icon="users" hint={d.sections.rsvp ? 'Đang nhận xác nhận' : 'Đã tắt'}
+          open={open.rsvp} onOpenChange={openSection('rsvp')} enabled={d.sections.rsvp} onEnabledChange={(v) => setSection('rsvp', v)} switchLabel="Nhận"
+        >
+          <div className={s.row}>
+            <Field label="Hạn chót" optional hint="Quá hạn, nút xác nhận sẽ đóng.">
+              <Input type="datetime-local" value={d.rsvpDeadline} onChange={(e) => set('rsvpDeadline', e.target.value)} />
+            </Field>
+            <Field label="Số người tối đa mỗi lần báo">
+              <Select value={String(d.rsvpMaxHeadcount)} onChange={(e) => set('rsvpMaxHeadcount', Number(e.target.value))}>
+                {[1, 2, 3, 4, 5, 6, 8, 10, 20].map((n) => <option key={n} value={n}>{n} người</option>)}
+              </Select>
+            </Field>
+          </div>
+          <label className={s.check}>
+            <input type="checkbox" checked={d.guestbookEnabled} onChange={(e) => set('guestbookEnabled', e.target.checked)} />
+            <span>Hiện lời chúc của khách công khai trên thiệp (lưu bút). Bạn ẩn được từng lời chúc ở trang quản lý.</span>
+          </label>
         </FormSection>
 
         <FormSection id="sec-link" title="Đường dẫn và riêng tư" icon="link" hint={d.slug ? `/${d.slug}` : undefined} open={open.link} onOpenChange={openSection('link')}>

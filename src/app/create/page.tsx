@@ -1,4 +1,4 @@
-import { defaultTemplateId, getTemplate, greetingsFile, listFaculties, listGreetingGroups, listMeetingPois, listTemplates } from '@/modules/content';
+import { defaultTemplateId, getTemplate, listMusic, greetingsFile, listFaculties, listGreetingGroups, listMeetingPois, listTemplates } from '@/modules/content';
 import { isStorageEnabled } from '@/lib/storage';
 import { Page, PageHeading } from '@/ui';
 import { CreateForm } from './create-form';
@@ -20,6 +20,7 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
         defaultTemplateId={defaultTemplateId}
         initialTemplateId={initialTemplateId}
         photosEnabled={isStorageEnabled()}
+        music={listMusic().map((m) => ({ id: m.id, title: m.artist ? `${m.title} · ${m.artist}` : m.title }))}
       />
     </Page>
   );
