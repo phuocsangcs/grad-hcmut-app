@@ -14,3 +14,4 @@ export { CopyButton } from './clients/CopyButton';
 export { ShareButton } from './clients/ShareButton';
 export { PhoneFrame } from './primitives/PhoneFrame';
 export { Prose } from './layout/Prose';
+export { FormSection } from './primitives/FormSection';

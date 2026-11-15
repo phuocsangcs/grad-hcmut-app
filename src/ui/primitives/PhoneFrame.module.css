@@ -85,3 +85,13 @@
   top: calc(var(--u) * 196);
   height: calc(var(--u) * 92);
 }
+
+/* Chỉ màn hình, không khung. Đổi bo góc ở đây. */
+.bare {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  isolation: isolate;
+}

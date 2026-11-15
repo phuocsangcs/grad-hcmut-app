@@ -2,7 +2,16 @@ import type { CSSProperties, ReactNode } from 'react';
 import { cx } from '../cx';
 import s from './PhoneFrame.module.css';
 
-type Props = { children: ReactNode; scale?: number; className?: string; interactive?: boolean; width?: number; height?: number };
+type Props = {
+  children: ReactNode;
+  scale?: number;
+  className?: string;
+  interactive?: boolean;
+  width?: number;
+  height?: number;
+  /** true: chỉ lấy màn hình (không viền, nút, đảo camera), bo góc nhẹ. */
+  bare?: boolean;
+};
 
 /** Độ dày viền đen quanh màn hình, tính theo hệ toạ độ 390px của trang. */
 const BEZEL = 12;
@@ -11,7 +20,20 @@ const BEZEL = 12;
  * Điện thoại thật (viền kim loại, đảo camera, nút bên hông) chứa một trang thật, thu nhỏ bằng transform.
  * Kích thước ngoài = width×height nhân scale; màn hình nằm gọn bên trong viền.
  */
-export function PhoneFrame({ children, scale = 1, className, interactive = true, width = 390, height = 780 }: Props) {
+export function PhoneFrame({ children, scale = 1, className, interactive = true, width = 390, height = 780, bare = false }: Props) {
+  if (bare) {
+    return (
+      <div className={cx(s.bare, className)} style={{ width: width * scale, height: height * scale }}>
+        <div
+          className={s.screen}
+          style={{ width, height, transform: `scale(${scale})`, pointerEvents: interactive ? 'auto' : 'none' }}
+          aria-hidden={!interactive}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
   const outerW = width * scale;
   const outerH = height * scale;
   const pad = BEZEL * scale;
