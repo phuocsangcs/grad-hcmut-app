@@ -14,6 +14,9 @@ export const PENDING_KEY_RE = /^pending\/[A-Za-z0-9_-]{16,40}\.(jpg|webp|png)$/;
 /** Khoá ảnh đã gắn thiệp: cards/<cardId>/<id>.<ext> */
 export const CARD_KEY_RE = /^cards\/[A-Za-z0-9_-]{8,40}\/[A-Za-z0-9_-]{16,40}\.(jpg|webp|png)$/;
 
+/** Khoá ảnh hợp lệ khi sửa thiệp: ảnh mới (pending/) hoặc ảnh đã có của thiệp (cards/). */
+export const isPhotoKey = (k: string) => PENDING_KEY_RE.test(k) || CARD_KEY_RE.test(k);
+
 export function isPhotoType(t: string): t is PhotoType {
   return Object.prototype.hasOwnProperty.call(PHOTO_TYPES, t);
 }

@@ -56,3 +56,15 @@ export function toCompactLocal(d: Date): string {
   const shifted = new Date(d.getTime() + TZ_OFFSET_MINUTES * 60_000);
   return shifted.toISOString().replace(/[-:]/g, '').slice(0, 15);
 }
+
+/** Date → giá trị ô datetime-local theo giờ Việt Nam. */
+export function toVnLocalInput(d: Date): string {
+  return new Date(d.getTime() + TZ_OFFSET_MINUTES * 60_000).toISOString().slice(0, 16);
+}
+
+/** Giá trị ô datetime-local (hiểu là giờ Việt Nam) → ISO UTC. Rỗng hoặc sai thì trả null. */
+export function fromVnLocalInput(v: string): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(v)) return null;
+  const d = new Date(`${v}:00+07:00`);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}

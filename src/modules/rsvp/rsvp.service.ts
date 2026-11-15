@@ -1,5 +1,5 @@
 import { newId } from '@/lib/id';
-import { notFound } from '@/lib/http';
+import { badRequest, notFound } from '@/lib/http';
 import { cardRepo } from '@/modules/card/card.repo';
 import { normalizeSlug } from '@/modules/card/slug';
 import type { Rsvp } from '@/db/schema';
@@ -14,6 +14,10 @@ export type RsvpSummary = { responses: number; guests: number; wishes: number };
 export async function submitRsvp(slug: string, input: SubmitRsvpInput): Promise<Rsvp> {
   const card = await cardRepo.findBySlug(normalizeSlug(slug));
   if (!card || card.locked || card.expiresAt.getTime() < Date.now()) throw notFound('card_not_found');
+  // Chủ thiệp có thể tắt xác nhận, đặt hạn chót và số người tối đa mỗi lần.
+  if (!card.rsvpEnabled) throw badRequest('rsvp_closed');
+  if (card.rsvpDeadline && card.rsvpDeadline.getTime() < Date.now()) throw badRequest('rsvp_closed');
+  if (input.headcount > card.rsvpMaxHeadcount) throw badRequest('headcount_exceeded');
 
   let inviteId: string | null = null;
   let groupKey = input.groupKey ?? null;
@@ -46,6 +50,11 @@ export async function getMyRsvp(slug: string, clientId: string): Promise<Rsvp | 
 
 export const listRsvps = (cardId: string) => rsvpRepo.listByCard(cardId);
 export const rsvpSummary = (cardId: string): Promise<RsvpSummary> => rsvpRepo.summary(cardId);
+
+export async function setRsvpHidden(cardId: string, rsvpId: string, hidden: boolean): Promise<void> {
+  const ok = await rsvpRepo.setHidden(cardId, rsvpId, hidden);
+  if (!ok) throw notFound('rsvp_not_found');
+}
 
 export async function removeRsvp(cardId: string, rsvpId: string): Promise<void> {
   const ok = await rsvpRepo.delete(cardId, rsvpId);

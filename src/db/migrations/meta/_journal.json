@@ -15,6 +15,13 @@
       "when": 1794762198616,
       "tag": "0001_card_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794765214079,
+      "tag": "0002_card_extras",
+      "breakpoints": true
     }
   ]
 }

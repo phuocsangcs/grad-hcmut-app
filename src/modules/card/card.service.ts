@@ -2,7 +2,9 @@ import { newId } from '@/lib/id';
 import { badRequest, conflict, notFound } from '@/lib/http';
 import { addDays } from '@/lib/time';
 import { adoptPending, deleteKeys, isStorageEnabled, publicUrl, verifyPending } from '@/lib/storage';
-import { getFaculty, getFacultyCeremony, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
+import { CARD_KEY_RE, PENDING_KEY_RE } from '@/lib/storage-keys';
+import { getFaculty, getFacultyCeremony, getMusic, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
+import { rsvpRepo } from '@/modules/rsvp/rsvp.repo';
 import { generateManageToken, hashToken } from '@/modules/manage/token';
 import type { Card } from '@/db/schema';
 import { cardRepo } from './card.repo';
@@ -30,6 +32,7 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
   if (!faculty) throw badRequest('faculty_not_found');
   if (!getTemplate(input.templateId)) throw badRequest('template_not_found');
   if (input.meetingPoiId && !getPoi(input.meetingPoiId)) throw badRequest('poi_not_found');
+  if (input.musicId && !getMusic(input.musicId)) throw badRequest('music_not_found');
 
   const slug = normalizeSlug(input.slug);
   const problem = validateSlug(slug);
@@ -66,6 +69,13 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
     meetingNote: input.meetingNote || null,
     phone: input.phone || null,
     photos,
+    beforeTime: input.beforeTime || null,
+    afterTime: input.afterTime || null,
+    musicId: input.musicId || null,
+    rsvpEnabled: input.rsvpEnabled ?? true,
+    rsvpDeadline: input.rsvpDeadline ?? null,
+    rsvpMaxHeadcount: input.rsvpMaxHeadcount ?? 20,
+    guestbookEnabled: input.guestbookEnabled ?? false,
     manageTokenHash: hashToken(manageToken),
     ownerEmail: input.ownerEmail || null,
     expiresAt: addDays(ceremonyAt, CARD_TTL_DAYS),
@@ -118,6 +128,14 @@ export type PublicCard = {
   phone: string | null;
   /** URL công khai của ảnh; phần tử đầu là ảnh bìa. */
   photos: string[];
+  /** Giờ đón khách trước lễ / gặp sau lễ (tuỳ chọn). */
+  beforeTime: string | null;
+  afterTime: string | null;
+  music: { id: string; title: string; artist?: string; src: string } | null;
+  /** Trạng thái nhận xác nhận tham dự. */
+  rsvp: { open: boolean; reason: 'disabled' | 'deadline' | null; deadline: string | null; maxHeadcount: number };
+  /** Lời chúc công khai (lưu bút); rỗng nếu chủ thiệp không bật. */
+  wishes: { id: string; name: string; wish: string }[];
   mode: CardMode;
   countdown: Countdown;
   expiresAt: string;
@@ -146,10 +164,27 @@ export async function getPublicCard(slug: string, opts: PublicViewOptions = {}):
 
   if (!opts.skipView) await cardRepo.incrementView(card.id).catch((e) => console.error('incrementView(card) lỗi', e));
 
-  return { status: 'ok', card: toPublicCard(card, opts, now) };
+  return { status: 'ok', card: toPublicCard(card, opts, now, await loadWishes(card)) };
 }
 
-export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date): PublicCard {
+/** Lưu bút: chỉ đọc DB khi chủ thiệp bật. */
+export async function loadWishes(card: Card): Promise<PublicCard['wishes']> {
+  if (!card.guestbookEnabled) return [];
+  const rows = await rsvpRepo.listWishes(card.id);
+  return rows.flatMap((r) => (r.wish ? [{ id: r.id, name: r.name, wish: r.wish }] : []));
+}
+
+function rsvpState(card: Card, now: Date): PublicCard['rsvp'] {
+  const late = card.rsvpDeadline ? card.rsvpDeadline.getTime() < now.getTime() : false;
+  return {
+    open: card.rsvpEnabled && !late,
+    reason: !card.rsvpEnabled ? 'disabled' : late ? 'deadline' : null,
+    deadline: card.rsvpDeadline ? card.rsvpDeadline.toISOString() : null,
+    maxHeadcount: card.rsvpMaxHeadcount,
+  };
+}
+
+export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date, wishes: PublicCard['wishes'] = []): PublicCard {
   const faculty = getFaculty(card.facultyId) ?? { id: card.facultyId, name: card.facultyId, shortName: card.facultyId };
   const groupKey = opts.invite?.groupKey ?? normalizeGroupKey(opts.to);
   const templateId = opts.invite?.templateId ?? card.templateId;
@@ -175,6 +210,14 @@ export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date): Pu
     meeting: poi ? { poi, time: card.meetingTime, note: card.meetingNote } : null,
     phone: card.phone,
     photos: (card.photos ?? []).map(publicUrl).filter(Boolean),
+    beforeTime: card.beforeTime,
+    afterTime: card.afterTime,
+    music: (() => {
+      const m = card.musicId ? getMusic(card.musicId) : undefined;
+      return m ? { id: m.id, title: m.title, artist: m.artist, src: m.src } : null;
+    })(),
+    rsvp: rsvpState(card, now),
+    wishes,
     mode: resolveMode(card.ceremonyAt, now, opts.modeOverride),
     countdown: countdown(card.ceremonyAt, now),
     expiresAt: card.expiresAt.toISOString(),
@@ -186,6 +229,10 @@ export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date): Pu
 export async function updateCard(cardId: string, patch: UpdateCardInput): Promise<Card> {
   if (patch.templateId && !getTemplate(patch.templateId)) throw badRequest('template_not_found');
   if (patch.meetingPoiId && !getPoi(patch.meetingPoiId)) throw badRequest('poi_not_found');
+  if (patch.musicId && !getMusic(patch.musicId)) throw badRequest('music_not_found');
+
+  const current = await cardRepo.findById(cardId);
+  if (!current) throw notFound('card_not_found');
 
   const data: Partial<Card> = {};
   if (patch.displayName !== undefined) data.displayName = patch.displayName;
@@ -202,10 +249,44 @@ export async function updateCard(cardId: string, patch: UpdateCardInput): Promis
   if (patch.meetingNote !== undefined) data.meetingNote = patch.meetingNote || null;
   if (patch.phone !== undefined) data.phone = patch.phone || null;
   if (patch.ownerEmail !== undefined) data.ownerEmail = patch.ownerEmail || null;
+  if (patch.beforeTime !== undefined) data.beforeTime = patch.beforeTime || null;
+  if (patch.afterTime !== undefined) data.afterTime = patch.afterTime || null;
+  if (patch.musicId !== undefined) data.musicId = patch.musicId || null;
+  if (patch.rsvpEnabled !== undefined) data.rsvpEnabled = patch.rsvpEnabled;
+  if (patch.rsvpDeadline !== undefined) data.rsvpDeadline = patch.rsvpDeadline ?? null;
+  if (patch.rsvpMaxHeadcount !== undefined) data.rsvpMaxHeadcount = patch.rsvpMaxHeadcount;
+  if (patch.guestbookEnabled !== undefined) data.guestbookEnabled = patch.guestbookEnabled;
+  if (patch.photos !== undefined) data.photos = await resolvePhotos(cardId, current.photos ?? [], patch.photos);
 
   const row = await cardRepo.update(cardId, data);
   if (!row) throw notFound('card_not_found');
+  // Ảnh bị gỡ khỏi thiệp thì xoá khỏi R2 (sau khi DB đã cập nhật).
+  if (data.photos) {
+    const gone = (current.photos ?? []).filter((k) => !data.photos!.includes(k));
+    if (gone.length) await deleteKeys(gone);
+  }
   return row;
+}
+
+/**
+ * Danh sách ảnh mong muốn → danh sách khoá thật, giữ thứ tự (ảnh đầu là ảnh bìa).
+ * cards/... chỉ được là ảnh sẵn có của chính thiệp này; pending/... được kiểm tra rồi chép vào thiệp.
+ */
+async function resolvePhotos(cardId: string, current: string[], wanted: string[]): Promise<string[]> {
+  const out: string[] = [];
+  for (const key of [...new Set(wanted)]) {
+    if (CARD_KEY_RE.test(key)) {
+      if (!key.startsWith(`cards/${cardId}/`) || !current.includes(key)) throw badRequest('photo_not_found');
+      out.push(key);
+    } else if (PENDING_KEY_RE.test(key)) {
+      if (!isStorageEnabled()) throw badRequest('storage_disabled');
+      if (!(await verifyPending(key))) throw badRequest('photo_missing');
+      out.push(await adoptPending(key, cardId));
+    } else {
+      throw badRequest('photo_invalid');
+    }
+  }
+  return out;
 }
 
 export async function deleteCard(cardId: string): Promise<void> {

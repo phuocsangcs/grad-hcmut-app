@@ -104,6 +104,20 @@ export const templatesFileSchema = z.object({
   items: z.array(templateSchema).min(1),
 });
 
+export const musicSchema = z.object({
+  id: idSchema,
+  title: z.string().min(1),
+  artist: z.string().optional(),
+  /** Đường dẫn file âm thanh: /music/xxx.mp3 trong public/ hoặc URL công khai. */
+  src: z.string().min(1),
+  /** Nguồn/giấy phép, để biết bài nào dùng được. */
+  license: z.string().min(1),
+});
+export const musicFileSchema = z.object({
+  updatedAt: dateKey,
+  items: z.array(musicSchema),
+});
+
 export const greetingGroupSchema = z.object({
   key: idSchema,
   label: z.string().min(1),
@@ -118,6 +132,7 @@ export const greetingsFileSchema = z.object({
   messageSuggestions: z.array(z.string()),
 });
 
+export type Music = z.infer<typeof musicSchema>;
 export type Faculty = z.infer<typeof facultySchema>;
 export type FacultyMotif = z.infer<typeof facultyMotifSchema>;
 export type Poi = z.infer<typeof poiSchema>;

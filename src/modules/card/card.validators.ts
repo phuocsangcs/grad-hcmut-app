@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { greetingGroupKeys } from '@/modules/content';
-import { MAX_PHOTOS, PENDING_KEY_RE } from '@/lib/storage-keys';
+import { MAX_PHOTOS, PENDING_KEY_RE, isPhotoKey } from '@/lib/storage-keys';
 import { SLUG_MAX, SLUG_MIN } from './slug';
 
 const phone = z.string().trim().regex(/^(\+84|0)\d{9,10}$/, 'Số điện thoại không hợp lệ');
@@ -22,6 +22,14 @@ export const createCardSchema = z.object({
   slug: z.string().trim().min(SLUG_MIN).max(SLUG_MAX),
   /** Khoá ảnh đã tải lên R2 (pending/...). Phần tử đầu là ảnh bìa. */
   photos: z.array(z.string().regex(PENDING_KEY_RE, 'Khoá ảnh không hợp lệ')).max(MAX_PHOTOS).optional(),
+  /** Giờ đón khách trước lễ và giờ gặp sau lễ. Tuỳ chọn. */
+  beforeTime: z.string().trim().max(30).optional().nullable(),
+  afterTime: z.string().trim().max(30).optional().nullable(),
+  musicId: z.string().optional().nullable(),
+  rsvpEnabled: z.boolean().optional(),
+  rsvpDeadline: z.coerce.date().optional().nullable(),
+  rsvpMaxHeadcount: z.number().int().min(1).max(20).optional(),
+  guestbookEnabled: z.boolean().optional(),
   ownerEmail: z.string().trim().email().optional().nullable().or(z.literal('')),
   /** Phase 5: token Turnstile. Hiện tuỳ chọn. */
   turnstileToken: z.string().optional(),
@@ -30,7 +38,11 @@ export type CreateCardInput = z.infer<typeof createCardSchema>;
 
 export const updateCardSchema = createCardSchema
   .omit({ slug: true, turnstileToken: true, facultyId: true, photos: true })
-  .partial();
+  .partial()
+  .extend({
+    /** Danh sách ảnh mong muốn, theo thứ tự. Khoá cards/ phải là ảnh sẵn có của chính thiệp này (service kiểm tra). */
+    photos: z.array(z.string().refine(isPhotoKey, 'Khoá ảnh không hợp lệ')).max(MAX_PHOTOS).optional(),
+  });
 export type UpdateCardInput = z.infer<typeof updateCardSchema>;
 
 export const checkSlugQuerySchema = z.object({

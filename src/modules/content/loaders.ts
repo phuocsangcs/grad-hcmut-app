@@ -3,15 +3,18 @@ import poisRaw from '@/content/pois.json';
 import eateriesRaw from '@/content/eateries.json';
 import templatesRaw from '@/content/templates.json';
 import greetingsRaw from '@/content/greetings.json';
+import musicRaw from '@/content/music.json';
 import {
   eateriesFileSchema,
   facultiesFileSchema,
   greetingsFileSchema,
+  musicFileSchema,
   poisFileSchema,
   templatesFileSchema,
   type Eatery,
   type Faculty,
   type GreetingGroup,
+  type Music,
   type Poi,
   type Template,
 } from './schema';
@@ -34,6 +37,7 @@ export const poisFile = parseOnce('pois', poisFileSchema, poisRaw);
 export const eateriesFile = parseOnce('eateries', eateriesFileSchema, eateriesRaw);
 export const templatesFile = parseOnce('templates', templatesFileSchema, templatesRaw);
 export const greetingsFile = parseOnce('greetings', greetingsFileSchema, greetingsRaw);
+export const musicFile = parseOnce('music', musicFileSchema, musicRaw);
 
 function indexBy<T extends { id: string }>(items: T[]) {
   return new Map(items.map((i) => [i.id, i]));
@@ -67,6 +71,9 @@ export const getEatery = (id: string): Eatery | undefined => eateryIndex.get(id)
 export const listTemplates = (): Template[] => templatesFile.items;
 export const getTemplate = (id: string): Template | undefined => templateIndex.get(id);
 export const defaultTemplateId = templatesFile.defaultId;
+
+export const listMusic = (): Music[] => musicFile.items;
+export const getMusic = (id: string): Music | undefined => musicFile.items.find((m) => m.id === id);
 
 export const listGreetingGroups = (): GreetingGroup[] => greetingsFile.groups;
 export const getGreetingGroup = (key: string): GreetingGroup | undefined => greetingIndex.get(key);

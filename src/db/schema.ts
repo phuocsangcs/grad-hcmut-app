@@ -32,6 +32,17 @@ export const cards = pgTable(
     phone: text('phone'),
     /** Khoá file ảnh trên R2 (cards/<id>/...), phần tử đầu là ảnh bìa. */
     photos: jsonb('photos').$type<string[]>().notNull().default([]),
+    /** Giờ đón khách (trước lễ) và giờ gặp sau lễ, chữ tự do như "07h00 – 07h30". Tuỳ chọn. */
+    beforeTime: text('before_time'),
+    afterTime: text('after_time'),
+    /** Id bài nhạc nền trong src/content/music.json. */
+    musicId: text('music_id'),
+    rsvpEnabled: boolean('rsvp_enabled').notNull().default(true),
+    rsvpDeadline: ts('rsvp_deadline'),
+    /** Số người tối đa khách được báo trong một lần xác nhận. */
+    rsvpMaxHeadcount: smallint('rsvp_max_headcount').notNull().default(20),
+    /** Hiện lời chúc của khách công khai trên thiệp (lưu bút). */
+    guestbookEnabled: boolean('guestbook_enabled').notNull().default(false),
     manageTokenHash: text('manage_token_hash').notNull().unique(),
     ownerEmail: text('owner_email'),
     locked: boolean('locked').notNull().default(false),
@@ -78,6 +89,8 @@ export const rsvps = pgTable(
     headcount: smallint('headcount').notNull().default(1),
     wish: text('wish'),
     groupKey: text('group_key'),
+    /** Chủ thiệp ẩn lời chúc này khỏi lưu bút công khai. */
+    hidden: boolean('hidden').notNull().default(false),
     createdAt: ts('created_at').notNull().defaultNow(),
     updatedAt: ts('updated_at').notNull().defaultNow(),
   },

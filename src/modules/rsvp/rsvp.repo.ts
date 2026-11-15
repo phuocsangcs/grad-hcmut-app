@@ -41,6 +41,24 @@ export const rsvpRepo = {
     return row;
   },
 
+  /** Lời chúc hiện công khai (lưu bút): chưa bị ẩn, có nội dung, mới nhất trước. */
+  listWishes: (cardId: string, limit = 30) =>
+    db
+      .select({ id: rsvps.id, name: rsvps.guestName, wish: rsvps.wish })
+      .from(rsvps)
+      .where(and(eq(rsvps.cardId, cardId), eq(rsvps.hidden, false), sql`${rsvps.wish} is not null and ${rsvps.wish} <> ''`))
+      .orderBy(desc(rsvps.createdAt))
+      .limit(limit),
+
+  setHidden: async (cardId: string, rsvpId: string, hidden: boolean): Promise<boolean> => {
+    const rows = await db
+      .update(rsvps)
+      .set({ hidden, updatedAt: new Date() })
+      .where(and(eq(rsvps.cardId, cardId), eq(rsvps.id, rsvpId)))
+      .returning({ id: rsvps.id });
+    return rows.length > 0;
+  },
+
   delete: async (cardId: string, rsvpId: string): Promise<boolean> => {
     const rows = await db
       .delete(rsvps)

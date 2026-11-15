@@ -6,7 +6,7 @@ import { getEmail } from '@/lib/email';
 import { notFound } from '@/lib/http';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
 import { cardRepo } from '@/modules/card/card.repo';
-import { toPublicCard, updateCard, deleteCard, type PublicCard } from '@/modules/card/card.service';
+import { toPublicCard, updateCard, deleteCard, loadWishes, type PublicCard } from '@/modules/card/card.service';
 import type { UpdateCardInput } from '@/modules/card/card.validators';
 import { listRsvps, rsvpSummary, type RsvpSummary } from '@/modules/rsvp/rsvp.service';
 import { hashToken, tokenLooksValid, generateManageToken } from './token';
@@ -32,7 +32,7 @@ export async function getOverview(token: string): Promise<ManageOverview> {
   const base = getEnv().NEXT_PUBLIC_SITE_URL;
   return {
     card,
-    preview: toPublicCard(card, { skipView: true }, new Date()),
+    preview: toPublicCard(card, { skipView: true }, new Date(), await loadWishes(card)),
     summary: await rsvpSummary(card.id),
     urls: { card: `${base}/${card.slug}`, manage: `${base}/manage/${token}` },
   };
