@@ -1,0 +1,29 @@
+name: Migrate DB
+
+# Chạy tay: GitHub → Actions → "Migrate DB" → Run workflow.
+# Áp migration trong src/db/migrations vào Supabase production. Làm TRƯỚC khi deploy bản code cần cột mới.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Tạo environment tên "production" ở Settings → Environments, có thể bật "Required reviewers" để cần duyệt trước khi chạy.
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Áp migration
+        run: pnpm db:migrate
+        env:
+          # Secret: Supabase → Database → Connection string (Direct, cổng 5432)
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}

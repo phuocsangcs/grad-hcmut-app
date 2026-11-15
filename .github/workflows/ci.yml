@@ -1,0 +1,59 @@
+name: CI
+
+# Chạy mỗi lần push lên main và mỗi pull request.
+# Deploy (CD) do Vercel làm qua tích hợp Git: push main → production, pull request → bản preview.
+# Xem docs/DEPLOY.md.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Kiểm tra và build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Giá trị giả: build và test không cần DB thật (test dùng PGlite trong bộ nhớ).
+      DATABASE_URL: postgres://ci:ci@localhost:5432/ci
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+
+      # Phiên bản pnpm lấy từ trường packageManager trong package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Kiểm tra dữ liệu nội dung
+        run: pnpm content:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+
+      # Migration đã sinh ra phải khớp schema, tránh quên chạy db:generate.
+      - name: Migration khớp schema
+        run: |
+          pnpm db:generate
+          git diff --exit-code -- src/db/migrations || (echo "Schema đã đổi nhưng chưa có migration. Chạy pnpm db:generate và commit." && exit 1)
