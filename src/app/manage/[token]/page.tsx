@@ -2,12 +2,17 @@ import Link from 'next/link';
 import { getOverview, listCardRsvps } from '@/modules/manage';
 import { HttpError } from '@/lib/http';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
-import { listTemplates } from '@/modules/content';
+import { getGreetingGroup, listMeetingPois, listTemplates } from '@/modules/content';
+import { InvitationCard, type TemplateLinks } from '@/templates';
+import { Button, Chip, CopyButton, Icon, Page, PageHeading, PhoneFrame, ShareButton, Surface } from '@/ui';
 import { CardActions } from './card-actions';
+import s from './manage.module.css';
 
 type Props = { params: Promise<{ token: string }> };
 
-/** UI trần trang quản lý. Sẽ thay bằng UI thật. */
+export const metadata = { title: 'Quản lý thiệp', robots: { index: false } };
+
+/** Trang quản lý của chủ thiệp: số liệu, lời chúc, xem trước, sửa nhanh. */
 export default async function ManagePage({ params }: Props) {
   const { token } = await params;
   let data;
@@ -16,50 +21,101 @@ export default async function ManagePage({ params }: Props) {
   } catch (e) {
     if (e instanceof HttpError && e.status === 404) {
       return (
-        <main>
-          <p>Link quản lý không đúng hoặc thiệp đã bị xoá.</p>
-          <Link href="/create">Tạo thiệp mới</Link>
-        </main>
+        <Page width="narrow">
+          <PageHeading title="Không tìm thấy thiệp" lead="Link quản lý không đúng, hoặc thiệp đã bị xoá / hết hạn." />
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <Button href="/create">Tạo thiệp mới</Button>
+            <Button href="/about#recover" variant="ghost">Lấy lại link bằng email</Button>
+          </div>
+        </Page>
       );
     }
     throw e;
   }
   const rsvps = await listCardRsvps(token);
-  const { card, summary, urls } = data;
+  const { card, summary, urls, preview } = data;
+  const previewLinks: TemplateLinks = { card: urls.card, ics: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: preview.meeting ? '#' : null, call: preview.phone ? '#' : null, messenger: '#' };
 
   return (
-    <main>
-      <h1>Quản lý thiệp của {card.displayName}</h1>
-      <p>
-        {formatDateVi(card.ceremonyAt)} · {formatTimeVi(card.ceremonyAt)} · {card.venue}
-      </p>
-      <p>
-        Link thiệp: <a href={urls.card}>{urls.card}</a>
-      </p>
-      <p>
-        <strong>{summary.guests} người sẽ đến</strong> · {summary.responses} phản hồi · {summary.wishes} lời chúc · {card.viewCount} lượt mở
-      </p>
-      <p>
-        <Link href={`/manage/${token}/invites`}>Người nhận (gửi riêng từng người)</Link>
-      </p>
-      <h2>RSVP và lời chúc</h2>
-      {rsvps.length === 0 ? (
-        <p>Chưa có ai xác nhận.</p>
-      ) : (
-        <ul>
-          {rsvps.map((r) => (
-            <li key={r.id}>
-              <strong>{r.guestName}</strong> · {r.headcount} người{r.groupKey ? ` · ${r.groupKey}` : ''}
-              {r.wish ? <> — “{r.wish}”</> : null}
-            </li>
-          ))}
-        </ul>
-      )}
-      <p><a href={`/api/cards/${card.slug}/qr?size=512`}>Tải QR</a></p>
-      <CardActions token={token} templates={listTemplates().map((t) => ({ id: t.id, name: t.name }))} current={{ templateId: card.templateId, message: card.message, displayName: card.displayName }} />
-      <p>
-        <small>Giữ link này riêng tư. Ai có link đều sửa hoặc xoá được thiệp.</small>
-      </p>
-    </main>
+    <Page>
+      <header className={s.head}>
+        <div>
+          <p className="eyebrow">Trang quản lý</p>
+          <h1>Thiệp của {card.displayName}</h1>
+          <div className={s.meta}>
+            <Chip tone="primary" dot>{formatDateVi(card.ceremonyAt)} · {formatTimeVi(card.ceremonyAt)}</Chip>
+            <Chip>{card.venue}</Chip>
+            <Chip tone="outline">/{card.slug}</Chip>
+          </div>
+        </div>
+        <div className={s.headActions}>
+          <CopyButton text={urls.card} label="Chép link thiệp" />
+          <ShareButton url={urls.card} label="Gửi" />
+          <Button href={urls.card} variant="ghost" target="_blank" rel="noreferrer" trailing={<Icon name="external" size={16} />}>Mở thiệp</Button>
+        </div>
+      </header>
+
+      <div className={s.layout}>
+        <div className={s.col}>
+          <div className={s.stats}>
+            <div className={`${s.stat} ${s.statMain}`}><b>{summary.guests}</b><span>người sẽ đến</span></div>
+            <div className={s.stat}><b>{summary.responses}</b><span>phản hồi</span></div>
+            <div className={s.stat}><b>{summary.wishes}</b><span>lời chúc</span></div>
+            <div className={s.stat}><b>{card.viewCount}</b><span>lượt mở thiệp</span></div>
+          </div>
+
+          <section>
+            <h2 className={s.h2}>
+              Ai sẽ đến & lời chúc
+              <Link href={`/manage/${token}/invites`} style={{ fontSize: 'var(--text-sm)', color: 'var(--bk-600)' }}>Gửi riêng từng người →</Link>
+            </h2>
+            {rsvps.length === 0 ? (
+              <div className={s.empty}>
+                <p><strong>Chưa có ai xác nhận.</strong></p>
+                <p>Gửi link cho Ba Mẹ, Ông Bà, bạn bè. Ai bấm “sẽ đến” sẽ hiện ở đây.</p>
+              </div>
+            ) : (
+              <ul className={s.rsvps}>
+                {rsvps.map((r) => (
+                  <li key={r.id} className={s.rsvp}>
+                    <span className={s.avatar} aria-hidden="true">{r.guestName.trim().charAt(0).toUpperCase()}</span>
+                    <div>
+                      <strong>{r.guestName}</strong>
+                      {r.groupKey ? <> · <small>{getGreetingGroup(r.groupKey)?.label ?? r.groupKey}</small></> : null}
+                      {r.wish ? <p>“{r.wish}”</p> : null}
+                    </div>
+                    <span className={s.count}>{r.headcount} người</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <CardActions
+            token={token}
+            templates={listTemplates().map((t) => ({ id: t.id, name: t.name, description: t.description }))}
+            pois={listMeetingPois().map((p) => ({ id: p.id, name: p.name }))}
+            current={{
+              templateId: card.templateId,
+              message: card.message,
+              displayName: card.displayName,
+              meetingPoiId: card.meetingPoiId ?? '',
+              meetingTime: card.meetingTime ?? '',
+              phone: card.phone ?? '',
+            }}
+          />
+        </div>
+
+        <aside className={s.aside} aria-label="Thiệp hiện tại">
+          <PhoneFrame scale={0.88}>
+            <InvitationCard card={preview} links={previewLinks} preview />
+          </PhoneFrame>
+          <Button href={`/api/cards/${card.slug}/qr?size=1024`} variant="secondary" size="sm" download leading={<Icon name="qr" size={16} />}>Tải mã QR</Button>
+          <Surface tone="tint" pad="sm">
+            <p className={s.note}><Icon name="lock" size={16} /> Giữ link trang này riêng tư. Ai có link đều sửa hoặc xoá được thiệp.</p>
+          </Surface>
+        </aside>
+      </div>
+    </Page>
   );
 }

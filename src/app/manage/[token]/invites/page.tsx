@@ -1,61 +1,104 @@
 import Link from 'next/link';
 import { requireCardByToken } from '@/modules/manage';
 import { listInvites } from '@/modules/invite';
-import { listGreetingGroups, listTemplates } from '@/modules/content';
+import { getGreetingGroup, listGreetingGroups, listTemplates } from '@/modules/content';
 import { HttpError } from '@/lib/http';
+import { Button, Icon, Page, PageHeading, Surface } from '@/ui';
 import { BulkForm } from './bulk-form';
 import { InviteRowActions } from './invite-row-actions';
+import s from './invites.module.css';
 
 type Props = { params: Promise<{ token: string }> };
 
-/** UI trần: danh sách người nhận + form dán hàng loạt (gọi API bằng fetch ở Phase 6). */
+export const metadata = { title: 'Người nhận', robots: { index: false } };
+const MAX = 200;
+
+/** Danh sách người nhận (link riêng từng người) + thêm hàng loạt. */
 export default async function InvitesPage({ params }: Props) {
   const { token } = await params;
   let card;
   try {
     card = await requireCardByToken(token);
   } catch (e) {
-    if (e instanceof HttpError && e.status === 404) return <main><p>Link quản lý không đúng.</p></main>;
+    if (e instanceof HttpError && e.status === 404) {
+      return (
+        <Page width="narrow">
+          <PageHeading title="Link quản lý không đúng" lead="Kiểm tra lại link, hoặc tạo thiệp mới." />
+          <div><Button href="/create">Tạo thiệp</Button></div>
+        </Page>
+      );
+    }
     throw e;
   }
   const list = await listInvites(card.slug, card.id);
   const groups = listGreetingGroups();
   const templates = listTemplates();
+  const confirmed = list.filter((i) => i.rsvp).length;
 
   return (
-    <main>
-      <p><Link href={`/manage/${token}`}>← Quản lý</Link></p>
-      <h1>Người nhận ({list.length}/200)</h1>
-      <p>
-        Dán danh sách từ Excel hoặc Zalo, mỗi dòng một người. Cột cách nhau bằng Tab hoặc dấu phẩy:
-        <code> Tên, Nhóm, Lời chào riêng, Mẫu</code>. Nhóm: {groups.map((g) => `${g.label} (${g.key})`).join(', ')}.
-        Mẫu: {templates.map((t) => t.id).join(', ')}. Lời chào có dấu phẩy thì dùng Tab hoặc chấm phẩy để phân cách.
-      </p>
-      <p>
-        <a href={`/api/manage/${token}/invites/export`}>Tải CSV</a>
-      </p>
-      <BulkForm token={token} />
-      {list.length === 0 ? (
-        <p>Chưa có người nhận.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr><th>Tên</th><th>Nhóm</th><th>Link</th><th>Mở</th><th>RSVP</th><th></th></tr>
-          </thead>
-          <tbody>
-            {list.map((i) => (
-              <tr key={i.id}>
-                <td>{i.recipientName}</td>
-                <td>{i.groupKey ?? '—'}</td>
-                <td><a href={i.url}>{i.url}</a></td>
-                <td>{i.viewCount}</td>
-                <td>{i.rsvp ? `${i.rsvp.headcount} người` : '—'}</td>
-                <td><InviteRowActions token={token} id={i.id} url={i.url} /></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </main>
+    <Page>
+      <div>
+        <Link href={`/manage/${token}`} className={s.back}><Icon name="arrow" size={14} style={{ transform: 'rotate(180deg)' }} /> Trang quản lý</Link>
+        <PageHeading
+          eyebrow={`${list.length}/${MAX} người nhận · ${confirmed} đã xác nhận`}
+          title="Gửi riêng từng người"
+          lead="Mỗi người một link, mở ra thấy đúng tên mình và lời chào riêng. Bạn biết ai đã mở, ai sẽ đến."
+        />
+      </div>
+
+      <div className={s.layout}>
+        <section>
+          <h2 className={s.h2}>
+            Danh sách
+            {list.length > 0 && (
+              <Button href={`/api/manage/${token}/invites/export`} variant="ghost" size="sm" leading={<Icon name="download" size={16} />}>Tải CSV</Button>
+            )}
+          </h2>
+          {list.length === 0 ? (
+            <div className={s.empty}>
+              <p><strong>Chưa có người nhận.</strong></p>
+              <p>Dán danh sách ở khung bên cạnh, mỗi dòng một người.</p>
+            </div>
+          ) : (
+            <div className={s.tableWrap}>
+              <table className={s.table}>
+                <thead>
+                  <tr><th>Người nhận</th><th>Nhóm</th><th className={s.num}>Đã mở</th><th>Xác nhận</th><th><span className="sr-only">Thao tác</span></th></tr>
+                </thead>
+                <tbody>
+                  {list.map((i) => (
+                    <tr key={i.id}>
+                      <td>
+                        <div className={s.name}>{i.recipientName}</div>
+                        <div className={s.code}>/{card.slug}/{i.code}</div>
+                      </td>
+                      <td>{i.groupKey ? getGreetingGroup(i.groupKey)?.label ?? i.groupKey : '—'}</td>
+                      <td className={s.num}>{i.viewCount}</td>
+                      <td>{i.rsvp ? <span className={s.yes}>✓ {i.rsvp.headcount} người</span> : <span className={s.no}>Chưa</span>}</td>
+                      <td><InviteRowActions token={token} id={i.id} url={i.url} name={i.recipientName} /></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <aside style={{ display: 'grid', gap: 16 }}>
+          <Surface>
+            <h2 className={s.h2}>Thêm hàng loạt</h2>
+            <BulkForm token={token} />
+          </Surface>
+          <Surface tone="tint" pad="sm">
+            <div className={s.help}>
+              <p>Mỗi dòng: <code>Tên, Nhóm, Lời chào riêng, Mẫu</code>. Chỉ cần Tên, còn lại tuỳ chọn. Dán thẳng từ Excel (Tab) cũng được.</p>
+              <p>Nhóm: {groups.map((g) => <code key={g.key}>{g.key}</code>).reduce<React.ReactNode[]>((a, c, i) => (i ? [...a, ' ', c] : [c]), [])}</p>
+              <p>Mẫu: {templates.map((t) => <code key={t.id}>{t.id}</code>).reduce<React.ReactNode[]>((a, c, i) => (i ? [...a, ' ', c] : [c]), [])}</p>
+              <p>Lời chào có dấu phẩy thì phân cách bằng Tab hoặc dấu chấm phẩy.</p>
+            </div>
+          </Surface>
+        </aside>
+      </div>
+    </Page>
   );
 }
