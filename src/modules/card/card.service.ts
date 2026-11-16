@@ -3,7 +3,7 @@ import { badRequest, conflict, notFound } from '@/lib/http';
 import { addDays } from '@/lib/time';
 import { adoptPending, deleteKeys, isStorageEnabled, publicUrl, verifyPending } from '@/lib/storage';
 import { CARD_KEY_RE, PENDING_KEY_RE } from '@/lib/storage-keys';
-import { getFaculty, getFacultyCeremony, getMusic, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
+import { canBeOisp, getFaculty, getMusic, resolveProgram, type DegreeId, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
 import { rsvpRepo } from '@/modules/rsvp/rsvp.repo';
 import { generateManageToken, hashToken } from '@/modules/manage/token';
 import type { Card } from '@/db/schema';
@@ -39,7 +39,9 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
   if (problem) throw badRequest(`slug_${problem}`);
   if (await cardRepo.slugExists(slug)) throw conflict('slug_taken');
 
-  const ceremony = getFacultyCeremony(faculty.id)!;
+  const degree = input.degree ?? 'bachelor';
+  const oisp = !!input.oisp && canBeOisp(degree);
+  const ceremony = resolveProgram(faculty.id, degree, oisp)!;
   const ceremonyAt = input.ceremonyAt ?? ceremony.at;
   const manageToken = generateManageToken();
   const id = newId();
@@ -59,6 +61,8 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
     slug,
     displayName: input.displayName,
     facultyId: faculty.id,
+    degree,
+    oisp,
     ceremonyAt,
     venue: input.venue ?? ceremony.venue,
     templateId: input.templateId,
@@ -117,6 +121,9 @@ export type PublicCard = {
   slug: string;
   displayName: string;
   faculty: Pick<Faculty, 'id' | 'name' | 'shortName'>;
+  degree: DegreeId;
+  /** Học chương trình OISP (dự lễ OISP chung). */
+  oisp: boolean;
   ceremonyAt: string;
   venue: string;
   template: Template;
@@ -195,6 +202,8 @@ export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date, wis
     slug: card.slug,
     displayName: card.displayName,
     faculty: { id: faculty.id, name: faculty.name, shortName: faculty.shortName },
+    degree: card.degree as DegreeId,
+    oisp: card.oisp,
     ceremonyAt: card.ceremonyAt.toISOString(),
     venue: card.venue,
     template,

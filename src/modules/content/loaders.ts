@@ -48,7 +48,10 @@ const eateryIndex = indexBy(eateriesFile.items);
 const templateIndex = indexBy(templatesFile.items);
 const greetingIndex = new Map(greetingsFile.groups.map((g) => [g.key, g]));
 
+/** Mọi mục lịch (kể cả lễ chung Sau đại học, OISP). Dùng cho lịch /guide. */
 export const listFaculties = (): Faculty[] => facultiesFile.items;
+/** Chỉ các khoa thật, để người dùng chọn khoa. */
+export const listRealFaculties = (): Faculty[] => facultiesFile.items.filter((f) => f.kind === 'faculty');
 export const getFaculty = (id: string): Faculty | undefined => facultyIndex.get(id);
 
 /** Thời điểm lễ của khoa (Date tuyệt đối) và hội trường mặc định. */

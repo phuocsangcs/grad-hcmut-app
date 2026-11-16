@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { greetingGroupKeys } from '@/modules/content';
+import { DEGREE_IDS, greetingGroupKeys } from '@/modules/content';
 import { MAX_PHOTOS, PENDING_KEY_RE, isPhotoKey } from '@/lib/storage-keys';
 import { SLUG_MAX, SLUG_MIN } from './slug';
 
@@ -9,6 +9,10 @@ const groupKeys = greetingGroupKeys() as [string, ...string[]];
 export const createCardSchema = z.object({
   displayName: z.string().trim().min(1).max(60),
   facultyId: z.string().min(1),
+  /** Trình độ: cử nhân, kỹ sư, thạc sĩ, tiến sĩ. */
+  degree: z.enum(DEGREE_IDS).optional(),
+  /** Chương trình OISP (chỉ có nghĩa với cử nhân / kỹ sư). */
+  oisp: z.boolean().optional(),
   /** Cho phép sửa giờ lễ; bỏ trống → lấy từ khoa */
   ceremonyAt: z.coerce.date().optional(),
   venue: z.string().trim().min(1).max(80).optional(),
@@ -37,7 +41,7 @@ export const createCardSchema = z.object({
 export type CreateCardInput = z.infer<typeof createCardSchema>;
 
 export const updateCardSchema = createCardSchema
-  .omit({ slug: true, turnstileToken: true, facultyId: true, photos: true })
+  .omit({ slug: true, turnstileToken: true, facultyId: true, degree: true, oisp: true, photos: true })
   .partial()
   .extend({
     /** Danh sách ảnh mong muốn, theo thứ tự. Khoá cards/ phải là ảnh sẵn có của chính thiệp này (service kiểm tra). */

@@ -20,6 +20,10 @@ export const cards = pgTable(
     slug: text('slug').notNull().unique(),
     displayName: text('display_name').notNull(),
     facultyId: text('faculty_id').notNull(),
+    /** bachelor | engineer | master | phd (xem modules/content/program.ts). */
+    degree: text('degree').notNull().default('bachelor'),
+    /** Chương trình OISP: dự lễ OISP chung thay vì lễ của khoa. */
+    oisp: boolean('oisp').notNull().default(false),
     ceremonyAt: ts('ceremony_at').notNull(),
     venue: text('venue').notNull().default('Hội trường A5'),
     templateId: text('template_id').notNull(),

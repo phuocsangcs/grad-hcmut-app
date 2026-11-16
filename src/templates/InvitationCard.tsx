@@ -1,5 +1,5 @@
 import type { PublicCard } from '@/modules/card';
-import { getFaculty, getGreetingGroup, getPoi, type Faculty } from '@/modules/content';
+import { getFaculty, getGreetingGroup, getPoi, resolveProgram, type Faculty } from '@/modules/content';
 import { poiSearchUrl } from '@/modules/share/maps-link';
 import { getTemplateDefinition } from './registry';
 import type { TemplateBlocks, TemplateLinks } from './types';
@@ -37,8 +37,9 @@ function rsvpCta(groupKey: string | null, recipientName: string | null): string 
 /** Khoa có thể thiếu trong JSON (dữ liệu cũ) → dựng bản dự phòng để không vỡ thiệp. */
 function resolveFaculty(card: PublicCard): Faculty {
   return (
-    getFaculty(card.faculty.id) ?? {
+    resolveProgram(card.faculty.id, card.degree, card.oisp)?.faculty ?? getFaculty(card.faculty.id) ?? {
       id: card.faculty.id,
+      kind: 'faculty',
       name: card.faculty.name,
       shortName: card.faculty.shortName,
       code: card.faculty.shortName.slice(0, 4).toUpperCase(),

@@ -24,6 +24,8 @@ export const facultyMotifSchema = z.enum([
 
 export const facultySchema = z.object({
   id: idSchema,
+  /** faculty = khoa thường; graduate = lễ chung Sau đại học; oisp = lễ chung OISP. Hai loại sau không xuất hiện trong danh sách chọn khoa. */
+  kind: z.enum(['faculty', 'graduate', 'oisp']).default('faculty'),
   name: z.string().min(1),
   shortName: z.string().min(1),
   /** Mã ngắn in trên thiệp, ví dụ "CSE". */

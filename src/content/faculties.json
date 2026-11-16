@@ -5,6 +5,7 @@
   "items": [
     {
       "id": "grad",
+      "kind": "graduate",
       "name": "Sau đại học (Thạc sĩ, Tiến sĩ)",
       "shortName": "Sau đại học",
       "code": "SĐH",
@@ -180,6 +181,7 @@
     },
     {
       "id": "oisp",
+      "kind": "oisp",
       "name": "Văn phòng Đào tạo Quốc tế (OISP)",
       "shortName": "Đào tạo Quốc tế",
       "code": "OISP",

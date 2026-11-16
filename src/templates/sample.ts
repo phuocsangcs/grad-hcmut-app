@@ -31,6 +31,8 @@ export function sampleCard(o: SampleOptions = {}): PublicCard {
     slug: 'minh-anh-k22',
     displayName: o.displayName ?? 'Nguyễn Minh Anh',
     faculty: { id: faculty.id, name: faculty.name, shortName: faculty.shortName },
+    degree: 'bachelor',
+    oisp: false,
     ceremonyAt: ceremony.at.toISOString(),
     venue: ceremony.venue,
     template,
