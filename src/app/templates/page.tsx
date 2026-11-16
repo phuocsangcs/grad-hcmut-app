@@ -13,6 +13,7 @@ export default function TemplatesPage() {
     const inner = <InvitationCard card={card} links={SAMPLE_LINKS} preview />;
     return {
       id: t.id,
+      cover: t.cover,
       name: t.name,
       description: t.description,
       thumb: <FitScreen>{inner}</FitScreen>,

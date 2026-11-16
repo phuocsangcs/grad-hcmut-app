@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { SAMPLE_PHOTOS } from '../templates/samples';
 import { InvitationCard, SAMPLE_LINKS, sampleCard } from '@/templates';
 
 export const dynamic = 'force-dynamic';
@@ -12,6 +13,6 @@ type Props = { searchParams: Promise<Record<string, string | undefined>> };
 export default async function PlaygroundPage({ searchParams }: Props) {
   if (process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_ENABLE_PLAYGROUND !== '1') notFound();
   const sp = await searchParams;
-  const card = sampleCard({ templateId: sp.template, facultyId: sp.faculty, to: sp.to, recipientName: sp.name, message: sp.message, mode: sp.mode });
+  const card = sampleCard({ templateId: sp.template, facultyId: sp.faculty, to: sp.to, recipientName: sp.name, message: sp.message, mode: sp.mode, photos: SAMPLE_PHOTOS[sp.template ?? ''] });
   return <InvitationCard card={card} links={SAMPLE_LINKS} preview />;
 }

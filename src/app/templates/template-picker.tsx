@@ -7,6 +7,8 @@ import s from './templates.module.css';
 
 export type PickerItem = {
   id: string;
+  /** Mẫu có chỗ đặt ảnh bìa. */
+  cover: boolean;
   name: string;
   description: string;
   /** Xem trước nhỏ trong lưới (server render sẵn). */
@@ -46,19 +48,28 @@ export function TemplatePicker({ items }: { items: PickerItem[] }) {
 
   return (
     <>
-      <ul className={s.grid}>
-        {items.map((t) => (
-          <li key={t.id} className={s.card}>
-            <div className={s.thumb} aria-hidden="true">{t.thumb}</div>
-            <div className={s.cardBody}>
-              <h2 className={s.cardName}>{t.name}</h2>
-              <p className={s.cardDesc}>{t.description}</p>
-            </div>
-            {/* Nút phủ kín thẻ: thẻ chứa bản xem trước có nút thật nên không thể bọc bằng button. */}
-            <button type="button" className={s.hit} onClick={() => open(t)} aria-label={`Chọn mẫu ${t.name}`} />
-          </li>
-        ))}
-      </ul>
+      {[
+        { title: 'Có ảnh bìa', sub: 'Có chỗ đặt ảnh của bạn (ví dụ ảnh kỷ yếu) ngay đầu thiệp.', list: items.filter((t) => t.cover) },
+        { title: 'Không cần ảnh', sub: 'Chữ và hình vẽ theo khoa, không phải chuẩn bị ảnh.', list: items.filter((t) => !t.cover) },
+      ].map((g) => (
+        <section key={g.title} className={s.group} aria-label={g.title}>
+          <h2 className={s.groupTitle}>{g.title}</h2>
+          <p className={s.groupSub}>{g.sub}</p>
+          <ul className={s.grid}>
+            {g.list.map((t) => (
+              <li key={t.id} className={s.card}>
+                <div className={s.thumb} aria-hidden="true">{t.thumb}</div>
+                <div className={s.cardBody}>
+                  <h3 className={s.cardName}>{t.name}</h3>
+                  <p className={s.cardDesc}>{t.description}</p>
+                </div>
+                {/* Nút phủ kín thẻ: thẻ chứa bản xem trước có nút thật nên không thể bọc bằng button. */}
+                <button type="button" className={s.hit} onClick={() => open(t)} aria-label={`Chọn mẫu ${t.name}`} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
 
       {picked && (
         <div className={s.backdrop} onClick={close}>

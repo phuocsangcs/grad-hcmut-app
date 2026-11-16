@@ -70,7 +70,7 @@ export function CreateForm(p: Props) {
   const [d, setD] = useState<Draft>({
     displayName: '', facultyId: p.faculties[0]?.id ?? '', degree: 'bachelor', oisp: false, templateId: p.initialTemplateId ?? p.defaultTemplateId, message: '',
     slug: '', meetingPoiId: '', meetingTime: '', phone: '', ownerEmail: '', greetings: {},
-    sections: { message: false, meeting: false, contact: false, photos: false, times: false, music: false, rsvp: true },
+    sections: { message: false, meeting: false, contact: false, photos: !!p.photosEnabled && !!p.templates.find((t) => t.id === (p.initialTemplateId ?? p.defaultTemplateId))?.cover, times: false, music: false, rsvp: true },
     uploads: [], beforeTime: '', afterTime: '', musicId: '', rsvpDeadline: '', rsvpMaxHeadcount: 20, guestbookEnabled: false,
   });
   const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, ceremony: true, message: true, photos: true, times: true, meeting: true, music: true, contact: true, rsvp: true, link: true });
@@ -90,7 +90,8 @@ export function CreateForm(p: Props) {
           const saved = JSON.parse(raw) as Partial<Draft>;
           // Gộp công tắc để nháp cũ (thiếu khoá mới) vẫn giữ giá trị mặc định của khoá mới.
           if (saved.facultyId && !p.faculties.some((f) => f.id === saved.facultyId)) delete saved.facultyId;
-          setD((cur) => ({ ...cur, ...saved, sections: { ...cur.sections, ...saved.sections }, ...(p.initialTemplateId ? { templateId: p.initialTemplateId } : {}) }));
+          const wantCover = !!p.photosEnabled && !!p.templates.find((t) => t.id === p.initialTemplateId)?.cover;
+          setD((cur) => ({ ...cur, ...saved, sections: { ...cur.sections, ...saved.sections, ...(wantCover ? { photos: true } : {}) }, ...(p.initialTemplateId ? { templateId: p.initialTemplateId } : {}) }));
           if (saved.slug) setSlugTouched(true);
         }
       } catch {}
@@ -188,6 +189,7 @@ export function CreateForm(p: Props) {
   }
 
   const tplName = p.templates.find((t) => t.id === d.templateId)?.name;
+  const isCover = !!p.templates.find((t) => t.id === d.templateId)?.cover;
   const seg = (
     <div className={s.seg} role="group" aria-label="Chế độ">
       <button type="button" aria-pressed={view === 'edit'} onClick={() => setView('edit')}><Icon name="edit" size={14} />Chỉnh sửa</button>
@@ -280,9 +282,10 @@ export function CreateForm(p: Props) {
 
         {p.photosEnabled ? (
           <FormSection
-            id="sec-photos" offNote="Phần này hiển thị album ảnh trên thiệp. Bật công tắc ở trên nếu bạn muốn hiện phần này trên thiệp!" title="Ảnh" icon="camera" hint={d.sections.photos ? `${d.uploads.length} ảnh` : 'Không hiện trên thiệp'}
+            id="sec-photos" offNote={isCover ? 'Mẫu này có chỗ đặt ảnh bìa. Bật công tắc ở trên và tải ảnh lên để hiện ảnh của bạn ở đầu thiệp!' : 'Phần này hiển thị album ảnh trên thiệp. Bật công tắc ở trên nếu bạn muốn hiện phần này trên thiệp!'} title={isCover ? 'Ảnh bìa và album' : 'Ảnh'} icon="camera" hint={d.sections.photos ? (isCover ? (d.uploads.length ? `${d.uploads.length} ảnh · ảnh đầu là ảnh bìa` : 'Chưa có ảnh bìa') : `${d.uploads.length} ảnh`) : 'Không hiện trên thiệp'}
             open={open.photos} onOpenChange={openSection('photos')} enabled={d.sections.photos} onEnabledChange={(v) => setSection('photos', v)} switchLabel="Hiện"
           >
+            {isCover ? <p className={s.coverHint}>Ảnh đầu tiên sẽ là ảnh bìa của thiệp. Ảnh dọc, thấy rõ mặt sẽ đẹp nhất. Các ảnh sau nằm trong album ở cuối thiệp.</p> : null}
             <PhotoUploader value={d.uploads} onChange={(next) => set('uploads', next)} />
           </FormSection>
         ) : null}
