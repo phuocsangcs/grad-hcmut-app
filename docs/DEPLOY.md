@@ -26,7 +26,7 @@ Bật **branch protection** cho `main` (Settings → Branches): yêu cầu job `
 |---|---|
 | `DATABASE_URL` | Supabase pooler, cổng 6543 (Transaction mode) |
 | `DIRECT_URL` | Supabase direct, cổng 5432 (chỉ cần cho migration, có thể để trống ở Vercel) |
-| `NEXT_PUBLIC_SITE_URL` | URL production, ví dụ `https://ngayratruong.vn`, không có `/` cuối |
+| `NEXT_PUBLIC_SITE_URL` | URL production, ví dụ `https://ngayratruong.vn`, không có `/` cuối. Nên đặt khi có tên miền riêng. Không đặt thì code tự lấy tên miền Vercel (`VERCEL_PROJECT_PRODUCTION_URL` ở production, `VERCEL_URL` ở preview), không bao giờ ra `localhost` trên Vercel |
 | `CRON_SECRET` | Chuỗi ngẫu nhiên dài. **Bắt buộc** ở production, thiếu thì cron bị từ chối. Vercel tự gửi kèm khi gọi cron |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | Ảnh thiệp, xem STORAGE.md |
 | `RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_EMAIL` | Tuỳ chọn: email lấy lại link và báo cáo vi phạm |
