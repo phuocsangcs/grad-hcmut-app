@@ -1,0 +1,309 @@
+.root {
+  --gold: #b8923c;
+  --gold-soft: #e3cf9c;
+  --navy: #0f2a63;
+  --t-ink: var(--navy);
+  --t-muted: #5b6b8c;
+  --t-surface: #fffdf7;
+  --t-line: rgba(184, 146, 60, 0.55);
+  --t-radius: 6px;
+  --t-accent: var(--navy);
+  --t-soft: #f3ecd8;
+  container-type: inline-size;
+  min-height: 100dvh;
+  background: #efe8d6;
+  color: var(--navy);
+  padding: var(--space-3) var(--space-3) var(--space-10);
+}
+.sheet {
+  position: relative;
+  width: min(520px, 100%);
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-6) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  text-align: center;
+  background: linear-gradient(160deg, #fbf6e9 0%, #f4ecd7 45%, #fbf6e9 100%);
+  overflow: hidden;
+}
+/* Khung viền vàng kép */
+.frame {
+  position: absolute;
+  inset: 8px;
+  border: 1.5px solid var(--gold);
+  pointer-events: none;
+}
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--gold-soft);
+}
+/* Ruy băng xanh đậm góc trên trái, ghi tên khoa theo chiều dọc */
+.ribbon {
+  position: absolute;
+  top: 8px;
+  left: 22px;
+  width: 38px;
+  height: 130px;
+  background: var(--navy);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 88%, 0 100%);
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+  box-shadow: inset 0 0 0 3px var(--navy), inset 0 0 0 4px var(--gold);
+}
+.ribbon span {
+  writing-mode: vertical-rl;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  color: var(--gold-soft);
+  max-height: 86px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.school {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.seal {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--navy);
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  overflow: hidden;
+}
+.seal img {
+  width: 78%;
+  height: auto;
+}
+.schoolName {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 82%;
+  color: var(--gold);
+}
+.ornament span {
+  flex: 1;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.7;
+}
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.invite {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 8vw, 2.7rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.event {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-xl);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.of {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--gold);
+  font-size: var(--text-lg);
+  margin-top: var(--space-1);
+}
+.name {
+  font-family: var(--font-script);
+  font-size: clamp(2.2rem, 10vw, 3.1rem);
+  line-height: 1.15;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.degree {
+  font-size: var(--text-sm);
+  color: var(--t-muted);
+}
+.invitee {
+  width: 100%;
+  padding-bottom: var(--space-3);
+  border-bottom: 1.5px dotted var(--gold);
+}
+.message {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-md);
+  line-height: 1.6;
+  color: var(--t-muted);
+  max-width: 34ch;
+}
+.date {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-3) 0;
+  border-block: 1px solid var(--gold);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+.date b {
+  font-size: 3.4rem;
+  line-height: 1;
+  font-weight: 800;
+  padding-inline: var(--space-4);
+  border-inline: 1px solid var(--gold);
+}
+.clock {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-lg);
+}
+.clock svg {
+  color: var(--gold);
+}
+.times {
+  font-family: var(--font-display);
+  font-weight: 600;
+  white-space: pre-wrap;
+}
+.where {
+  width: 100%;
+  display: grid;
+  gap: var(--space-3);
+  text-align: left;
+  margin: 0;
+}
+.where > div {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  column-gap: var(--space-3);
+  align-items: start;
+}
+.pin {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold-soft);
+}
+.where dt {
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+.where dd {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+.where small {
+  font-size: var(--text-sm);
+}
+/* Các khối chức năng nằm dưới tờ thư mời */
+.stack {
+  width: min(520px, 100%);
+  margin: var(--space-4) auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---- Máy tính: tờ thư mời rộng hơn, chữ lớn hơn, các khối chức năng xếp 2 cột ---- */
+@container (min-width: 860px) {
+  .root {
+    padding: var(--space-10) var(--space-8) var(--space-16);
+  }
+  .sheet {
+    width: min(860px, 100%);
+    padding: 80px 110px 72px;
+    gap: var(--space-6);
+  }
+  .ribbon {
+    left: 64px;
+    width: 72px;
+    height: 250px;
+    padding-top: 24px;
+  }
+  .ribbon span {
+    font-size: var(--text-md);
+    max-height: 190px;
+  }
+  .seal {
+    width: 148px;
+    height: 148px;
+  }
+  .schoolName {
+    font-size: var(--text-xl);
+  }
+  .invite {
+    font-size: 3.8rem;
+  }
+  .event {
+    font-size: 2rem;
+  }
+  .of {
+    font-size: var(--text-xl);
+  }
+  .name {
+    font-size: 4.6rem;
+  }
+  .degree {
+    font-size: var(--text-md);
+  }
+  .message {
+    font-size: var(--text-xl);
+    max-width: 40ch;
+  }
+  .date {
+    font-size: var(--text-xl);
+  }
+  .date b {
+    font-size: 5rem;
+    padding-inline: var(--space-8);
+  }
+  .clock {
+    font-size: var(--text-xl);
+  }
+  .where dd,
+  .where small {
+    font-size: var(--text-md);
+  }
+  .stack {
+    width: min(860px, 100%);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: var(--space-6);
+  }
+}

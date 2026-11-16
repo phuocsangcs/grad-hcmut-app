@@ -11,12 +11,6 @@ export function PrintTemplate({ card, faculty, blocks, message, preview }: Templ
   return (
     <main className={s.root} style={facultyVars(faculty)}>
       <article className={s.sheet}>
-        <header className={s.top}>
-          <span className={s.code}>
-            {faculty.code} · {card.ceremonyAt.slice(8, 10)}.{card.ceremonyAt.slice(5, 7)}
-          </span>
-          <span className={s.to}>{card.greeting.replace(/[,!]$/, '').toUpperCase()}</span>
-        </header>
         <p className={s.facultyName}>{faculty.name}</p>
 
         <figure className={s.motif}>
@@ -28,6 +22,8 @@ export function PrintTemplate({ card, faculty, blocks, message, preview }: Templ
           <h1 className={s.name}>{card.displayName}</h1>
           <p className={s.tagline}>{faculty.tagline}</p>
         </div>
+
+        {blocks.invitee}
 
         <div className={preview ? '' : 'rise-2'}>{blocks.ceremony}</div>
 

@@ -5,7 +5,7 @@ import { buildIcs } from './ics';
 import { googleCalendarUrl } from './calendar-link';
 import { directionsToCampusUrl, telUrl } from './maps-link';
 import { renderQr } from './qr';
-import { cardIcs, shareLinks } from './share.service';
+import { shareLinks } from './share.service';
 import { cardMetadata } from './og';
 
 const start = vnDate('2026-11-28', '14:30');
@@ -50,15 +50,10 @@ describe('qr', () => {
 });
 
 describe('share.service với thiệp thật', () => {
-  it('ics, links và metadata', async () => {
+  it('links và metadata', async () => {
     await createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {}, slug: 'share-a', phone: '0901234567', meetingPoiId: 'bench-a5', meetingTime: '16h00' });
     const r = await getPublicCard('share-a', { skipView: true });
     if (r.status !== 'ok') throw new Error();
-    const ics = cardIcs(r.card).replace(/\r\n /g, ''); // unfold
-    expect(ics).toContain('UID:card-share-a@localhost');
-    expect(ics).toContain('DTSTART;TZID=Asia/Ho_Chi_Minh:20261128T143000');
-    expect(ics).toContain('Điểm hẹn: Ghế đá hàng cây trước A5 lúc 16h00');
-
     const l = shareLinks(r.card, 'abcdef');
     expect(l.card).toBe('http://localhost:3000/share-a/abcdef');
     expect(l.qr).toBe('http://localhost:3000/api/cards/share-a/qr?code=abcdef');

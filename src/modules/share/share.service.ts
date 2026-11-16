@@ -1,7 +1,7 @@
 import { getEnv } from '@/lib/env';
 import { getPoi, poisFile } from '@/modules/content';
 import type { PublicCard } from '@/modules/card/card.service';
-import { buildIcs, type CalendarEvent } from './ics';
+import type { CalendarEvent } from './ics';
 import { googleCalendarUrl } from './calendar-link';
 import { directionsToCampusUrl, messengerShareUrl, poiSearchUrl, telUrl } from './maps-link';
 
@@ -18,12 +18,9 @@ export function cardEvent(c: PublicCard): CalendarEvent {
   };
 }
 
-export const cardIcs = (c: PublicCard) => buildIcs(cardEvent(c));
-
 /** Tập link hành động cho trang thiệp; UI chỉ render, không tự ghép URL. */
 export type ShareLinks = {
   card: string;
-  ics: string;
   qr: string;
   googleCalendar: string;
   directions: string;
@@ -39,7 +36,6 @@ export function shareLinks(c: PublicCard, inviteCode?: string | null): ShareLink
   const poi = c.meeting ? getPoi(c.meeting.poi.id) : undefined;
   return {
     card,
-    ics: `${base}/api/cards/${c.slug}/ics`,
     qr: `${base}/api/cards/${c.slug}/qr${inviteCode ? `?code=${inviteCode}` : ''}`,
     googleCalendar: googleCalendarUrl(cardEvent(c)),
     directions: directionsToCampusUrl(),

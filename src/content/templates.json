@@ -1,7 +1,9 @@
 {
   "updatedAt": "2026-11-15",
-  "defaultId": "print",
+  "defaultId": "royal",
   "items": [
+    { "id": "portrait", "name": "Ảnh bìa", "description": "Ảnh chân dung của bạn làm bìa: máy tính chia đôi màn hình, điện thoại ảnh tràn ngang. Hợp dùng ảnh kỷ yếu.", "tone": "modern", "cover": true, "ogImage": "/images/og/print.png" },
+    { "id": "royal", "name": "Trang trọng", "description": "Nền lụa kem, khung viền vàng, ruy băng xanh đậm và huy hiệu Trường. Thư mời tốt nghiệp truyền thống, hợp gửi người lớn.", "tone": "formal", "ogImage": "/images/og/print.png" },
     { "id": "print", "name": "In ấn", "description": "Giấy sáng, nét vẽ theo khoa, khối thông tin kiểu bản vẽ. Rõ ràng, hợp mọi người.", "tone": "modern", "ogImage": "/images/og/print.png" },
     { "id": "glass", "name": "Kính", "description": "Tấm kính mờ nổi trên hình vẽ của khoa, có chiều sâu nhưng tiết chế. Sang và hiện đại.", "tone": "modern", "ogImage": "/images/og/glass.png" },
     { "id": "airy", "name": "Bay bổng", "description": "Chữ Tân Cử nhân thật lớn, mảng màu cắt giấy, hình vẽ trôi nhẹ. Nghệ và thoáng.", "tone": "warm", "ogImage": "/images/og/airy.png" },

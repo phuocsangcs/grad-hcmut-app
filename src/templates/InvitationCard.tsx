@@ -1,5 +1,5 @@
 import type { PublicCard } from '@/modules/card';
-import { getFaculty, getGreetingGroup, getPoi, resolveProgram, type Faculty } from '@/modules/content';
+import { getFaculty, getGreetingGroup, getPoi, getTemplate, resolveProgram, type Faculty } from '@/modules/content';
 import { poiSearchUrl } from '@/modules/share/maps-link';
 import { getTemplateDefinition } from './registry';
 import type { TemplateBlocks, TemplateLinks } from './types';
@@ -13,6 +13,7 @@ import { Gallery } from './shared/Gallery';
 import { Guestbook, RsvpClosed } from './shared/Guestbook';
 import { MusicPlayer } from './shared/MusicPlayer';
 import { TimesInfo } from './shared/TimesInfo';
+import { Invitee } from './shared/Invitee';
 import { MeetingPoint } from './shared/MeetingPoint';
 import { Rsvp } from './shared/Rsvp';
 
@@ -66,7 +67,12 @@ export function InvitationCard({ card, links, inviteCode, preview, templateId }:
   const message = card.message.trim() || faculty.invitation;
   const meetingPoi = card.meeting ? getPoi(card.meeting.poi.id) : undefined;
 
+  const hasCover = !!getTemplate(def.id)?.cover;
+  const coverPhoto = hasCover ? card.photos[0] ?? null : null;
+  const galleryPhotos = hasCover ? card.photos.slice(1) : card.photos;
+  const inviteeName = card.recipientName ?? (card.groupKey ? getGreetingGroup(card.groupKey)?.label : null) ?? 'Quý khách';
   const blocks: TemplateBlocks = {
+    invitee: <Invitee name={inviteeName} />,
     ceremony: <CeremonyInfo ceremonyAt={card.ceremonyAt} venue={card.venue} />,
     countdown: <Countdown ceremonyAt={card.ceremonyAt} initial={card.countdown} />,
     rsvp:
@@ -78,7 +84,7 @@ export function InvitationCard({ card, links, inviteCode, preview, templateId }:
     times: card.beforeTime || card.afterTime ? <TimesInfo beforeTime={card.beforeTime} afterTime={card.afterTime} /> : null,
     guestbook: card.wishes.length > 0 ? <Guestbook wishes={card.wishes} /> : null,
     meeting: card.meeting ? <MeetingPoint meeting={card.meeting} mapsUrl={meetingPoi ? poiSearchUrl(meetingPoi) : links.meetingPoi} /> : null,
-    gallery: card.photos.length > 0 ? <Gallery photos={card.photos} name={card.displayName} /> : null,
+    gallery: galleryPhotos.length > 0 ? <Gallery photos={galleryPhotos} name={card.displayName} /> : null,
     actions: <Actions links={links} displayName={card.displayName} />,
     after: card.mode === 'after' ? <After displayName={card.displayName} expiresAt={card.expiresAt} /> : null,
     explore: <Explore slug={card.slug} preview={preview} />,
@@ -98,7 +104,7 @@ export function InvitationCard({ card, links, inviteCode, preview, templateId }:
   const { Component } = def;
   return (
     <div data-template={def.id} data-scheme={def.scheme} data-mode={card.mode} data-preview={preview ? '' : undefined}>
-      <Component card={card} faculty={faculty} links={links} blocks={blocks} message={message} preview={preview} />
+      <Component card={card} inviteeName={inviteeName} coverPhoto={coverPhoto} faculty={faculty} links={links} blocks={blocks} message={message} preview={preview} />
       {music}
     </div>
   );

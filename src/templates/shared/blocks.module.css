@@ -329,3 +329,24 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* ---- Người được mời ---- */
+.invitee {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+.inviteeLead {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-md);
+  color: var(--t-muted, var(--fg-muted));
+}
+.inviteeName {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--t-ink, var(--bk-700));
+}

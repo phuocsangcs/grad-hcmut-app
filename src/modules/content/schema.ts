@@ -98,6 +98,8 @@ export const templateSchema = z.object({
   name: z.string().min(1),
   description: z.string(),
   tone: z.enum(['formal', 'warm', 'modern', 'fun']),
+  /** true = mẫu có chỗ đặt ảnh bìa (ảnh đầu tiên người tạo tải lên). false = không cần ảnh. */
+  cover: z.boolean().default(false),
   ogImage: z.string(),
 });
 export const templatesFileSchema = z.object({

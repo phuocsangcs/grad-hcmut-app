@@ -13,6 +13,7 @@ export type SampleOptions = {
   displayName?: string;
   to?: string;
   recipientName?: string | null;
+  photos?: string[];
   message?: string;
   mode?: string;
   now?: Date;
@@ -42,7 +43,7 @@ export function sampleCard(o: SampleOptions = {}): PublicCard {
     recipientName: o.recipientName ?? null,
     meeting: poi ? { poi, time: '16h00', note: null } : null,
     phone: '0901234567',
-    photos: [],
+    photos: o.photos ?? [],
     beforeTime: null,
     afterTime: null,
     music: null,
@@ -56,7 +57,6 @@ export function sampleCard(o: SampleOptions = {}): PublicCard {
 
 export const SAMPLE_LINKS: TemplateLinks = {
   card: '/minh-anh-k22',
-  ics: '#',
   qr: '#',
   googleCalendar: '#',
   directions: '#',

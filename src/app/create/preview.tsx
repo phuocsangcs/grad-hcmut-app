@@ -33,7 +33,7 @@ export type PreviewDraft = {
   guestbookEnabled?: boolean;
 };
 
-const LINKS: TemplateLinks = { card: '#', ics: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: '#', call: null, messenger: '#' };
+const LINKS: TemplateLinks = { card: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: '#', call: null, messenger: '#' };
 
 /** Dựng PublicCard giả từ nháp để render đúng template thật, không cần server. */
 export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string } = {}): PublicCard | null {

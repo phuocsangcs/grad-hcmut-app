@@ -1,7 +1,6 @@
 import type { TemplateProps } from '../types';
 import { FacultyMotif } from '../motifs/FacultyMotif';
 import { facultyVars } from '../shared/vars';
-import { splitGreeting } from '../shared/Greeting';
 import { formatTimeVi } from '@/lib/time';
 import s from './blueprint.module.css';
 
@@ -9,8 +8,7 @@ import s from './blueprint.module.css';
  * BẢN VẼ KỸ THUẬT — giấy xanh Bách Khoa có lưới ô, hình vẽ nét trắng,
  * đường kích thước vàng, khung tên bản vẽ ở cuối; mục DUYỆT là chữ ký của khách.
  */
-export function BlueprintTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
-  const g = splitGreeting(card.greeting);
+export function BlueprintTemplate({ card, inviteeName, faculty, blocks, message, preview }: TemplateProps) {
   const at = new Date(card.ceremonyAt);
   const dd = card.ceremonyAt.slice(8, 10);
   const mm = card.ceremonyAt.slice(5, 7);
@@ -18,19 +16,13 @@ export function BlueprintTemplate({ card, faculty, blocks, message, preview }: T
     <main className={s.root} style={facultyVars(faculty)}>
       <article className={s.sheet}>
         <div className={s.frame} aria-hidden="true" />
-        <header className={s.meta}>
-          <span>
-            BV-{dd}{mm} · TỜ 01/01
-          </span>
-          <span>TỶ LỆ 1:1</span>
-        </header>
-
         <div className={`${s.title} ${preview ? '' : 'rise'}`}>
-          <span className={s.to}>KÍNH GỬI · {g.name.toUpperCase()}</span>
           <span className={s.degree}>{faculty.degreeTitle}</span>
           <h1 className={s.name}>{card.displayName}</h1>
           <p className={s.tagline}>{faculty.tagline}</p>
         </div>
+
+        {blocks.invitee}
 
         <figure className={s.motif}>
           <FacultyMotif motif={faculty.motif} />
@@ -65,7 +57,7 @@ export function BlueprintTemplate({ card, faculty, blocks, message, preview }: T
           </div>
           <div>
             <dt>Duyệt</dt>
-            <dd className={s.sign}>{g.name}</dd>
+            <dd className={s.sign}>{inviteeName}</dd>
           </div>
         </dl>
 

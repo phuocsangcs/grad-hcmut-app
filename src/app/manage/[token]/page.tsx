@@ -38,7 +38,7 @@ export default async function ManagePage({ params }: Props) {
   }
   const rsvps = await listCardRsvps(token);
   const { card, summary, urls, preview } = data;
-  const previewLinks: TemplateLinks = { card: urls.card, ics: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: preview.meeting ? '#' : null, call: preview.phone ? '#' : null, messenger: '#' };
+  const previewLinks: TemplateLinks = { card: urls.card, qr: '#', googleCalendar: '#', directions: '#', meetingPoi: preview.meeting ? '#' : null, call: preview.phone ? '#' : null, messenger: '#' };
 
   return (
     <Page>

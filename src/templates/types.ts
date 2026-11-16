@@ -12,7 +12,6 @@ import type { Faculty } from '@/modules/content';
  */
 export type TemplateLinks = {
   card: string;
-  ics: string;
   qr: string;
   googleCalendar: string;
   directions: string;
@@ -22,6 +21,8 @@ export type TemplateLinks = {
 };
 
 export type TemplateBlocks = {
+  /** "Thương mời: Ba Mẹ" — người được mời (tên riêng nếu có, không thì nhóm). */
+  invitee: ReactNode;
   /** Ngày · giờ · nơi (3 ô). */
   ceremony: ReactNode;
   /** Đếm ngược sống (client). */
@@ -46,6 +47,10 @@ export type TemplateBlocks = {
 
 export type TemplateProps = {
   card: PublicCard;
+  /** Tên người được mời: tên riêng, hoặc nhóm (Ba Mẹ, Ông Bà…). */
+  inviteeName: string;
+  /** Ảnh bìa (ảnh đầu tiên) của mẫu có ảnh bìa; null nếu chưa có hoặc mẫu không dùng ảnh bìa. */
+  coverPhoto: string | null;
   /** Bản ghi khoa đầy đủ (màu nhấn, câu chủ đề, hình vẽ). */
   faculty: Faculty;
   links: TemplateLinks;

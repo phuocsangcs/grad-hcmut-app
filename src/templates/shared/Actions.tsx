@@ -19,9 +19,6 @@ export function Actions({ links, displayName, layout = 'grid' }: Props) {
           Gọi {displayName}
         </Button>
       ) : null}
-      <a className={s.inlineLink} href={links.ics}>
-        Tải file lịch (.ics) cho iPhone <Icon name="download" size={14} />
-      </a>
     </div>
   );
 }

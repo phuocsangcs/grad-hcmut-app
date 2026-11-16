@@ -1,6 +1,5 @@
 import type { TemplateProps } from '../types';
 import { facultyVars } from '../shared/vars';
-import { splitGreeting } from '../shared/Greeting';
 import { formatTimeVi } from '@/lib/time';
 import { Icon } from '@/ui';
 import s from './ticket.module.css';
@@ -24,22 +23,15 @@ function HexCode({ seed }: { seed: string }) {
  * VÉ MỜI — vé hạng gia đình: cuống xanh đậm, đường xé răng cưa, mã vé tổ ong,
  * dấu mộc hồng "ĐÃ MỜI". Phẳng, góc vuông, chữ mono cho phần số liệu.
  */
-export function TicketTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
-  const g = splitGreeting(card.greeting);
+export function TicketTemplate({ card, inviteeName, faculty, blocks, message, preview }: TemplateProps) {
   const at = new Date(card.ceremonyAt);
   const dd = card.ceremonyAt.slice(8, 10);
   const mm = card.ceremonyAt.slice(5, 7);
   return (
     <main className={s.root} style={facultyVars(faculty)}>
       <div className={s.wrap}>
-        <header className={s.meta}>
-          <span>NGÀY RA TRƯỜNG</span>
-          <span>Nº {card.slug.toUpperCase().replace(/-/g, '').slice(0, 8)} · {card.ceremonyAt.slice(0, 4)}</span>
-        </header>
-
         <article className={`${s.ticket} ${preview ? '' : 'rise'}`}>
           <div className={s.stub}>
-            <span className={s.class}>VÉ MỜI · HẠNG GIA ĐÌNH</span>
             <span className={s.degree}>{faculty.degreeTitle}</span>
             <h1 className={s.name}>{card.displayName.toUpperCase()}</h1>
             <span className={s.faculty}>{faculty.name}</span>
@@ -53,6 +45,7 @@ export function TicketTemplate({ card, faculty, blocks, message, preview }: Temp
           </div>
 
           <div className={s.body}>
+            {blocks.invitee}
             <dl className={s.facts}>
               <div>
                 <dt>Ngày</dt>
@@ -86,7 +79,7 @@ export function TicketTemplate({ card, faculty, blocks, message, preview }: Temp
             <div className={s.guest}>
               <span>
                 <small>Khách mời</small>
-                <b>{g.name}</b>
+                <b>{inviteeName}</b>
               </span>
               <span className={s.right}>
                 <small>Châm ngôn</small>

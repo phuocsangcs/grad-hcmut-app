@@ -1,7 +1,6 @@
 import type { TemplateProps } from '../types';
 import { FacultyMotif } from '../motifs/FacultyMotif';
 import { facultyVars } from '../shared/vars';
-import { splitGreeting } from '../shared/Greeting';
 import { Chip } from '@/ui';
 import { formatTimeVi } from '@/lib/time';
 import s from './airy.module.css';
@@ -11,7 +10,6 @@ import s from './airy.module.css';
  * chữ "Tân Cử nhân" thật lớn tách hai dòng lệch nhau. Phẳng, nhiều khoảng thở.
  */
 export function AiryTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
-  const g = splitGreeting(card.greeting);
   const [t1, ...rest] = faculty.degreeTitle.split(' ');
   const at = new Date(card.ceremonyAt);
   const day = `${card.ceremonyAt.slice(8, 10)}.${card.ceremonyAt.slice(5, 7)}`;
@@ -27,7 +25,6 @@ export function AiryTemplate({ card, faculty, blocks, message, preview }: Templa
         </svg>
 
         <header className={s.head}>
-          <span className={s.lead}>{g.lead ? `${g.lead} ${g.name},` : g.name}</span>
           <span className={s.faculty}>{faculty.name}</span>
         </header>
 
@@ -44,6 +41,8 @@ export function AiryTemplate({ card, faculty, blocks, message, preview }: Templa
           <span className={s.name}>{card.displayName}</span>
           <span className={s.tagline}>{faculty.tagline}</span>
         </div>
+
+        {blocks.invitee}
 
         <div className={s.chips}>
           <Chip tone="outline">{day}</Chip>

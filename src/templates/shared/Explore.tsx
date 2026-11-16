@@ -29,10 +29,11 @@ export function Explore({ slug, preview }: { slug: string; preview?: boolean }) 
           </li>
         ))}
       </ul>
-      <p className={s.exploreFoot}>
-        Bạn cũng sắp tốt nghiệp? <Link href={preview ? '#' : '/templates'}>Tạo thiệp của bạn</Link>
-        {!preview ? <ReportButton slug={slug} /> : null}
-      </p>
+      {!preview ? (
+        <p className={s.exploreFoot}>
+          <ReportButton slug={slug} />
+        </p>
+      ) : null}
     </section>
   );
 }

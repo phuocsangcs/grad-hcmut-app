@@ -5,6 +5,8 @@ import { AiryTemplate } from './airy/AiryTemplate';
 import { BlueprintTemplate } from './blueprint/BlueprintTemplate';
 import { TicketTemplate } from './ticket/TicketTemplate';
 import { RisoTemplate } from './riso/RisoTemplate';
+import { RoyalTemplate } from './royal/RoyalTemplate';
+import { PortraitTemplate } from './portrait/PortraitTemplate';
 
 /**
  * Danh bạ template. id phải trùng với `src/content/templates.json`
@@ -16,6 +18,8 @@ import { RisoTemplate } from './riso/RisoTemplate';
  *   3. thêm mục vào templates.json
  */
 export const TEMPLATES: TemplateDefinition[] = [
+  { id: 'portrait', scheme: 'light', Component: PortraitTemplate },
+  { id: 'royal', scheme: 'light', Component: RoyalTemplate },
   { id: 'print', scheme: 'light', Component: PrintTemplate },
   { id: 'glass', scheme: 'light', Component: GlassTemplate },
   { id: 'airy', scheme: 'light', Component: AiryTemplate },

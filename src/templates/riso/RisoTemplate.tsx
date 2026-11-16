@@ -1,6 +1,5 @@
 import type { TemplateProps } from '../types';
 import { facultyVars } from '../shared/vars';
-import { splitGreeting } from '../shared/Greeting';
 import { FacultyMotif } from '../motifs/FacultyMotif';
 import { formatTimeVi } from '@/lib/time';
 import s from './riso.module.css';
@@ -10,7 +9,6 @@ import s from './riso.module.css';
  * thật to, hình vẽ của khoa qua lưới chấm, ghi chú viết tay. Trẻ, hợp bạn bè.
  */
 export function RisoTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
-  const g = splitGreeting(card.greeting);
   const at = new Date(card.ceremonyAt);
   const words = faculty.degreeTitle.toUpperCase().split(' ');
   return (
@@ -38,10 +36,10 @@ export function RisoTemplate({ card, faculty, blocks, message, preview }: Templa
           <div className={s.motif}>
             <FacultyMotif motif={faculty.motif} />
           </div>
-          <span className={s.hand}>{g.lead ? `${g.name} ơi!` : 'tới nha!'}</span>
         </div>
 
         <div className={s.info}>
+          {blocks.invitee}
           <div className={s.nameRow}>
             <span className={s.name}>{card.displayName}</span>
             <span className={s.faculty}>{faculty.shortName.toUpperCase()}</span>

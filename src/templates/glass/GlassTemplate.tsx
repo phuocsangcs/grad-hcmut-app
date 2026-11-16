@@ -1,7 +1,6 @@
 import type { TemplateProps } from '../types';
 import { FacultyMotif } from '../motifs/FacultyMotif';
 import { facultyVars } from '../shared/vars';
-import { splitGreeting } from '../shared/Greeting';
 import { Countdown } from '../shared/Countdown';
 import s from './glass.module.css';
 
@@ -11,7 +10,6 @@ import s from './glass.module.css';
  * Tối đa 3 lớp kính trên một màn để không giật trên máy yếu.
  */
 export function GlassTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
-  const g = splitGreeting(card.greeting);
   return (
     <main className={s.root} style={facultyVars(faculty)}>
       <div className={s.stage}>
@@ -27,11 +25,11 @@ export function GlassTemplate({ card, faculty, blocks, message, preview }: Templ
         <section className={`${s.glass} ${preview ? '' : 'rise'}`}>
           <span className={s.faculty}>{faculty.name}</span>
           <div className={s.title}>
-            <span className={s.lead}>{g.lead ? `${g.lead} ${g.name},` : g.name}</span>
             <span className={s.degree}>{faculty.degreeTitle}</span>
             <h1 className={s.name}>{card.displayName}</h1>
             <p className={s.tagline}>{faculty.tagline}</p>
           </div>
+          {blocks.invitee}
           <div className={s.wells}>{blocks.ceremony}</div>
           <p className={s.message}>{message}</p>
           {blocks.rsvp}
