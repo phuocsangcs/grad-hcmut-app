@@ -36,6 +36,13 @@
       "when": 1794847681334,
       "tag": "0004_card_invitation",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794849776725,
+      "tag": "0005_invite_message",
+      "breakpoints": true
     }
   ]
 }

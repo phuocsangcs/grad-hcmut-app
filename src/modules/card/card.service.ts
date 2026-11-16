@@ -151,7 +151,7 @@ export type PublicViewOptions = {
   modeOverride?: string | null;
   now?: Date;
   /** Khi mở từ link riêng (Phase 3b) */
-  invite?: { recipientName: string; greeting: string | null; templateId: string | null } | null;
+  invite?: { recipientName: string; greeting: string | null; message?: string | null; templateId: string | null } | null;
   /** Không tăng view_count (ví dụ khi preview trong trang quản lý) */
   skipView?: boolean;
 };
@@ -202,7 +202,8 @@ export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date, wis
     ceremonyAt: card.ceremonyAt.toISOString(),
     venue: card.venue,
     template,
-    message: card.message,
+    // Link mời riêng có lời nhắn riêng thì thay lời nhắn chung.
+    message: opts.invite?.message?.trim() || card.message,
     inviteLead: invitation.lead,
     inviteeName: invitation.name,
     recipientName: opts.invite?.recipientName ?? null,

@@ -4,6 +4,8 @@ export type BulkRow = {
   recipientName: string;
   /** Câu mời riêng ("Kính mời"…); null → dùng câu mời của thiệp. */
   greeting: string | null;
+  /** Lời nhắn riêng; null → lời nhắn chung của thiệp. */
+  message: string | null;
   templateId: string | null;
 };
 
@@ -12,14 +14,16 @@ export type BulkParseError = { line: number; raw: string; message: string };
 export type BulkParseResult = { rows: BulkRow[]; errors: BulkParseError[] };
 
 export const BULK_MAX_ROWS = 200;
+export const INVITE_MESSAGE_MAX = 500;
 
 /**
  * Nhận văn bản dán từ Excel / Zalo / Notes. Mỗi dòng một người.
  * Cột phân cách bằng TAB (Excel) hoặc dấu phẩy / chấm phẩy:
  *   Tên
  *   Tên, câu mời
- *   Tên, câu mời, mẫu
- * Câu mời trống → dùng câu mời của thiệp (vd. "Thương mời").
+ *   Tên, câu mời, lời nhắn
+ *   Tên, câu mời, lời nhắn, mẫu
+ * Câu mời / lời nhắn trống → dùng của thiệp. Lời nhắn có dấu phẩy thì phân cách bằng Tab hoặc chấm phẩy.
  * Dòng trống và dòng tiêu đề ("Tên", "Name") bị bỏ qua.
  */
 export function parseBulkText(text: string, validTemplateIds: ReadonlySet<string>): BulkParseResult {
@@ -31,13 +35,14 @@ export function parseBulkText(text: string, validTemplateIds: ReadonlySet<string
     const line = idx + 1;
     const raw = rawLine.trim();
     if (!raw) return;
-    const [name = '', lead = '', template = ''] = splitColumns(raw);
+    const [name = '', lead = '', message = '', template = ''] = splitColumns(raw);
 
     if (idx === 0 && /^(tên|ten|name|họ tên|ho ten)$/i.test(name)) return; // header
 
     if (!name) return errors.push({ line, raw, message: 'Thiếu tên' }) && undefined;
     if (name.length > INVITEE_MAX) return errors.push({ line, raw, message: `Tên quá ${INVITEE_MAX} ký tự` }) && undefined;
     if (lead.length > INVITE_LEAD_MAX) return errors.push({ line, raw, message: `Câu mời quá ${INVITE_LEAD_MAX} ký tự` }) && undefined;
+    if (message.length > INVITE_MESSAGE_MAX) return errors.push({ line, raw, message: `Lời nhắn quá ${INVITE_MESSAGE_MAX} ký tự` }) && undefined;
 
     let templateId: string | null = null;
     if (template) {
@@ -45,7 +50,7 @@ export function parseBulkText(text: string, validTemplateIds: ReadonlySet<string
       templateId = template;
     }
 
-    rows.push({ recipientName: name, greeting: lead || null, templateId });
+    rows.push({ recipientName: name, greeting: lead || null, message: message || null, templateId });
   });
 
   if (rows.length > BULK_MAX_ROWS) {

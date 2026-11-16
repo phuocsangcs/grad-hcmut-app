@@ -60,7 +60,7 @@ export function DoneView() {
           </Surface>
 
           <div className={s.actions}>
-            <Button href={`/manage/${c.manageToken}/invites`} variant="secondary" trailing={<Icon name="arrow" size={16} />}>Thêm người nhận để gửi riêng từng người</Button>
+            <Button href={`/manage/${c.manageToken}/invites`} variant="secondary" trailing={<Icon name="arrow" size={16} />}>Thêm khách mời, mỗi người một link riêng</Button>
             <Button href={`/manage/${c.manageToken}`} variant="ghost">Mở trang quản lý</Button>
           </div>
         </div>

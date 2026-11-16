@@ -1,10 +1,13 @@
 import { z } from 'zod';
 import { INVITE_LEAD_MAX, INVITEE_MAX } from '@/modules/content';
+import { INVITE_MESSAGE_MAX } from './bulk-parser';
 
 export const inviteRowSchema = z.object({
   recipientName: z.string().trim().min(1).max(INVITEE_MAX),
   /** Câu mời riêng ("Kính mời"…); trống → câu mời của thiệp. */
   greeting: z.string().trim().max(INVITE_LEAD_MAX).nullable().optional(),
+  /** Lời nhắn riêng; trống → lời nhắn chung của thiệp. */
+  message: z.string().trim().max(INVITE_MESSAGE_MAX).nullable().optional(),
   templateId: z.string().nullable().optional(),
 });
 

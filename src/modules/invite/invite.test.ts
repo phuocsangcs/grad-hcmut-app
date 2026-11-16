@@ -3,7 +3,7 @@ import { createCard } from '@/modules/card';
 import { submitRsvp } from '@/modules/rsvp';
 import { generateUniqueCodes, isInviteCode } from './code';
 import { parseBulkText } from './bulk-parser';
-import { bulkCreateInvites, exportInvitesCsv, getPublicCardByInvite, listInvites, removeInvite, updateInvite } from './invite.service';
+import { bulkCreateInvites, exportInvitesCsv, getPublicCardByInvite, inviteStats, listInvites, removeInvite, updateInvite } from './invite.service';
 
 const T = new Set(['print', 'glass', 'ticket', 'royal']);
 const mk = (slug: string) =>
@@ -22,32 +22,41 @@ describe('invite code', () => {
 });
 
 describe('bulk parser', () => {
-  it('nhận tên trần, tên + câu mời, tab từ Excel, bỏ header và dòng trống', () => {
-    const text = ['Tên\tCâu mời', 'Ba Mẹ', 'Ông Bà\tKính mời', '', 'Cô Hoa, Thân mời', 'Minh;;ticket', 'Bạn X'].join('\n');
+  it('nhận tên trần, tên + câu mời + lời nhắn, tab từ Excel, bỏ header và dòng trống', () => {
+    const text = ['Tên\tCâu mời', 'Ba Mẹ', 'Ông Bà\tKính mời\tCháu đón Ông Bà ở cổng, nhé', '', 'Cô Hoa, Thân mời', 'Minh;;;ticket', 'Bạn X'].join('\n');
     const r = parseBulkText(text, T);
     expect(r.errors).toEqual([]);
     expect(r.rows).toEqual([
-      { recipientName: 'Ba Mẹ', greeting: null, templateId: null },
-      { recipientName: 'Ông Bà', greeting: 'Kính mời', templateId: null },
-      { recipientName: 'Cô Hoa', greeting: 'Thân mời', templateId: null },
-      { recipientName: 'Minh', greeting: null, templateId: 'ticket' },
-      { recipientName: 'Bạn X', greeting: null, templateId: null },
+      { recipientName: 'Ba Mẹ', greeting: null, message: null, templateId: null },
+      { recipientName: 'Ông Bà', greeting: 'Kính mời', message: 'Cháu đón Ông Bà ở cổng, nhé', templateId: null },
+      { recipientName: 'Cô Hoa', greeting: 'Thân mời', message: null, templateId: null },
+      { recipientName: 'Minh', greeting: null, message: null, templateId: 'ticket' },
+      { recipientName: 'Bạn X', greeting: null, message: null, templateId: null },
     ]);
   });
   it('báo lỗi theo số dòng', () => {
-    const r = parseBulkText(`A, ${'x'.repeat(41)}\nB, Kính mời, nope\n, Kính mời`, T);
+    const r = parseBulkText(`A, ${'x'.repeat(41)}\nB; Kính mời; ; nope\n, Kính mời\nC; ; ${'y'.repeat(501)}`, T);
     expect(r.rows).toHaveLength(0);
-    expect(r.errors.map((e) => e.line)).toEqual([1, 2, 3]);
+    expect(r.errors.map((e) => e.line)).toEqual([1, 2, 3, 4]);
     expect(r.errors[0].message).toMatch(/Câu mời quá/);
     expect(r.errors[1].message).toMatch(/Mẫu "nope"/);
     expect(r.errors[2].message).toMatch(/Thiếu tên/);
+    expect(r.errors[3].message).toMatch(/Lời nhắn quá/);
+  });
+  it('inviteStats đếm theo link riêng', () => {
+    const st = inviteStats([
+      { viewCount: 0, rsvp: null },
+      { viewCount: 2, rsvp: null },
+      { viewCount: 1, rsvp: { id: 'a', guestName: 'A', headcount: 3, wish: null, createdAt: new Date() } },
+    ]);
+    expect(st).toEqual({ total: 3, opened: 2, notOpened: 1, confirmed: 1, pending: 2, headcount: 3 });
   });
 });
 
 describe('invite.service', () => {
   it('tạo hàng loạt từ text, link riêng ra đúng tên/mẫu/câu mời, RSVP gắn đúng người', async () => {
     const { card } = await mk('inv-a');
-    const r = await bulkCreateInvites(card.id, { text: 'Ba Mẹ\nCô Hoa; Kính mời; glass\nMinh' });
+    const r = await bulkCreateInvites(card.id, { text: 'Ba Mẹ\nCô Hoa; Kính mời; Con mời Cô đến chung vui; glass\nMinh' });
     expect(r.errors).toEqual([]);
     expect(r.created).toHaveLength(3);
     const [bm, hoa, minh] = r.created;
@@ -65,8 +74,11 @@ describe('invite.service', () => {
     if (v2.status === 'ok') {
       expect(v2.card.inviteLead).toBe('Kính mời');
       expect(v2.card.inviteeName).toBe('Cô Hoa');
+      expect(v2.card.message).toBe('Con mời Cô đến chung vui');
       expect(v2.card.template.id).toBe('glass');
     }
+    // Không có lời nhắn riêng → lời nhắn chung của thiệp (ở đây rỗng).
+    if (v1.status === 'ok') expect(v1.card.message).toBe('');
     const v3 = await getPublicCardByInvite('inv-a', minh.code);
     if (v3.status === 'ok') expect(v3.card.inviteeName).toBe('Minh');
     expect(await getPublicCardByInvite('inv-a', 'zzzzzz')).toEqual({ status: 'not_found' });
@@ -83,13 +95,19 @@ describe('invite.service', () => {
     expect(list[0].rsvp).toBeNull();
 
     const csv = await exportInvitesCsv('inv-a', card.id);
-    expect(csv.startsWith('﻿"Tên"')).toBe(true);
-    expect(csv).toContain(`"Cô Hoa","Kính mời","http://localhost:3000/inv-a/${hoa.code}","x","x","2",""`);
+    expect(csv.startsWith('﻿"Tên","Nguồn"')).toBe(true);
+    expect(csv).toContain(`"Cô Hoa","Link riêng","Kính mời","Con mời Cô đến chung vui","http://localhost:3000/inv-a/${hoa.code}","1","Đã xác nhận","2",""`);
+    expect(csv).toContain(`"Ba Mẹ","Link riêng","","","http://localhost:3000/inv-a/${bm.code}","1","Đã mở, chưa phản hồi","",""`);
+    expect(csv.split('\r\n')).toHaveLength(4);
+
+    // Khách xác nhận qua link chung cũng có trong báo cáo.
+    await submitRsvp('inv-a', { clientId: 'client-00000002', guestName: 'Bạn chung', headcount: 1 });
+    expect(await exportInvitesCsv('inv-a', card.id)).toContain('"Bạn chung","Link chung","","","","","Đã xác nhận","1",""');
   });
 
   it('text có lỗi → không tạo gì; vượt 200 → 400; tạo thêm thì sort_order nối tiếp', async () => {
     const { card } = await mk('inv-b');
-    const r = await bulkCreateInvites(card.id, { text: 'A\nB, Kính mời, nope' });
+    const r = await bulkCreateInvites(card.id, { text: 'A\nB; Kính mời; ; nope' });
     expect(r.created).toHaveLength(0);
     expect(r.errors).toHaveLength(1);
     expect(await listInvites('inv-b', card.id)).toHaveLength(0);

@@ -7,6 +7,7 @@ import { getPublicCard, type PublicCardResult, type PublicViewOptions } from '@/
 import { normalizeSlug } from '@/modules/card/slug';
 import type { Invite } from '@/db/schema';
 import { inviteRepo } from './invite.repo';
+import { rsvpRepo } from '@/modules/rsvp/rsvp.repo';
 import { generateUniqueCodes, isInviteCode } from './code';
 import { BULK_MAX_ROWS, parseBulkText, type BulkParseResult, type BulkRow } from './bulk-parser';
 import type { BulkCreateInput, UpdateInviteInput } from './invite.validators';
@@ -30,7 +31,8 @@ export async function bulkCreateInvites(cardId: string, input: BulkCreateInput):
   } else {
     rows = input.rows.map((r) => ({
       recipientName: r.recipientName,
-      greeting: r.greeting ?? null,
+      greeting: r.greeting || null,
+      message: r.message || null,
       templateId: r.templateId ?? null,
     }));
     const bad = rows.find((r) => r.templateId && !getTemplate(r.templateId));
@@ -52,6 +54,7 @@ export async function bulkCreateInvites(cardId: string, input: BulkCreateInput):
       code: codes[i],
       recipientName: r.recipientName,
       greeting: r.greeting,
+      message: r.message,
       templateId: r.templateId,
       sortOrder: startOrder + i,
     })),
@@ -85,6 +88,7 @@ export async function updateInvite(cardId: string, id: string, patch: UpdateInvi
   const row = await inviteRepo.update(cardId, id, {
     ...(patch.recipientName !== undefined && { recipientName: patch.recipientName }),
     ...(patch.greeting !== undefined && { greeting: patch.greeting || null }),
+    ...(patch.message !== undefined && { message: patch.message || null }),
     ...(patch.templateId !== undefined && { templateId: patch.templateId || null }),
   });
   if (!row) throw notFound('invite_not_found');
@@ -96,15 +100,39 @@ export async function removeInvite(cardId: string, id: string): Promise<void> {
   if (!ok) throw notFound('invite_not_found');
 }
 
-/** CSV cho chủ thiệp: mở bằng Excel, có BOM để Excel đọc đúng tiếng Việt. */
+export type InviteStats = { total: number; opened: number; notOpened: number; confirmed: number; pending: number; headcount: number };
+
+/** Số liệu cho trang quản lý khách: chỉ tính khách có link riêng. */
+export function inviteStats(list: Pick<InviteWithStatus, 'viewCount' | 'rsvp'>[]): InviteStats {
+  const opened = list.filter((i) => i.viewCount > 0).length;
+  const confirmed = list.filter((i) => i.rsvp).length;
+  return {
+    total: list.length,
+    opened,
+    notOpened: list.length - opened,
+    confirmed,
+    pending: list.length - confirmed,
+    headcount: list.reduce((n, i) => n + (i.rsvp?.headcount ?? 0), 0),
+  };
+}
+
+/**
+ * Báo cáo CSV cho chủ thiệp (mở bằng Excel, có BOM để đọc đúng tiếng Việt).
+ * Một bảng gồm khách có link riêng và khách xác nhận qua link chung (cột Nguồn).
+ */
 export async function exportInvitesCsv(cardSlug: string, cardId: string): Promise<string> {
   const list = await listInvites(cardSlug, cardId);
+  const general = (await rsvpRepo.listByCard(cardId)).filter((r) => !r.inviteId);
   const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const header = ['Tên', 'Câu mời', 'Link', 'Đã mở', 'Đã xác nhận', 'Số người', 'Lời chúc'];
-  const lines = list.map((i) =>
-    [i.recipientName, i.greeting ?? '', i.url, i.viewCount > 0 ? 'x' : '', i.rsvp ? 'x' : '', i.rsvp?.headcount ?? '', i.rsvp?.wish ?? ''].map(esc).join(','),
-  );
-  return '﻿' + [header.map(esc).join(','), ...lines].join('\r\n');
+  const header = ['Tên', 'Nguồn', 'Câu mời', 'Lời nhắn riêng', 'Link', 'Lượt mở', 'Trạng thái', 'Số người', 'Lời chúc'];
+  const rows = [
+    ...list.map((i) => [
+      i.recipientName, 'Link riêng', i.greeting ?? '', i.message ?? '', i.url, i.viewCount,
+      i.rsvp ? 'Đã xác nhận' : i.viewCount > 0 ? 'Đã mở, chưa phản hồi' : 'Chưa mở', i.rsvp?.headcount ?? '', i.rsvp?.wish ?? '',
+    ]),
+    ...general.map((r) => [r.guestName, 'Link chung', '', '', '', '', 'Đã xác nhận', r.headcount, r.wish ?? '']),
+  ];
+  return '\uFEFF' + [header, ...rows].map((r) => r.map(esc).join(',')).join('\r\n');
 }
 
 /** Thiệp cá nhân hoá: /[slug]/[code]. Code sai → not_found (thiệp chung vẫn mở được qua /[slug]). */
@@ -117,6 +145,6 @@ export async function getPublicCardByInvite(slug: string, code: string, opts: Om
   if (!opts.skipView) await inviteRepo.incrementView(inv.id).catch((e) => console.error('incrementView(invite) lỗi', e));
   return getPublicCard(slug, {
     ...opts,
-    invite: { recipientName: inv.recipientName, greeting: inv.greeting, templateId: inv.templateId },
+    invite: { recipientName: inv.recipientName, greeting: inv.greeting, message: inv.message, templateId: inv.templateId },
   });
 }

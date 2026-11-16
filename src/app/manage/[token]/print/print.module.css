@@ -1,0 +1,132 @@
+/* Trang in QR: xem trên màn hình như tờ giấy, in ra đúng A4 3 × 4 thẻ. */
+.root {
+  min-height: 100dvh;
+  padding: 0 16px 32px;
+  background: #e9edf3;
+  color: var(--bk-900);
+}
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  max-width: 210mm;
+  margin: 0 auto 16px;
+  padding: 12px 0;
+  background: #e9edf3;
+  border-bottom: 1px solid var(--line-card);
+}
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--bk-600);
+}
+.count {
+  margin-right: auto;
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+}
+.empty {
+  max-width: 210mm;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 4px;
+  background: #fff;
+  text-align: center;
+  color: var(--fg-muted);
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  max-width: 210mm;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid var(--line-card);
+}
+.cardItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 70mm;
+  padding: 6mm 4mm;
+  border-right: 1px dashed #b9c3d3;
+  border-bottom: 1px dashed #b9c3d3;
+  text-align: center;
+  break-inside: avoid;
+}
+.cardItem:nth-child(3n) {
+  border-right: 0;
+}
+.lead {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 11pt;
+  color: var(--muted);
+}
+.name {
+  max-width: 100%;
+  font-size: 14pt;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--bk-700);
+  overflow-wrap: anywhere;
+}
+.cardItem img {
+  width: 32mm;
+  height: 32mm;
+  margin: 2mm 0;
+}
+.from {
+  font-size: 8.5pt;
+  color: var(--bk-900);
+}
+.url {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  color: var(--fg-muted);
+}
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cardItem:nth-child(3n) {
+    border-right: 1px dashed #b9c3d3;
+  }
+  .cardItem:nth-child(2n) {
+    border-right: 0;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 10mm 0 0;
+}
+@media print {
+  .root {
+    padding: 0;
+    background: #fff;
+  }
+  .toolbar {
+    display: none;
+  }
+  .grid {
+    border: 0;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* 4 hàng × 70mm = 280mm: vừa một trang A4 (297mm trừ lề trên). */
+  .cardItem:nth-child(12n) {
+    break-after: page;
+  }
+}

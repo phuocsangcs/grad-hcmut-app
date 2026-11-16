@@ -259,7 +259,7 @@ export function CreateForm(p: Props) {
             </Field>
           ) : null}
           <p className={s.invitePreview} aria-live="polite">Trên thiệp: <strong>{invitationText}</strong></p>
-          <p className={s.defaultNote}>Muốn mỗi người một link mở ra đúng tên mình? Sau khi xuất bản, vào trang quản lý → <em>Gửi riêng từng người</em>.</p>
+          <p className={s.defaultNote}>Muốn mỗi người một link mở ra đúng tên mình? Sau khi xuất bản, vào trang quản lý → <em>Quản lý khách mời</em>.</p>
         </FormSection>
 
         <FormSection id="sec-ceremony" title="Lễ và thời gian" icon="calendar" hint={shown && ceremonyAt ? `${formatDateVi(ceremonyAt)} · ${formatTimeVi(ceremonyAt)}` : undefined} open={open.ceremony} onOpenChange={openSection('ceremony')}>

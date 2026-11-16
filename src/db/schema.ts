@@ -75,6 +75,8 @@ export const invites = pgTable(
     groupKey: text('group_key'),
     /** Câu mời riêng cho người này (vd. "Kính mời"); trống → câu mời của thiệp. */
     greeting: text('greeting'),
+    /** Lời nhắn riêng cho người này; trống → lời nhắn chung của thiệp. */
+    message: text('message'),
     templateId: text('template_id'),
     sortOrder: integer('sort_order').notNull().default(0),
     viewCount: integer('view_count').notNull().default(0),
