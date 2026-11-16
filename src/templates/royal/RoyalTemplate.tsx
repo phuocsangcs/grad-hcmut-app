@@ -24,7 +24,7 @@ function Ornament() {
 /**
  * TRANG TRỌNG — thư mời nền lụa kem, khung viền vàng, dải ruy băng xanh đậm ghi tên khoa,
  * huy hiệu Trường ở giữa. Bố cục theo thư mời tốt nghiệp truyền thống:
- * Thư mời → tên → Thương mời → ngày (Tháng | ngày | Năm) → giờ → địa điểm → liên hệ.
+ * Thư mời → tên → lời mời (Thương mời: …) → ngày (Tháng | ngày | Năm) → giờ → địa điểm → liên hệ.
  */
 export function RoyalTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
   const at = new Date(card.ceremonyAt);

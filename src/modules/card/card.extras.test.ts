@@ -3,7 +3,7 @@ import { createCard, getPublicCard, updateCard } from './card.service';
 import { submitRsvp } from '@/modules/rsvp';
 import { fromVnLocalInput, toVnLocalInput } from '@/lib/time';
 
-const base = { displayName: 'Phước Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {} };
+const base = { displayName: 'Phước Sang', facultyId: 'cse', templateId: 'print', message: '' };
 const guest = { clientId: 'client-aaaa-1111', guestName: 'Cô Hai', headcount: 2, wish: 'Chúc mừng con!' };
 
 describe('giờ trước/sau lễ và RSVP nâng cao', () => {

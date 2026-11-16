@@ -18,8 +18,8 @@ function readCreated(): Created | null {
   } catch { return null; }
 }
 
-/** Trang sau khi tạo: link, QR, gửi nhanh theo nhóm, link quản lý (hiện một lần). */
-export function DoneView({ groups }: { groups: { key: string; label: string }[] }) {
+/** Trang sau khi tạo: link, QR, link quản lý (hiện một lần). */
+export function DoneView() {
   // Đọc từ sessionStorage sau hydrate; server render null.
   const c = useSyncExternalStore(noop, readCreated, () => null);
   if (!c) {
@@ -49,25 +49,6 @@ export function DoneView({ groups }: { groups: { key: string; label: string }[] 
               </div>
             </div>
           </Surface>
-
-          <div>
-            <h2 className={s.h2}>Gửi nhanh theo nhóm</h2>
-            <p className={s.lead}>Mỗi link mở đầu bằng lời chào riêng cho nhóm đó.</p>
-          </div>
-          <ul className={s.groupList}>
-            {groups.map((g) => {
-              const u = `${c.url}?to=${g.key}`;
-              return (
-                <li key={g.key} className={s.groupRow}>
-                  <span><strong>{g.label}</strong><small>?to={g.key}</small></span>
-                  <span className={s.groupBtns}>
-                    <CopyButton text={u} size="sm" label="Chép" />
-                    <ShareButton url={u} size="sm" label="Gửi" />
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
 
           <Surface className={s.manage}>
             <h2><Icon name="lock" size={18} /> Link quản lý — lưu lại ngay</h2>

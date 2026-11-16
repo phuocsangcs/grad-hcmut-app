@@ -4,7 +4,8 @@ import {
   eateriesFileSchema,
   filterEateries,
   getFacultyCeremony,
-  getGreetingGroup,
+  greetingsFile,
+  listInviteLeads,
   getTemplate,
   listEateries,
   listFaculties,
@@ -66,8 +67,8 @@ describe('content: templates & greetings', () => {
     expect(getTemplate(defaultTemplateId)).toBeDefined();
     expect(listTemplates().length).toBeGreaterThanOrEqual(1);
   });
-  it('preset nhóm khách', () => {
-    expect(getGreetingGroup('parents')?.greeting).toBe('Gửi Ba Mẹ,');
-    expect(getGreetingGroup('nope')).toBeUndefined();
+  it('câu mời chọn sẵn có câu mặc định', () => {
+    expect(listInviteLeads()).toContain(greetingsFile.defaultInviteLead);
+    expect(greetingsFile.defaultInvitee).toBeTruthy();
   });
 });

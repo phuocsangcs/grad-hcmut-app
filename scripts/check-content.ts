@@ -26,7 +26,6 @@ uniqueIds('faculties', facultiesFile.items.map((i) => i.id));
 uniqueIds('pois', poisFile.items.map((i) => i.id));
 uniqueIds('eateries', eateriesFile.items.map((i) => i.id));
 uniqueIds('templates', templatesFile.items.map((i) => i.id));
-uniqueIds('greetings.groups', greetingsFile.groups.map((i) => i.key));
 
 if (!getTemplate(defaultTemplateId)) errors.push(`templates: defaultId "${defaultTemplateId}" không tồn tại`);
 
@@ -43,5 +42,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `Nội dung OK: ${facultiesFile.items.length} khoa, ${poisFile.items.length} POI, ${eateriesFile.items.length} quán, ${templatesFile.items.length} mẫu, ${greetingsFile.groups.length} nhóm khách.`,
+  `Nội dung OK: ${facultiesFile.items.length} khoa, ${poisFile.items.length} POI, ${eateriesFile.items.length} quán, ${templatesFile.items.length} mẫu, ${greetingsFile.inviteLeads.length} câu mời.`,
 );

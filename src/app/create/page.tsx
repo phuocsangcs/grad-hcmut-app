@@ -1,4 +1,4 @@
-import { defaultTemplateId, getTemplate, listMusic, greetingsFile, listRealFaculties, listGreetingGroups, listMeetingPois, listTemplates } from '@/modules/content';
+import { defaultTemplateId, getTemplate, listMusic, greetingsFile, listRealFaculties, listInviteLeads, listMeetingPois, listTemplates } from '@/modules/content';
 import { isStorageEnabled } from '@/lib/storage';
 import { Page } from '@/ui';
 import { CreateForm } from './create-form';
@@ -15,7 +15,9 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
         faculties={listRealFaculties()}
         templates={listTemplates()}
         pois={listMeetingPois()}
-        groups={listGreetingGroups()}
+        inviteLeads={listInviteLeads()}
+        defaultInviteLead={greetingsFile.defaultInviteLead}
+        defaultInvitee={greetingsFile.defaultInvitee}
         suggestions={greetingsFile.messageSuggestions}
         defaultTemplateId={defaultTemplateId}
         initialTemplateId={initialTemplateId}

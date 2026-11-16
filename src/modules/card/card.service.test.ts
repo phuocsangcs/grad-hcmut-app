@@ -9,7 +9,6 @@ const base = {
   facultyId: 'cse',
   templateId: 'print',
   message: 'Mời mọi người!',
-  greetings: {},
 };
 
 describe('card.service', () => {
@@ -50,31 +49,30 @@ describe('card.service', () => {
     await expect(createCard({ ...base, slug: 'x3-abc', meetingPoiId: 'zzz' })).rejects.toMatchObject({ code: 'poi_not_found' });
   });
 
-  it('thiệp công khai: ẩn thông tin nhạy cảm, resolve ?to và ?mode, tăng view', async () => {
+  it('thiệp công khai: ẩn thông tin nhạy cảm, lời mời, ?mode, tăng view', async () => {
     const { card } = await createCard({
       ...base,
       slug: 'public-test',
-      greetings: { friends: 'Ê tụi bây,' },
+      inviteLead: 'Kính mời',
+      inviteeName: 'Ông Bà',
       meetingPoiId: 'bench-a5',
       meetingTime: '16h00',
       phone: '0901234567',
       ownerEmail: 'me@example.com',
     });
-    const r = await getPublicCard('public-test', { to: 'friends', now: vnDate('2026-11-20') });
+    const r = await getPublicCard('public-test', { now: vnDate('2026-11-20') });
     expect(r.status).toBe('ok');
     if (r.status !== 'ok') return;
-    expect(r.card.greeting).toBe('Ê tụi bây,');
-    expect(r.card.groupKey).toBe('friends');
+    expect(r.card.inviteLead).toBe('Kính mời');
+    expect(r.card.inviteeName).toBe('Ông Bà');
     expect(r.card.mode).toBe('before');
     expect(r.card.meeting?.poi.id).toBe('bench-a5');
     expect(r.card.phone).toBe('0901234567');
     expect(JSON.stringify(r.card)).not.toContain('me@example.com');
     expect(JSON.stringify(r.card)).not.toContain(card.manageTokenHash);
 
-    const r2 = await getPublicCard('public-test', { to: 'hack', modeOverride: 'dayof', now: vnDate('2026-11-20') });
+    const r2 = await getPublicCard('public-test', { modeOverride: 'dayof', now: vnDate('2026-11-20') });
     if (r2.status === 'ok') {
-      expect(r2.card.groupKey).toBeNull();
-      expect(r2.card.greeting).toBe('Gửi bạn,');
       expect(r2.card.mode).toBe('dayof');
     }
     expect((await cardRepo.findById(card.id))?.viewCount).toBe(2);

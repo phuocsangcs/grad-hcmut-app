@@ -14,7 +14,6 @@ export const rsvpRepo = {
           guestName: data.guestName,
           headcount: data.headcount,
           wish: data.wish ?? null,
-          groupKey: data.groupKey ?? null,
           inviteId: data.inviteId ?? null,
           updatedAt: new Date(),
         },

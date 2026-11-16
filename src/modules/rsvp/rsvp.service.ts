@@ -20,13 +20,9 @@ export async function submitRsvp(slug: string, input: SubmitRsvpInput): Promise<
   if (input.headcount > card.rsvpMaxHeadcount) throw badRequest('headcount_exceeded');
 
   let inviteId: string | null = null;
-  let groupKey = input.groupKey ?? null;
   if (input.inviteCode && isInviteCode(input.inviteCode)) {
     const inv = await inviteRepo.findByCode(card.id, input.inviteCode);
-    if (inv) {
-      inviteId = inv.id;
-      groupKey = groupKey ?? inv.groupKey;
-    }
+    if (inv) inviteId = inv.id;
   }
 
   return rsvpRepo.upsert({
@@ -37,7 +33,6 @@ export async function submitRsvp(slug: string, input: SubmitRsvpInput): Promise<
     guestName: input.guestName,
     headcount: input.headcount,
     wish: input.wish || null,
-    groupKey,
   });
 }
 

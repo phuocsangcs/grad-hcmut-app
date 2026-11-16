@@ -3,12 +3,12 @@ import { createCardSchema } from './card.validators';
 
 describe('createCardSchema', () => {
   const base = { displayName: 'A', facultyId: 'cse', templateId: 'print', slug: 'abc-def' };
-  it('greetings chỉ cần một vài nhóm', () => {
-    const r = createCardSchema.parse({ ...base, greetings: { friends: 'Ê,' } });
-    expect(r.greetings).toEqual({ friends: 'Ê,' });
-    expect(createCardSchema.parse(base).greetings).toEqual({});
+  it('lời mời tuỳ chọn, được cắt khoảng trắng', () => {
+    const r = createCardSchema.parse({ ...base, inviteLead: '  Thân mời ', inviteeName: 'Cô Hoa' });
+    expect(r).toMatchObject({ inviteLead: 'Thân mời', inviteeName: 'Cô Hoa' });
+    expect(createCardSchema.parse(base).inviteLead).toBeUndefined();
   });
-  it('nhóm lạ bị từ chối', () => {
-    expect(() => createCardSchema.parse({ ...base, greetings: { hangxom: 'x' } })).toThrow();
+  it('câu mời quá dài bị từ chối', () => {
+    expect(() => createCardSchema.parse({ ...base, inviteLead: 'x'.repeat(41) })).toThrow();
   });
 });

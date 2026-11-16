@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button, Icon } from '@/ui';
 import s from './templates.module.css';
@@ -17,12 +18,22 @@ export type PickerItem = {
   large: ReactNode;
 };
 
+type Filter = 'all' | 'cover' | 'plain';
+const FILTERS: { id: Filter; label: string }[] = [
+  { id: 'all', label: 'Tất cả' },
+  { id: 'cover', label: 'Có ảnh bìa' },
+  { id: 'plain', label: 'Không cần ảnh' },
+];
+
 /**
- * Lưới mẫu thiệp. Bấm một mẫu → hộp xác nhận (kính mờ) → "Dùng mẫu này" mới sang trang nhập thông tin.
+ * Lưới mẫu thiệp, lọc nhanh theo có/không ảnh bìa. Bấm một mẫu → hộp xác nhận (kính mờ) → "Dùng mẫu này" mới sang trang nhập thông tin.
  */
 export function TemplatePicker({ items }: { items: PickerItem[] }) {
   const router = useRouter();
   const [picked, setPicked] = useState<PickerItem | null>(null);
+  const [filter, setFilter] = useState<Filter>('all');
+  const count = (f: Filter) => items.filter((t) => f === 'all' || (f === 'cover') === t.cover).length;
+  const list = items.filter((t) => filter === 'all' || (filter === 'cover') === t.cover);
   const confirmRef = useRef<HTMLButtonElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
 
@@ -48,28 +59,31 @@ export function TemplatePicker({ items }: { items: PickerItem[] }) {
 
   return (
     <>
-      {[
-        { title: 'Có ảnh bìa', sub: 'Có chỗ đặt ảnh của bạn (ví dụ ảnh kỷ yếu) ngay đầu thiệp.', list: items.filter((t) => t.cover) },
-        { title: 'Không cần ảnh', sub: 'Chữ và hình vẽ theo khoa, không phải chuẩn bị ảnh.', list: items.filter((t) => !t.cover) },
-      ].map((g) => (
-        <section key={g.title} className={s.group} aria-label={g.title}>
-          <h2 className={s.groupTitle}>{g.title}</h2>
-          <p className={s.groupSub}>{g.sub}</p>
-          <ul className={s.grid}>
-            {g.list.map((t) => (
-              <li key={t.id} className={s.card}>
-                <div className={s.thumb} aria-hidden="true">{t.thumb}</div>
-                <div className={s.cardBody}>
-                  <h3 className={s.cardName}>{t.name}</h3>
-                  <p className={s.cardDesc}>{t.description}</p>
-                </div>
-                {/* Nút phủ kín thẻ: thẻ chứa bản xem trước có nút thật nên không thể bọc bằng button. */}
-                <button type="button" className={s.hit} onClick={() => open(t)} aria-label={`Chọn mẫu ${t.name}`} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      <div className={s.filters} role="group" aria-label="Lọc mẫu thiệp">
+        {FILTERS.map((f) => (
+          <button key={f.id} type="button" className={s.filter} aria-pressed={filter === f.id} onClick={() => setFilter(f.id)}>
+            {f.label}
+            <span className={s.filterCount}>{count(f.id)}</span>
+          </button>
+        ))}
+      </div>
+
+      <ul className={s.grid} aria-label="Danh sách mẫu">
+        {list.map((t) => (
+          <li key={t.id} className={s.card}>
+            <div className={s.thumb} aria-hidden="true">{t.thumb}</div>
+            <div className={s.cardBody}>
+              <h2 className={s.cardName}>{t.name}</h2>
+              <p className={s.cardDesc}>{t.description}</p>
+              <Link href={`/templates/${t.id}`} className={s.demoLink}>
+                <Icon name="eye" size={14} /> Xem demo
+              </Link>
+            </div>
+            {/* Nút phủ kín thẻ: thẻ chứa bản xem trước có nút thật nên không thể bọc bằng button. */}
+            <button type="button" className={s.hit} onClick={() => open(t)} aria-label={`Chọn mẫu ${t.name}`} />
+          </li>
+        ))}
+      </ul>
 
       {picked && (
         <div className={s.backdrop} onClick={close}>
@@ -94,6 +108,7 @@ export function TemplatePicker({ items }: { items: PickerItem[] }) {
                 >
                   Dùng mẫu này <Icon name="arrow" size={16} />
                 </button>
+                <Button href={`/templates/${picked.id}`} variant="secondary" leading={<Icon name="eye" size={16} />}>Xem demo</Button>
                 <Button variant="ghost" onClick={close}>Chọn mẫu khác</Button>
               </div>
             </div>

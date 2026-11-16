@@ -1,5 +1,5 @@
 import type { PublicCard } from '@/modules/card';
-import { getFaculty, getGreetingGroup, getPoi, getTemplate, resolveProgram, type Faculty } from '@/modules/content';
+import { getFaculty, greetingsFile, getPoi, getTemplate, resolveProgram, type Faculty } from '@/modules/content';
 import { poiSearchUrl } from '@/modules/share/maps-link';
 import { getTemplateDefinition } from './registry';
 import type { TemplateBlocks, TemplateLinks } from './types';
@@ -27,12 +27,9 @@ type Props = {
   templateId?: string;
 };
 
-/** Nhãn nút RSVP theo nhóm khách. */
-function rsvpCta(groupKey: string | null, recipientName: string | null): string {
-  if (recipientName) return `${recipientName} sẽ đến`;
-  const label = groupKey ? getGreetingGroup(groupKey)?.label : null;
-  if (label === 'Bạn bè') return 'Tới chứ, tới!';
-  return label ? `${label} sẽ đến` : 'Mình sẽ đến';
+/** Nhãn nút RSVP: "Ba Mẹ sẽ đến"; người được mời để mặc định ("Quý khách") thì "Tôi sẽ đến". */
+function rsvpCta(inviteeName: string): string {
+  return inviteeName === greetingsFile.defaultInvitee ? 'Tôi sẽ đến' : `${inviteeName} sẽ đến`;
 }
 
 /** Khoa có thể thiếu trong JSON (dữ liệu cũ) → dựng bản dự phòng để không vỡ thiệp. */
@@ -70,14 +67,14 @@ export function InvitationCard({ card, links, inviteCode, preview, templateId }:
   const hasCover = !!getTemplate(def.id)?.cover;
   const coverPhoto = hasCover ? card.photos[0] ?? null : null;
   const galleryPhotos = hasCover ? card.photos.slice(1) : card.photos;
-  const inviteeName = card.recipientName ?? (card.groupKey ? getGreetingGroup(card.groupKey)?.label : null) ?? 'Quý khách';
+  const { inviteLead, inviteeName } = card;
   const blocks: TemplateBlocks = {
-    invitee: <Invitee name={inviteeName} />,
+    invitee: <Invitee lead={inviteLead} name={inviteeName} />,
     ceremony: <CeremonyInfo ceremonyAt={card.ceremonyAt} venue={card.venue} />,
     countdown: <Countdown ceremonyAt={card.ceremonyAt} initial={card.countdown} />,
     rsvp:
       card.mode === 'after' ? null : card.rsvp.open ? (
-        <Rsvp slug={card.slug} groupKey={card.groupKey} recipientName={card.recipientName} inviteCode={inviteCode} cta={rsvpCta(card.groupKey, card.recipientName)} maxHeadcount={card.rsvp.maxHeadcount} preview={preview} />
+        <Rsvp slug={card.slug} recipientName={card.recipientName} inviteCode={inviteCode} cta={rsvpCta(inviteeName)} maxHeadcount={card.rsvp.maxHeadcount} preview={preview} />
       ) : card.rsvp.reason === 'deadline' ? (
         <RsvpClosed deadline={card.rsvp.deadline} />
       ) : null,
@@ -104,7 +101,7 @@ export function InvitationCard({ card, links, inviteCode, preview, templateId }:
   const { Component } = def;
   return (
     <div data-template={def.id} data-scheme={def.scheme} data-mode={card.mode} data-preview={preview ? '' : undefined}>
-      <Component card={card} inviteeName={inviteeName} coverPhoto={coverPhoto} faculty={faculty} links={links} blocks={blocks} message={message} preview={preview} />
+      <Component card={card} inviteLead={inviteLead} inviteeName={inviteeName} coverPhoto={coverPhoto} faculty={faculty} links={links} blocks={blocks} message={message} preview={preview} />
       {music}
     </div>
   );

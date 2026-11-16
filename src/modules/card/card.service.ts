@@ -3,25 +3,18 @@ import { badRequest, conflict, notFound } from '@/lib/http';
 import { addDays } from '@/lib/time';
 import { adoptPending, deleteKeys, isStorageEnabled, publicUrl, verifyPending } from '@/lib/storage';
 import { CARD_KEY_RE, PENDING_KEY_RE } from '@/lib/storage-keys';
-import { canBeOisp, getFaculty, getMusic, resolveProgram, type DegreeId, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
+import { canBeOisp, defaultTemplateId, getFaculty, getMusic, resolveProgram, type DegreeId, getPoi, getTemplate, type Faculty, type Poi, type Template } from '@/modules/content';
 import { rsvpRepo } from '@/modules/rsvp/rsvp.repo';
 import { generateManageToken, hashToken } from '@/modules/manage/token';
 import type { Card } from '@/db/schema';
 import { cardRepo } from './card.repo';
 import { normalizeSlug, suggestSlugs, validateSlug } from './slug';
 import { resolveMode, countdown, type CardMode, type Countdown } from './mode';
-import { resolveGreeting, normalizeGroupKey } from './greeting';
+import { resolveInvitation } from './invitation';
 import type { CreateCardInput, UpdateCardInput } from './card.validators';
 
 /** Thiệp tự xoá sau lễ bao nhiêu ngày (F5). */
 export const CARD_TTL_DAYS = 30;
-
-/** Bỏ key rỗng/undefined để lưu jsonb gọn. */
-function compactGreetings(g: Partial<Record<string, string>> | undefined): Record<string, string> {
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(g ?? {})) if (v && v.trim()) out[k] = v.trim();
-  return out;
-}
 
 // ---------- Tạo thiệp ----------
 
@@ -67,7 +60,8 @@ export async function createCard(input: CreateCardInput): Promise<CreateCardResu
     venue: input.venue ?? ceremony.venue,
     templateId: input.templateId,
     message: input.message,
-    greetings: compactGreetings(input.greetings),
+    inviteLead: input.inviteLead || null,
+    inviteeName: input.inviteeName || null,
     meetingPoiId: input.meetingPoiId || null,
     meetingTime: input.meetingTime || null,
     meetingNote: input.meetingNote || null,
@@ -128,8 +122,10 @@ export type PublicCard = {
   venue: string;
   template: Template;
   message: string;
-  greeting: string;
-  groupKey: string | null;
+  /** Lời mời đã xác định: "<inviteLead>: <inviteeName>". */
+  inviteLead: string;
+  inviteeName: string;
+  /** Tên người nhận khi mở từ link mời riêng (điền sẵn vào form xác nhận). */
   recipientName: string | null;
   meeting: { poi: Poi; time: string | null; note: string | null } | null;
   phone: string | null;
@@ -151,13 +147,11 @@ export type PublicCard = {
 export type PublicCardResult = { status: 'ok'; card: PublicCard } | { status: Exclude<PublicCardStatus, 'ok'> };
 
 export type PublicViewOptions = {
-  /** ?to= */
-  to?: string | null;
   /** ?mode= để test */
   modeOverride?: string | null;
   now?: Date;
   /** Khi mở từ link riêng (Phase 3b) */
-  invite?: { recipientName: string; groupKey: string | null; greeting: string | null; templateId: string | null } | null;
+  invite?: { recipientName: string; greeting: string | null; templateId: string | null } | null;
   /** Không tăng view_count (ví dụ khi preview trong trang quản lý) */
   skipView?: boolean;
 };
@@ -193,9 +187,10 @@ function rsvpState(card: Card, now: Date): PublicCard['rsvp'] {
 
 export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date, wishes: PublicCard['wishes'] = []): PublicCard {
   const faculty = getFaculty(card.facultyId) ?? { id: card.facultyId, name: card.facultyId, shortName: card.facultyId };
-  const groupKey = opts.invite?.groupKey ?? normalizeGroupKey(opts.to);
+  const invitation = resolveInvitation({ inviteLead: opts.invite?.greeting, recipientName: opts.invite?.recipientName, cardLead: card.inviteLead, cardInvitee: card.inviteeName });
   const templateId = opts.invite?.templateId ?? card.templateId;
-  const template = getTemplate(templateId) ?? getTemplate(card.templateId)!;
+  // Mẫu có thể đã bị gỡ khỏi templates.json (vd. airy, riso) → rơi về mẫu mặc định.
+  const template = getTemplate(templateId) ?? getTemplate(card.templateId) ?? getTemplate(defaultTemplateId)!;
   const poi = card.meetingPoiId ? getPoi(card.meetingPoiId) : undefined;
 
   return {
@@ -208,13 +203,8 @@ export function toPublicCard(card: Card, opts: PublicViewOptions, now: Date, wis
     venue: card.venue,
     template,
     message: card.message,
-    greeting: resolveGreeting({
-      inviteGreeting: opts.invite?.greeting,
-      recipientName: opts.invite?.recipientName,
-      groupKey,
-      cardGreetings: card.greetings,
-    }),
-    groupKey,
+    inviteLead: invitation.lead,
+    inviteeName: invitation.name,
     recipientName: opts.invite?.recipientName ?? null,
     meeting: poi ? { poi, time: card.meetingTime, note: card.meetingNote } : null,
     phone: card.phone,
@@ -252,7 +242,8 @@ export async function updateCard(cardId: string, patch: UpdateCardInput): Promis
   if (patch.venue !== undefined) data.venue = patch.venue;
   if (patch.templateId !== undefined) data.templateId = patch.templateId;
   if (patch.message !== undefined) data.message = patch.message;
-  if (patch.greetings !== undefined) data.greetings = compactGreetings(patch.greetings);
+  if (patch.inviteLead !== undefined) data.inviteLead = patch.inviteLead || null;
+  if (patch.inviteeName !== undefined) data.inviteeName = patch.inviteeName || null;
   if (patch.meetingPoiId !== undefined) data.meetingPoiId = patch.meetingPoiId || null;
   if (patch.meetingTime !== undefined) data.meetingTime = patch.meetingTime || null;
   if (patch.meetingNote !== undefined) data.meetingNote = patch.meetingNote || null;

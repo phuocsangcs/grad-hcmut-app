@@ -1,9 +1,10 @@
 import { listTemplates } from '@/modules/content';
 import { InvitationCard, SAMPLE_LINKS, sampleCard } from '@/templates';
-import { Page, PageHeading } from '@/ui';
+import { Page } from '@/ui';
 import { FitScreen } from './fit-screen';
 import { sampleOptionsFor } from './samples';
 import { TemplatePicker, type PickerItem } from './template-picker';
+import s from './templates.module.css';
 
 export const metadata = { title: 'Chọn mẫu thiệp' };
 
@@ -23,7 +24,10 @@ export default function TemplatesPage() {
 
   return (
     <Page>
-      <PageHeading title="Chọn mẫu thiệp" lead="Mẫu nào cũng tự đổi màu và hoạ tiết theo khoa của bạn. Chọn một mẫu để bắt đầu." />
+      <header className={s.head}>
+        <h1 className={s.headTitle}>Chọn mẫu thiệp</h1>
+        <p className={s.headLead}>Mẫu nào cũng tự đổi màu và hoạ tiết theo khoa của bạn. Chọn một mẫu để bắt đầu.</p>
+      </header>
       <TemplatePicker items={items} />
     </Page>
   );

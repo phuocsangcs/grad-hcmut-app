@@ -21,7 +21,7 @@ export const revalidate = 3600;
  *  - max:   quãng trôi tối đa (px).
  */
 const HERO = [
-  { templateId: 'riso', facultyId: 'me', displayName: 'Lê Quốc Bảo', scale: 0.4, speed: 0.1, max: 50 },
+  { templateId: 'ticket', facultyId: 'me', displayName: 'Lê Quốc Bảo', scale: 0.4, speed: 0.1, max: 50 },
   { templateId: 'print', facultyId: 'cse', displayName: 'Nguyễn Minh Anh', scale: 0.46, speed: 0.35, max: 120 },
 ];
 
@@ -36,8 +36,8 @@ const PAGE_FEATURES: { icon: IconName; title: string; body: string }[] = [
 
 const STEPS = [
   { title: 'Chọn khoa', body: 'Ngày giờ lễ tự điền theo lịch chính thức của trường.' },
-  { title: 'Chọn mẫu, viết lời nhắn', body: 'Sáu mẫu, mẫu nào cũng đổi màu và hoạ tiết theo khoa.' },
-  { title: 'Gửi link', body: 'Mỗi nhóm một lời chào: Ba Mẹ, Ông Bà, bạn bè. Ai sẽ đến, bạn biết ngay.' },
+  { title: 'Chọn mẫu, viết lời nhắn', body: 'Bảy mẫu, mẫu nào cũng đổi màu và hoạ tiết theo khoa.' },
+  { title: 'Gửi link', body: 'Thương mời Ba Mẹ, Kính mời Ông Bà… hoặc mỗi người một link riêng. Ai sẽ đến, bạn biết ngay.' },
 ];
 
 const GUIDES: { href: string; icon: IconName; title: string; body: string }[] = [
@@ -53,7 +53,7 @@ export default function HomePage() {
   const templates = listTemplates();
   // cùng một người, ba mẫu khác nhau -> minh hoạ "đổi mẫu không cần nhập lại"
   const SAME = { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' };
-  const SWAP = ['print', 'glass', 'riso'].map((id) => ({ id, name: templates.find((t) => t.id === id)?.name ?? id }));
+  const SWAP = ['print', 'glass', 'ticket'].map((id) => ({ id, name: templates.find((t) => t.id === id)?.name ?? id }));
 
   return (
     <>

@@ -51,7 +51,7 @@ describe('qr', () => {
 
 describe('share.service với thiệp thật', () => {
   it('links và metadata', async () => {
-    await createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {}, slug: 'share-a', phone: '0901234567', meetingPoiId: 'bench-a5', meetingTime: '16h00' });
+    await createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', slug: 'share-a', phone: '0901234567', meetingPoiId: 'bench-a5', meetingTime: '16h00' });
     const r = await getPublicCard('share-a', { skipView: true });
     if (r.status !== 'ok') throw new Error();
     const l = shareLinks(r.card, 'abcdef');

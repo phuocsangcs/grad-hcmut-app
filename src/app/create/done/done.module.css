@@ -53,36 +53,6 @@
   flex-wrap: wrap;
   gap: var(--space-2);
 }
-.groupList {
-  display: grid;
-  gap: var(--space-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.groupRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-s);
-}
-.groupRow strong {
-  display: block;
-  color: var(--bk-900);
-}
-.groupRow small {
-  font-family: var(--font-mono);
-  color: var(--fg-muted);
-  font-size: var(--text-xs);
-}
-.groupBtns {
-  display: flex;
-  gap: var(--space-1);
-  flex: none;
-}
 .manage {
   border: 1.5px solid var(--sun);
   background: var(--sun-soft);

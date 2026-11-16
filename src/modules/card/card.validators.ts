@@ -1,10 +1,9 @@
 import { z } from 'zod';
-import { DEGREE_IDS, greetingGroupKeys } from '@/modules/content';
+import { DEGREE_IDS, INVITE_LEAD_MAX, INVITEE_MAX } from '@/modules/content';
 import { MAX_PHOTOS, PENDING_KEY_RE, isPhotoKey } from '@/lib/storage-keys';
 import { SLUG_MAX, SLUG_MIN } from './slug';
 
 const phone = z.string().trim().regex(/^(\+84|0)\d{9,10}$/, 'Số điện thoại không hợp lệ');
-const groupKeys = greetingGroupKeys() as [string, ...string[]];
 
 export const createCardSchema = z.object({
   displayName: z.string().trim().min(1).max(60),
@@ -18,7 +17,9 @@ export const createCardSchema = z.object({
   venue: z.string().trim().min(1).max(80).optional(),
   templateId: z.string().min(1),
   message: z.string().trim().max(500).default(''),
-  greetings: z.partialRecord(z.enum(groupKeys), z.string().trim().max(200)).default({}),
+  /** Câu mời ("Thương mời", "Kính mời"…) và người được mời ("Ba Mẹ"). Trống → mặc định. */
+  inviteLead: z.string().trim().max(INVITE_LEAD_MAX).optional().nullable(),
+  inviteeName: z.string().trim().max(INVITEE_MAX).optional().nullable(),
   meetingPoiId: z.string().optional().nullable(),
   meetingTime: z.string().trim().max(20).optional().nullable(),
   meetingNote: z.string().trim().max(200).optional().nullable(),

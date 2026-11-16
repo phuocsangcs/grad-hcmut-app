@@ -11,6 +11,9 @@ import s from './manage.module.css';
 type Current = {
   templateId: string;
   message: string;
+  /** Câu mời và người được mời: "Thương mời: Ba Mẹ". */
+  inviteLead: string;
+  inviteeName: string;
   displayName: string;
   meetingPoiId: string;
   meetingTime: string;
@@ -31,6 +34,8 @@ type Props = {
   templates: { id: string; name: string; description: string }[];
   pois: { id: string; name: string }[];
   music: { id: string; title: string }[];
+  inviteLeads: string[];
+  defaultInvitee: string;
   photosEnabled: boolean;
   current: Current;
 };
@@ -51,7 +56,7 @@ function remapUploads(old: UploadedPhoto[], keys: string[]): UploadedPhoto[] {
 }
 
 /** Sửa thiệp (PATCH /api/manage/:token) và vùng xoá thiệp. */
-export function CardActions({ token, templates, pois, music, photosEnabled, current }: Props) {
+export function CardActions({ token, templates, pois, music, inviteLeads, defaultInvitee, photosEnabled, current }: Props) {
   const router = useRouter();
   const [base, setBase] = useState<Current>(current);
   const [v, setV] = useState<Current>(current);
@@ -71,6 +76,7 @@ export function CardActions({ token, templates, pois, music, photosEnabled, curr
         method: 'PATCH',
         json: {
           templateId: v.templateId, message: v.message, displayName: v.displayName,
+          inviteLead: v.inviteLead.trim() || null, inviteeName: v.inviteeName.trim() || null,
           meetingPoiId: v.meetingPoiId || null, meetingTime: v.meetingTime || null, phone: v.phone || null,
           ...(photosEnabled ? { photos: v.uploads.map((u) => u.key) } : {}),
           beforeTime: v.beforeTime || null, afterTime: v.afterTime || null,
@@ -102,7 +108,7 @@ export function CardActions({ token, templates, pois, music, photosEnabled, curr
       <Surface as="section">
         <h2 className={s.h2}>Sửa thiệp <small>Thay đổi hiện ngay với mọi người đã có link</small></h2>
         <form className={s.form} onSubmit={save}>
-          <FormSection id="m-info" title="Thông tin" icon="heart" hint="Tên, mẫu, lời nhắn, số điện thoại" open={open.info} onOpenChange={openSection('info')}>
+          <FormSection id="m-info" title="Thông tin" icon="heart" hint="Tên, mẫu, lời mời, lời nhắn, số điện thoại" open={open.info} onOpenChange={openSection('info')}>
             <div className={s.row}>
               <Field label="Tên hiển thị">
                 <Input required maxLength={60} value={v.displayName} onChange={(e) => set('displayName', e.target.value)} />
@@ -113,6 +119,22 @@ export function CardActions({ token, templates, pois, music, photosEnabled, curr
                 </Select>
               </Field>
             </div>
+            <div className={s.row}>
+              <Field label="Câu mời" hint={inviteLeads.includes(v.inviteLead) ? undefined : 'Đang tự viết, tối đa 40 ký tự'}>
+                <Select value={inviteLeads.includes(v.inviteLead) ? v.inviteLead : '__custom'} onChange={(e) => set('inviteLead', e.target.value === '__custom' ? '' : e.target.value)}>
+                  {inviteLeads.map((l) => <option key={l} value={l}>{l}</option>)}
+                  <option value="__custom">Tự viết…</option>
+                </Select>
+              </Field>
+              <Field label="Người được mời" optional hint={`Bỏ trống sẽ hiện “${defaultInvitee}”.`}>
+                <Input maxLength={60} value={v.inviteeName} placeholder="Ba Mẹ, Ông Bà, Cô Hoa…" onChange={(e) => set('inviteeName', e.target.value)} />
+              </Field>
+            </div>
+            {inviteLeads.includes(v.inviteLead) ? null : (
+              <Field label="Câu mời của bạn">
+                <Input maxLength={40} value={v.inviteLead} placeholder="Thân gửi" onChange={(e) => set('inviteLead', e.target.value)} />
+              </Field>
+            )}
             <Field label="Lời nhắn" optional hint={`${v.message.length}/500`}>
               <Textarea maxLength={500} rows={3} value={v.message} onChange={(e) => set('message', e.target.value)} />
             </Field>

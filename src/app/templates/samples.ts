@@ -5,17 +5,18 @@
 export const TEMPLATE_SAMPLES: Record<string, { facultyId: string; displayName: string }> = {
   print: { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' },
   glass: { facultyId: 'che', displayName: 'Trần Thu Hà' },
-  airy: { facultyId: 'env', displayName: 'Phạm Gia Hân' },
   blueprint: { facultyId: 'ce', displayName: 'Võ Hoàng Long' },
   ticket: { facultyId: 'eee', displayName: 'Đặng Khánh Linh' },
-  riso: { facultyId: 'me', displayName: 'Lê Quốc Bảo' },
   royal: { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' },
   portrait: { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' },
+  dossier: { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' },
 };
 
-/** Ảnh mẫu cho các mẫu có ảnh bìa (ảnh thật trong public/images/samples). */
+/** Ảnh mẫu (ảnh AI, không phải người thật) cho các mẫu có ảnh bìa: ảnh đầu là bìa, còn lại vào album. */
+const AI_PHOTOS = ['/images/samples/ai-chan-dung-nam.jpg', '/images/samples/ai-chan-dung-nu.jpg', '/images/samples/ai-chan-dung-nam-2.jpg'];
 export const SAMPLE_PHOTOS: Record<string, string[]> = {
-  portrait: ['/images/samples/ky-yeu-2.jpg', '/images/samples/ky-yeu-1.jpg'],
+  portrait: AI_PHOTOS,
+  dossier: AI_PHOTOS,
 };
 
 export function sampleOptionsFor(templateId: string, extra: { mode?: string } = {}) {

@@ -4,7 +4,7 @@ import { HttpError } from '@/lib/http';
 import { formatDateVi, formatTimeVi } from '@/lib/time';
 import { toVnLocalInput } from '@/lib/time';
 import { publicUrl } from '@/lib/storage';
-import { getGreetingGroup, listMeetingPois, listMusic, listTemplates } from '@/modules/content';
+import { greetingsFile, listInviteLeads, listMeetingPois, listMusic, listTemplates } from '@/modules/content';
 import { InvitationCard, type TemplateLinks } from '@/templates';
 import { Button, Chip, CopyButton, Icon, Page, PageHeading, PhoneFrame, ShareButton, Surface } from '@/ui';
 import { isStorageEnabled } from '@/lib/storage';
@@ -84,7 +84,6 @@ export default async function ManagePage({ params }: Props) {
                     <span className={s.avatar} aria-hidden="true">{r.guestName.trim().charAt(0).toUpperCase()}</span>
                     <div>
                       <strong>{r.guestName}</strong>
-                      {r.groupKey ? <> · <small>{getGreetingGroup(r.groupKey)?.label ?? r.groupKey}</small></> : null}
                       {r.wish ? <p>“{r.wish}”</p> : null}
                       {r.wish && card.guestbookEnabled ? <WishToggle token={token} id={r.id} hidden={r.hidden} /> : null}
                     </div>
@@ -102,6 +101,8 @@ export default async function ManagePage({ params }: Props) {
             current={{
               templateId: card.templateId,
               message: card.message,
+              inviteLead: card.inviteLead ?? greetingsFile.defaultInviteLead,
+              inviteeName: card.inviteeName ?? '',
               displayName: card.displayName,
               meetingPoiId: card.meetingPoiId ?? '',
               meetingTime: card.meetingTime ?? '',
@@ -115,6 +116,8 @@ export default async function ManagePage({ params }: Props) {
               rsvpMaxHeadcount: card.rsvpMaxHeadcount,
               guestbookEnabled: card.guestbookEnabled,
             }}
+            inviteLeads={listInviteLeads()}
+            defaultInvitee={greetingsFile.defaultInvitee}
             music={listMusic().map((m) => ({ id: m.id, title: m.artist ? `${m.title} · ${m.artist}` : m.title }))}
             photosEnabled={isStorageEnabled()}
           />

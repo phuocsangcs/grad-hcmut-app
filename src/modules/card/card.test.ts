@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeSlug, suggestSlugs, validateSlug } from './slug';
 import { countdown, resolveMode } from './mode';
-import { resolveGreeting, normalizeGroupKey } from './greeting';
+import { resolveInvitation } from './invitation';
 import { vnDate } from '@/lib/time';
 
 describe('slug', () => {
@@ -50,18 +50,11 @@ describe('mode', () => {
   });
 });
 
-describe('greeting', () => {
-  it('ưu tiên lời chào riêng > override nhóm > preset > tên > mặc định', () => {
-    expect(resolveGreeting({ inviteGreeting: 'Má ơi,', groupKey: 'parents' })).toBe('Má ơi,');
-    expect(resolveGreeting({ groupKey: 'parents', cardGreetings: { parents: 'Ba mẹ yêu quý,' } })).toBe('Ba mẹ yêu quý,');
-    expect(resolveGreeting({ groupKey: 'parents' })).toBe('Gửi Ba Mẹ,');
-    expect(resolveGreeting({ recipientName: 'Cô Hoa' })).toBe('Gửi Cô Hoa,');
-    expect(resolveGreeting({})).toBe('Gửi bạn,');
-    expect(resolveGreeting({ groupKey: 'unknown', recipientName: 'Cô Hoa' })).toBe('Gửi Cô Hoa,');
-  });
-  it('normalizeGroupKey', () => {
-    expect(normalizeGroupKey('friends')).toBe('friends');
-    expect(normalizeGroupKey('hack')).toBeNull();
-    expect(normalizeGroupKey(null)).toBeNull();
+describe('invitation', () => {
+  it('link mời riêng > thiệp > mặc định', () => {
+    expect(resolveInvitation({ inviteLead: 'Kính mời', recipientName: 'Cô Hoa', cardLead: 'Thân mời', cardInvitee: 'Ba Mẹ' })).toEqual({ lead: 'Kính mời', name: 'Cô Hoa' });
+    expect(resolveInvitation({ cardLead: 'Thân mời', cardInvitee: 'Ba Mẹ' })).toEqual({ lead: 'Thân mời', name: 'Ba Mẹ' });
+    expect(resolveInvitation({ recipientName: 'Minh', cardLead: '  ', cardInvitee: null })).toEqual({ lead: 'Thương mời', name: 'Minh' });
+    expect(resolveInvitation({})).toEqual({ lead: 'Thương mời', name: 'Quý khách' });
   });
 });

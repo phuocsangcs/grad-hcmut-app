@@ -13,7 +13,6 @@ import {
   templatesFileSchema,
   type Eatery,
   type Faculty,
-  type GreetingGroup,
   type Music,
   type Poi,
   type Template,
@@ -46,7 +45,6 @@ const facultyIndex = indexBy(facultiesFile.items);
 const poiIndex = indexBy(poisFile.items);
 const eateryIndex = indexBy(eateriesFile.items);
 const templateIndex = indexBy(templatesFile.items);
-const greetingIndex = new Map(greetingsFile.groups.map((g) => [g.key, g]));
 
 /** Mọi mục lịch (kể cả lễ chung Sau đại học, OISP). Dùng cho lịch /guide. */
 export const listFaculties = (): Faculty[] => facultiesFile.items;
@@ -78,6 +76,6 @@ export const defaultTemplateId = templatesFile.defaultId;
 export const listMusic = (): Music[] => musicFile.items;
 export const getMusic = (id: string): Music | undefined => musicFile.items.find((m) => m.id === id);
 
-export const listGreetingGroups = (): GreetingGroup[] => greetingsFile.groups;
-export const getGreetingGroup = (key: string): GreetingGroup | undefined => greetingIndex.get(key);
-export const greetingGroupKeys = (): string[] => greetingsFile.groups.map((g) => g.key);
+export const listInviteLeads = (): string[] => greetingsFile.inviteLeads;
+export const INVITE_LEAD_MAX = 40;
+export const INVITEE_MAX = 60;

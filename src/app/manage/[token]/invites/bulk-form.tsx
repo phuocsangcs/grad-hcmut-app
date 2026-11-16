@@ -6,7 +6,7 @@ import { api, ApiError } from '@/components/api';
 import { Button, Icon, Textarea } from '@/ui';
 import s from './invites.module.css';
 
-type Row = { recipientName: string; groupKey: string | null; greeting: string | null; templateId: string | null };
+type Row = { recipientName: string; greeting: string | null; templateId: string | null };
 type Preview = { rows: Row[]; errors: { line: number; raw: string; message: string }[] };
 
 /** Dán → kiểm tra → tạo. */
@@ -41,7 +41,7 @@ export function BulkForm({ token }: { token: string }) {
         className={s.mono}
         rows={6}
         aria-label="Danh sách người nhận"
-        placeholder={'Ba Mẹ, parents\nCô Hoa\tfamily\tCô Hoa thương mến,\nMinh; friends; ; riso'}
+        placeholder={'Ba Mẹ\nCô Hoa, Kính mời\nMinh; Thân mời; ticket'}
         value={text}
         onChange={(e) => { setText(e.target.value); setPreview(null); }}
       />
@@ -57,8 +57,8 @@ export function BulkForm({ token }: { token: string }) {
           <ul className={s.previewList}>
             {preview.rows.map((r, i) => (
               <li key={i}>
-                <span><strong>{r.recipientName}</strong>{r.greeting ? <small> · “{r.greeting}”</small> : null}</span>
-                <small>{[r.groupKey, r.templateId].filter(Boolean).join(' · ') || 'mặc định'}</small>
+                <span>{r.greeting ? <small>{r.greeting}: </small> : null}<strong>{r.recipientName}</strong></span>
+                <small>{r.templateId ?? 'mẫu của thiệp'}</small>
               </li>
             ))}
           </ul>

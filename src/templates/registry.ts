@@ -1,12 +1,11 @@
 import type { TemplateDefinition } from './types';
 import { PrintTemplate } from './print/PrintTemplate';
 import { GlassTemplate } from './glass/GlassTemplate';
-import { AiryTemplate } from './airy/AiryTemplate';
 import { BlueprintTemplate } from './blueprint/BlueprintTemplate';
 import { TicketTemplate } from './ticket/TicketTemplate';
-import { RisoTemplate } from './riso/RisoTemplate';
 import { RoyalTemplate } from './royal/RoyalTemplate';
 import { PortraitTemplate } from './portrait/PortraitTemplate';
+import { DossierTemplate } from './dossier/DossierTemplate';
 
 /**
  * Danh bạ template. id phải trùng với `src/content/templates.json`
@@ -18,14 +17,13 @@ import { PortraitTemplate } from './portrait/PortraitTemplate';
  *   3. thêm mục vào templates.json
  */
 export const TEMPLATES: TemplateDefinition[] = [
+  { id: 'dossier', scheme: 'light', Component: DossierTemplate },
   { id: 'portrait', scheme: 'light', Component: PortraitTemplate },
   { id: 'royal', scheme: 'light', Component: RoyalTemplate },
   { id: 'print', scheme: 'light', Component: PrintTemplate },
   { id: 'glass', scheme: 'light', Component: GlassTemplate },
-  { id: 'airy', scheme: 'light', Component: AiryTemplate },
   { id: 'blueprint', scheme: 'dark', Component: BlueprintTemplate },
   { id: 'ticket', scheme: 'light', Component: TicketTemplate },
-  { id: 'riso', scheme: 'light', Component: RisoTemplate },
 ];
 
 const byId = new Map(TEMPLATES.map((t) => [t.id, t]));

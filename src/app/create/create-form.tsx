@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api, ApiError } from '@/components/api';
-import { canBeOisp, DEGREES, resolveProgram, type DegreeId, type Faculty, type GreetingGroup, type Poi, type Template } from '@/modules/content';
+import { canBeOisp, DEGREES, resolveProgram, type DegreeId, type Faculty, type Poi, type Template } from '@/modules/content';
 import { vi } from '@/lib/i18n';
 import { formatDateVi, formatTimeVi, fromVnLocalInput } from '@/lib/time';
 import { Button, Field, FormSection, Icon, Input, Select, Textarea } from '@/ui';
@@ -16,7 +16,10 @@ type Props = {
   faculties: Faculty[];
   templates: Template[];
   pois: Poi[];
-  groups: GreetingGroup[];
+  /** Câu mời chọn sẵn ("Thương mời"…), câu mặc định và tên người được mời mặc định. */
+  inviteLeads: string[];
+  defaultInviteLead: string;
+  defaultInvitee: string;
   suggestions: string[];
   defaultTemplateId: string;
   /** Mẫu vừa chọn ở /templates (?template=...), thắng nháp đã lưu. */
@@ -29,7 +32,7 @@ type Props = {
 
 /** Công tắc của các khối tuỳ chọn. Tắt = không gửi và không hiện trên thiệp. */
 type Sections = { message: boolean; meeting: boolean; contact: boolean; photos: boolean; times: boolean; music: boolean; rsvp: boolean };
-type SectionKey = 'basic' | 'ceremony' | 'message' | 'photos' | 'times' | 'meeting' | 'music' | 'contact' | 'rsvp' | 'link';
+type SectionKey = 'basic' | 'invite' | 'ceremony' | 'message' | 'photos' | 'times' | 'meeting' | 'music' | 'contact' | 'rsvp' | 'link';
 type Draft = PreviewDraft & {
   ownerEmail: string;
   sections: Sections;
@@ -69,16 +72,15 @@ export function CreateForm(p: Props) {
   const router = useRouter();
   const [d, setD] = useState<Draft>({
     displayName: '', facultyId: p.faculties[0]?.id ?? '', degree: 'bachelor', oisp: false, templateId: p.initialTemplateId ?? p.defaultTemplateId, message: '',
-    slug: '', meetingPoiId: '', meetingTime: '', phone: '', ownerEmail: '', greetings: {},
+    slug: '', meetingPoiId: '', meetingTime: '', phone: '', ownerEmail: '', inviteLead: p.defaultInviteLead, inviteeName: '',
     sections: { message: false, meeting: false, contact: false, photos: !!p.photosEnabled && !!p.templates.find((t) => t.id === (p.initialTemplateId ?? p.defaultTemplateId))?.cover, times: false, music: false, rsvp: true },
     uploads: [], beforeTime: '', afterTime: '', musicId: '', rsvpDeadline: '', rsvpMaxHeadcount: 20, guestbookEnabled: false,
   });
-  const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, ceremony: true, message: true, photos: true, times: true, meeting: true, music: true, contact: true, rsvp: true, link: true });
+  const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, invite: true, ceremony: true, message: true, photos: true, times: true, meeting: true, music: true, contact: true, rsvp: true, link: true });
   const [slugResult, setSlugResult] = useState<{ q: string; r: SlugState } | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewTo, setPreviewTo] = useState(p.groups[0]?.key ?? 'parents');
   const [view, setView] = useState<'edit' | 'preview'>('edit');
 
   // khôi phục nháp sau hydrate (trì hoãn một frame để không setState đồng bộ trong effect)
@@ -131,7 +133,6 @@ export function CreateForm(p: Props) {
   const eff = useMemo<Draft>(() => ({
     ...d,
     message: d.sections.message ? d.message : '',
-    greetings: d.sections.message ? d.greetings : {},
     meetingPoiId: d.sections.meeting ? d.meetingPoiId : '',
     meetingTime: d.sections.meeting ? d.meetingTime : '',
     phone: d.sections.contact ? d.phone : '',
@@ -161,7 +162,7 @@ export function CreateForm(p: Props) {
         method: 'POST',
         json: {
           displayName: eff.displayName, facultyId: eff.facultyId, templateId: eff.templateId, message: eff.message,
-          slug: eff.slug, greetings: eff.greetings, degree: eff.degree, oisp: oispOn,
+          slug: eff.slug, inviteLead: eff.inviteLead.trim() || null, inviteeName: eff.inviteeName.trim() || null, degree: eff.degree, oisp: oispOn,
           meetingPoiId: eff.meetingPoiId || null, meetingTime: eff.meetingTime || null,
           phone: eff.phone || null, ownerEmail: eff.ownerEmail || null,
           photos: p.photosEnabled && d.sections.photos ? d.uploads.map((u) => u.key) : [],
@@ -189,6 +190,9 @@ export function CreateForm(p: Props) {
   }
 
   const tplName = p.templates.find((t) => t.id === d.templateId)?.name;
+  // Câu mời không nằm trong danh sách chọn sẵn → đang tự viết.
+  const customLead = !p.inviteLeads.includes(d.inviteLead);
+  const invitationText = `${d.inviteLead.trim() || p.defaultInviteLead}: ${d.inviteeName.trim() || p.defaultInvitee}`;
   const isCover = !!p.templates.find((t) => t.id === d.templateId)?.cover;
   const seg = (
     <div className={s.seg} role="group" aria-label="Chế độ">
@@ -237,6 +241,27 @@ export function CreateForm(p: Props) {
           ) : null}
         </FormSection>
 
+        <FormSection id="sec-invite" title="Lời mời" icon="mail" hint={invitationText} open={open.invite} onOpenChange={openSection('invite')}>
+          <div className={s.row}>
+            <Field label="Câu mời" hint={customLead ? 'Tối đa 40 ký tự, ví dụ: Thân gửi' : 'Hoặc chọn Tự viết để gõ câu riêng.'}>
+              <Select value={customLead ? '__custom' : d.inviteLead} onChange={(e) => set('inviteLead', e.target.value === '__custom' ? '' : e.target.value)}>
+                {p.inviteLeads.map((l) => <option key={l} value={l}>{l}</option>)}
+                <option value="__custom">Tự viết…</option>
+              </Select>
+            </Field>
+            <Field label="Người được mời" optional hint={`Bỏ trống sẽ hiện “${p.defaultInvitee}”.`}>
+              <Input maxLength={60} value={d.inviteeName} placeholder="Ba Mẹ, Ông Bà, Cô Hoa…" onChange={(e) => set('inviteeName', e.target.value)} />
+            </Field>
+          </div>
+          {customLead ? (
+            <Field label="Câu mời của bạn">
+              <Input maxLength={40} autoFocus value={d.inviteLead} placeholder="Thân gửi" onChange={(e) => set('inviteLead', e.target.value)} />
+            </Field>
+          ) : null}
+          <p className={s.invitePreview} aria-live="polite">Trên thiệp: <strong>{invitationText}</strong></p>
+          <p className={s.defaultNote}>Muốn mỗi người một link mở ra đúng tên mình? Sau khi xuất bản, vào trang quản lý → <em>Gửi riêng từng người</em>.</p>
+        </FormSection>
+
         <FormSection id="sec-ceremony" title="Lễ và thời gian" icon="calendar" hint={shown && ceremonyAt ? `${formatDateVi(ceremonyAt)} · ${formatTimeVi(ceremonyAt)}` : undefined} open={open.ceremony} onOpenChange={openSection('ceremony')}>
           {shown && ceremonyAt ? (
             <dl className={s.ceremony}>
@@ -249,7 +274,7 @@ export function CreateForm(p: Props) {
         </FormSection>
 
         <FormSection
-          id="sec-message" title="Lời nhắn và lời chào" icon="mail" hint={d.sections.message ? 'Lời nhắn riêng của bạn' : 'Đang dùng lời mời mặc định của khoa'}
+          id="sec-message" title="Lời nhắn" icon="mail" hint={d.sections.message ? 'Lời nhắn riêng của bạn' : 'Đang dùng lời mời mặc định của khoa'}
           open={open.message} onOpenChange={openSection('message')} enabled={d.sections.message} onEnabledChange={(v) => setSection('message', v)} switchLabel="Tự viết"
         >
           {d.sections.message ? (
@@ -262,18 +287,6 @@ export function CreateForm(p: Props) {
                   <button type="button" key={sg} className={s.chipBtn} onClick={() => set('message', sg)}>{sg}</button>
                 ))}
               </div>
-              <details className={s.groups}>
-                <summary>
-                  <span>Lời chào riêng theo nhóm <small>Ba Mẹ, Ông Bà, bạn bè… mỗi nhóm một câu mở đầu</small></span>
-                </summary>
-                <div className={s.groupsBody}>
-                  {p.groups.map((g) => (
-                    <Field key={g.key} label={g.label}>
-                      <Input placeholder={g.greeting} value={d.greetings[g.key] ?? ''} onChange={(e) => set('greetings', { ...d.greetings, [g.key]: e.target.value })} />
-                    </Field>
-                  ))}
-                </div>
-              </details>
             </>
           ) : (
             <p className={s.defaultNote}>Đang dùng lời mời mặc định của khoa:<br /><strong>{shown?.invitation}</strong></p>
@@ -405,12 +418,7 @@ export function CreateForm(p: Props) {
 
       {view === 'preview' ? (
         <section className={s.previewPane} aria-label="Xem trước">
-          <div className={s.toSelect} role="group" aria-label="Xem với tư cách">
-            {p.groups.map((g) => (
-              <button type="button" key={g.key} aria-pressed={previewTo === g.key} onClick={() => setPreviewTo(g.key)}>{g.label}</button>
-            ))}
-          </div>
-          <div className={s.cardBox}><PhonePreview draft={eff} to={previewTo} frame={false} /></div>
+          <div className={s.cardBox}><PhonePreview draft={eff} frame={false} /></div>
         </section>
       ) : null}
 

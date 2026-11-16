@@ -5,7 +5,6 @@ export const GET = handle(async (req: Request, ctx: { params: Promise<{ slug: st
   const { slug } = await ctx.params;
   const url = new URL(req.url);
   const result = await getPublicCard(slug, {
-    to: url.searchParams.get('to'),
     modeOverride: url.searchParams.get('mode'),
   });
   if (result.status !== 'ok') throw notFound(`card_${result.status}`);

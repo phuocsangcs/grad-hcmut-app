@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import type { PublicCard } from '@/modules/card/card.service';
 import { countdown, resolveMode } from '@/modules/card/mode';
-import { resolveGreeting } from '@/modules/card/greeting';
+import { resolveInvitation } from '@/modules/card/invitation';
 import { resolveProgram, canBeOisp, type DegreeId, getMusic, getPoi, getTemplate, type Faculty, type Template } from '@/modules/content';
 
 import { InvitationCard, type TemplateLinks } from '@/templates';
@@ -20,7 +20,9 @@ export type PreviewDraft = {
   meetingPoiId: string;
   meetingTime: string;
   phone: string;
-  greetings: Record<string, string>;
+  /** Câu mời ("Thương mời"…) và người được mời ("Ba Mẹ"); trống → mặc định. */
+  inviteLead: string;
+  inviteeName: string;
   /** URL ảnh để xem trước (đã tải lên R2). */
   photos?: string[];
   beforeTime?: string;
@@ -36,7 +38,7 @@ export type PreviewDraft = {
 const LINKS: TemplateLinks = { card: '#', qr: '#', googleCalendar: '#', directions: '#', meetingPoi: '#', call: null, messenger: '#' };
 
 /** Dựng PublicCard giả từ nháp để render đúng template thật, không cần server. */
-export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string } = {}): PublicCard | null {
+export function draftToCard(d: PreviewDraft, opts: { mode?: string } = {}): PublicCard | null {
   const program = resolveProgram(d.facultyId, d.degree, d.oisp && canBeOisp(d.degree));
   const faculty: Faculty | undefined = program?.faculty;
   const template: Template | undefined = getTemplate(d.templateId);
@@ -44,7 +46,7 @@ export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string 
   const at = program!.at;
   const now = new Date();
   const poi = d.meetingPoiId ? getPoi(d.meetingPoiId) : undefined;
-  const to = opts.to ?? 'parents';
+  const invitation = resolveInvitation({ cardLead: d.inviteLead, cardInvitee: d.inviteeName });
   return {
     slug: d.slug.trim() || 'ten-cua-ban',
     displayName: d.displayName.trim() || 'Tên của bạn',
@@ -55,8 +57,8 @@ export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string 
     venue: program!.venue,
     template,
     message: d.message,
-    greeting: resolveGreeting({ groupKey: to, cardGreetings: d.greetings }),
-    groupKey: to,
+    inviteLead: invitation.lead,
+    inviteeName: invitation.name,
     recipientName: null,
     meeting: poi ? { poi, time: d.meetingTime || null, note: null } : null,
     phone: d.phone || null,
@@ -82,7 +84,6 @@ export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string 
 
 type Props = {
   draft: PreviewDraft;
-  to?: string;
   mode?: string;
   templateId?: string;
   scale?: number;
@@ -93,8 +94,8 @@ type Props = {
 };
 
 /** Thiệp thật dựng từ nháp; mặc định đặt trong khung điện thoại và thu nhỏ bằng transform. */
-export function PhonePreview({ draft, to, mode, templateId, scale = 1, className, interactive = true, frame = true }: Props) {
-  const card = useMemo(() => draftToCard({ ...draft, templateId: templateId ?? draft.templateId }, { to, mode }), [draft, to, mode, templateId]);
+export function PhonePreview({ draft, mode, templateId, scale = 1, className, interactive = true, frame = true }: Props) {
+  const card = useMemo(() => draftToCard({ ...draft, templateId: templateId ?? draft.templateId }, { mode }), [draft, mode, templateId]);
   if (!card) return null;
   const links = { ...LINKS, call: draft.phone ? `tel:${draft.phone}` : null };
   if (!frame) return <InvitationCard card={card} links={links} preview />;

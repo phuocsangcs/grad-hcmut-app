@@ -3,13 +3,13 @@ import { createCard, cardRepo } from '@/modules/card';
 import { getMyRsvp, listRsvps, removeRsvp, rsvpSummary, submitRsvp } from './rsvp.service';
 
 const mk = (slug: string) =>
-  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {}, slug });
+  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', slug });
 
 describe('rsvp.service', () => {
   it('upsert theo clientId: gửi 2 lần chỉ có 1 dòng, số liệu đúng', async () => {
     const { card } = await mk('rsvp-a');
-    await submitRsvp('rsvp-a', { clientId: 'client-00000001', guestName: 'Ba', headcount: 2, wish: 'Chúc mừng con', groupKey: 'parents' });
-    await submitRsvp('rsvp-a', { clientId: 'client-00000001', guestName: 'Ba Mẹ', headcount: 3, wish: 'Chúc mừng con!', groupKey: 'parents' });
+    await submitRsvp('rsvp-a', { clientId: 'client-00000001', guestName: 'Ba', headcount: 2, wish: 'Chúc mừng con' });
+    await submitRsvp('rsvp-a', { clientId: 'client-00000001', guestName: 'Ba Mẹ', headcount: 3, wish: 'Chúc mừng con!' });
     await submitRsvp('rsvp-a', { clientId: 'client-00000002', guestName: 'Bạn A', headcount: 1 });
 
     const list = await listRsvps(card.id);

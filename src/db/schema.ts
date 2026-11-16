@@ -28,7 +28,10 @@ export const cards = pgTable(
     venue: text('venue').notNull().default('Hội trường A5'),
     templateId: text('template_id').notNull(),
     message: text('message').notNull().default(''),
-    /** Override lời chào theo nhóm: { parents: "...", friends: "..." } */
+    /** Lời mời trên thiệp: "<inviteLead>: <inviteeName>", ví dụ "Thương mời: Ba Mẹ". Trống → mặc định trong greetings.json. */
+    inviteLead: text('invite_lead'),
+    inviteeName: text('invitee_name'),
+    /** @deprecated Lời chào theo nhóm (đã bỏ). Giữ cột cho dữ liệu cũ, không còn đọc/ghi. */
     greetings: jsonb('greetings').$type<Record<string, string>>().notNull().default({}),
     meetingPoiId: text('meeting_poi_id'),
     meetingTime: text('meeting_time'),
@@ -68,7 +71,9 @@ export const invites = pgTable(
       .references(() => cards.id, { onDelete: 'cascade' }),
     code: text('code').notNull(),
     recipientName: text('recipient_name').notNull(),
+    /** @deprecated Nhóm khách (đã bỏ). Giữ cột cho dữ liệu cũ. */
     groupKey: text('group_key'),
+    /** Câu mời riêng cho người này (vd. "Kính mời"); trống → câu mời của thiệp. */
     greeting: text('greeting'),
     templateId: text('template_id'),
     sortOrder: integer('sort_order').notNull().default(0),
@@ -92,6 +97,7 @@ export const rsvps = pgTable(
     guestName: text('guest_name').notNull(),
     headcount: smallint('headcount').notNull().default(1),
     wish: text('wish'),
+    /** @deprecated Nhóm khách (đã bỏ). Giữ cột cho dữ liệu cũ. */
     groupKey: text('group_key'),
     /** Chủ thiệp ẩn lời chúc này khỏi lưu bút công khai. */
     hidden: boolean('hidden').notNull().default(false),

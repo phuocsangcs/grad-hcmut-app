@@ -1,6 +1,6 @@
 import { countdown, resolveMode } from '@/modules/card/mode';
 import type { PublicCard } from '@/modules/card/card.service';
-import { getFaculty, getFacultyCeremony, getPoi, getTemplate, listFaculties, listTemplates } from '@/modules/content';
+import { getFaculty, getFacultyCeremony, getMusic, getPoi, getTemplate, listFaculties, listTemplates } from '@/modules/content';
 import type { TemplateLinks } from './types';
 
 /**
@@ -11,15 +11,16 @@ export type SampleOptions = {
   templateId?: string;
   facultyId?: string;
   displayName?: string;
-  to?: string;
-  recipientName?: string | null;
+  /** Câu mời và người được mời; bỏ trống → "Thương mời: Ba Mẹ". */
+  inviteLead?: string;
+  inviteeName?: string;
   photos?: string[];
   message?: string;
   mode?: string;
+  /** id bài trong music.json; bỏ trống = không nhạc. */
+  musicId?: string;
   now?: Date;
 };
-
-const GREETINGS: Record<string, string> = { parents: 'Gửi Ba Mẹ,', grandparents: 'Kính gửi Ông Bà,', friends: 'Ê bạn ơi,', family: 'Gửi cả nhà,' };
 
 export function sampleCard(o: SampleOptions = {}): PublicCard {
   const faculty = getFaculty(o.facultyId ?? 'cse') ?? listFaculties()[0];
@@ -27,7 +28,7 @@ export function sampleCard(o: SampleOptions = {}): PublicCard {
   const ceremony = getFacultyCeremony(faculty.id)!;
   const now = o.now ?? new Date();
   const poi = getPoi('bench-a5');
-  const to = o.to ?? 'parents';
+  const m = o.musicId ? getMusic(o.musicId) : undefined;
   return {
     slug: 'minh-anh-k22',
     displayName: o.displayName ?? 'Nguyễn Minh Anh',
@@ -38,15 +39,15 @@ export function sampleCard(o: SampleOptions = {}): PublicCard {
     venue: ceremony.venue,
     template,
     message: o.message ?? '',
-    greeting: GREETINGS[to] ?? 'Gửi bạn,',
-    groupKey: to,
-    recipientName: o.recipientName ?? null,
+    inviteLead: o.inviteLead || 'Thương mời',
+    inviteeName: o.inviteeName || 'Ba Mẹ',
+    recipientName: null,
     meeting: poi ? { poi, time: '16h00', note: null } : null,
     phone: '0901234567',
     photos: o.photos ?? [],
     beforeTime: null,
     afterTime: null,
-    music: null,
+    music: m ? { id: m.id, title: m.title, artist: m.artist, src: m.src } : null,
     rsvp: { open: true, reason: null, deadline: null, maxHeadcount: 20 },
     wishes: [],
     mode: resolveMode(ceremony.at, now, o.mode),

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createCard } from './card.service';
 
-const base = { displayName: 'Phước Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {} };
+const base = { displayName: 'Phước Sang', facultyId: 'cse', templateId: 'print', message: '' };
 
 describe('card.service: ảnh', () => {
   it('chưa cấu hình R2 mà gửi ảnh → 400 storage_disabled, không tạo thiệp', async () => {

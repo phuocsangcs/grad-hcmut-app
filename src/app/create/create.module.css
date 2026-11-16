@@ -222,39 +222,14 @@
   background: var(--surface-tint);
 }
 
-/* Lời chào riêng theo nhóm */
-.groups {
-  border: 1px solid var(--line);
-  border-radius: var(--radius-m);
-  padding: var(--space-3) var(--space-4);
-}
-.groups summary {
-  cursor: pointer;
-  font-weight: 700;
-  color: var(--bk-700);
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.groups summary::after {
-  content: '+';
-  font-size: 1.3em;
-  color: var(--bk-500);
-}
-.groups[open] summary::after {
-  content: '–';
-}
-.groups summary small {
-  display: block;
-  font-weight: 500;
+/* Lời mời: dòng xem trước "Thương mời: Ba Mẹ" */
+.invitePreview {
+  font-size: var(--text-sm);
   color: var(--fg-muted);
-  font-size: var(--text-xs);
 }
-.groupsBody {
-  display: grid;
-  gap: var(--space-4);
-  padding-top: var(--space-4);
+.invitePreview strong {
+  color: var(--bk-700);
+  font-weight: 700;
 }
 
 /* Đường dẫn */
@@ -320,30 +295,6 @@
   background: #fdecea;
   color: #b42318;
   font-weight: 600;
-}
-
-.toSelect {
-  display: inline-flex;
-  gap: 4px;
-  padding: 3px;
-  border-radius: var(--radius-s);
-  background: var(--surface-tint);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.toSelect button {
-  border: 0;
-  background: transparent;
-  border-radius: var(--radius-s);
-  padding: 4px 10px;
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--bk-600);
-  cursor: pointer;
-}
-.toSelect button[aria-pressed='true'] {
-  background: var(--surface);
-  color: var(--bk-700);
 }
 
 .defaultNote {

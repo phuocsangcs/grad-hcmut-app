@@ -63,6 +63,9 @@ export function DayOfView({ card, faculty, links, blocks, preview }: Props) {
           </section>
         ) : null}
 
+        {/* Giờ đón khách / gặp sau lễ: đúng ngày lễ càng cần thấy. */}
+        {blocks.times}
+
         <div className={s.primary}>
           <Button href={links.directions} target="_blank" size="lg" leading={<Icon name="pin" size={18} />}>
             Chỉ đường

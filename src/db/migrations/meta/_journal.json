@@ -29,6 +29,13 @@
       "when": 1794801584024,
       "tag": "0003_card_degree_oisp",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794847681334,
+      "tag": "0004_card_invitation",
+      "breakpoints": true
     }
   ]
 }

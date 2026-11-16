@@ -8,10 +8,9 @@ import s from './blocks.module.css';
 
 type Props = {
   slug: string;
-  groupKey: string | null;
   recipientName: string | null;
   inviteCode?: string;
-  /** Nhãn nút theo nhóm khách: "Ba Mẹ sẽ đến", "Ông Bà sẽ đến", "Mình sẽ đến". */
+  /** Nhãn nút: "Ba Mẹ sẽ đến", "Tôi sẽ đến". */
   cta: string;
   /** Số người tối đa mỗi lần báo, do chủ thiệp đặt. */
   maxHeadcount?: number;
@@ -52,7 +51,7 @@ export function Rsvp(p: Props) {
     try {
       await api(`/api/cards/${p.slug}/rsvp`, {
         method: 'POST',
-        json: { clientId: getClientId(), guestName: name, headcount, wish: wish || null, groupKey: p.groupKey, inviteCode: p.inviteCode ?? null },
+        json: { clientId: getClientId(), guestName: name, headcount, wish: wish || null, inviteCode: p.inviteCode ?? null },
       });
       setMine({ confirmed: true, guestName: name, headcount, wish });
     } catch (e) {

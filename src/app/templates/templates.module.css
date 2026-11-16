@@ -1,17 +1,76 @@
-.group {
-  display: grid;
-  gap: var(--space-2);
-  margin-bottom: var(--space-8);
+/* ---- Đầu trang: nhỏ, căn giữa ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-top: var(--space-4);
+  text-align: center;
 }
-.groupTitle {
-  font-size: var(--text-xl);
+.headTitle {
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  line-height: 1.15;
   font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--bk-700);
 }
-.groupSub {
-  color: var(--fg-muted);
+.headLead {
+  max-width: 52ch;
   font-size: var(--text-sm);
-  margin-bottom: var(--space-3);
+  line-height: 1.5;
+  color: var(--fg-muted);
+  text-wrap: balance;
+}
+
+/* ---- Nút lọc ---- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: var(--space-5) 0 var(--space-6);
+}
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line-card);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--bk-700);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
+}
+.filter:hover {
+  border-color: var(--bk-700);
+}
+.filter:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+.filter[aria-pressed='true'] {
+  background: var(--bk-700);
+  border-color: var(--bk-700);
+  color: #fff;
+}
+.filterCount {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--bk-100);
+  color: var(--bk-700);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+.filter[aria-pressed='true'] .filterCount {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
 }
 .grid {
   display: grid;
@@ -60,6 +119,29 @@
   font-size: var(--text-sm);
   color: var(--fg-muted);
   line-height: 1.5;
+}
+/* Link Xem demo: nằm trên nút phủ kín thẻ (.hit) nên bấm riêng được */
+.demoLink {
+  position: relative;
+  z-index: 2;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--bk-600);
+  text-decoration: none;
+}
+.demoLink:hover {
+  color: var(--bk-700);
+  text-decoration: underline;
+}
+.demoLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+  border-radius: 4px;
 }
 /* Điện thoại: 2 mẫu một hàng, bỏ mô tả (đã có trong hộp xác nhận) */
 @media (max-width: 640px) {

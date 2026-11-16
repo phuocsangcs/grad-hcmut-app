@@ -21,7 +21,7 @@ export type TemplateLinks = {
 };
 
 export type TemplateBlocks = {
-  /** "Thương mời: Ba Mẹ" — người được mời (tên riêng nếu có, không thì nhóm). */
+  /** "Thương mời: Ba Mẹ" — câu mời + người được mời (link mời riêng thắng thiệp). */
   invitee: ReactNode;
   /** Ngày · giờ · nơi (3 ô). */
   ceremony: ReactNode;
@@ -47,7 +47,8 @@ export type TemplateBlocks = {
 
 export type TemplateProps = {
   card: PublicCard;
-  /** Tên người được mời: tên riêng, hoặc nhóm (Ba Mẹ, Ông Bà…). */
+  /** Câu mời ("Thương mời", "Kính mời"…) và người được mời, khi template tự vẽ lời mời. */
+  inviteLead: string;
   inviteeName: string;
   /** Ảnh bìa (ảnh đầu tiên) của mẫu có ảnh bìa; null nếu chưa có hoặc mẫu không dùng ảnh bìa. */
   coverPhoto: string | null;

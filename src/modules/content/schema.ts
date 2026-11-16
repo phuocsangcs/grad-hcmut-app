@@ -122,17 +122,15 @@ export const musicFileSchema = z.object({
   items: z.array(musicSchema),
 });
 
-export const greetingGroupSchema = z.object({
-  key: idSchema,
-  label: z.string().min(1),
-  greeting: z.string().min(1),
-  message: z.string().min(1),
-});
+/** Lời mời trên thiệp: "<câu mời>: <người được mời>", ví dụ "Thương mời: Ba Mẹ". */
 export const greetingsFileSchema = z.object({
   updatedAt: dateKey,
-  defaultGreeting: z.string().min(1),
   defaultMessage: z.string().min(1),
-  groups: z.array(greetingGroupSchema).min(1),
+  /** Câu mời chọn sẵn trong form (người tạo vẫn tự gõ được câu khác). */
+  inviteLeads: z.array(z.string().min(1)).min(1),
+  defaultInviteLead: z.string().min(1),
+  /** Tên người được mời khi người tạo bỏ trống. */
+  defaultInvitee: z.string().min(1),
   messageSuggestions: z.array(z.string()),
 });
 
@@ -144,7 +142,6 @@ export type PoiType = z.infer<typeof poiTypeSchema>;
 export type Eatery = z.infer<typeof eaterySchema>;
 export type Budget = z.infer<typeof budgetSchema>;
 export type Template = z.infer<typeof templateSchema>;
-export type GreetingGroup = z.infer<typeof greetingGroupSchema>;
 export type FacultiesFile = z.infer<typeof facultiesFileSchema>;
 export type PoisFile = z.infer<typeof poisFileSchema>;
 export type EateriesFile = z.infer<typeof eateriesFileSchema>;

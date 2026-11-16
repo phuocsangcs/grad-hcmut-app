@@ -1,12 +1,10 @@
 import { z } from 'zod';
-import { greetingGroupKeys } from '@/modules/content';
-
-const groupKeys = greetingGroupKeys() as [string, ...string[]];
+import { INVITE_LEAD_MAX, INVITEE_MAX } from '@/modules/content';
 
 export const inviteRowSchema = z.object({
-  recipientName: z.string().trim().min(1).max(60),
-  groupKey: z.enum(groupKeys).nullable().optional(),
-  greeting: z.string().trim().max(200).nullable().optional(),
+  recipientName: z.string().trim().min(1).max(INVITEE_MAX),
+  /** Câu mời riêng ("Kính mời"…); trống → câu mời của thiệp. */
+  greeting: z.string().trim().max(INVITE_LEAD_MAX).nullable().optional(),
   templateId: z.string().nullable().optional(),
 });
 

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { requireCardByToken } from '@/modules/manage';
 import { listInvites } from '@/modules/invite';
-import { getGreetingGroup, listGreetingGroups, listTemplates } from '@/modules/content';
+import { listTemplates } from '@/modules/content';
 import { HttpError } from '@/lib/http';
 import { Button, Icon, Page, PageHeading, Surface } from '@/ui';
 import { BulkForm } from './bulk-form';
@@ -31,7 +31,6 @@ export default async function InvitesPage({ params }: Props) {
     throw e;
   }
   const list = await listInvites(card.slug, card.id);
-  const groups = listGreetingGroups();
   const templates = listTemplates();
   const confirmed = list.filter((i) => i.rsvp).length;
 
@@ -41,7 +40,7 @@ export default async function InvitesPage({ params }: Props) {
         <Link href={`/manage/${token}`} className={s.back}><Icon name="arrow" size={14} style={{ transform: 'rotate(180deg)' }} /> Trang quản lý</Link>
         <PageHeading
           title="Gửi riêng từng người"
-          lead={`Mỗi người một link, mở ra thấy đúng tên mình và lời chào riêng. Đã mời ${list.length}/${MAX} người, ${confirmed} đã xác nhận.`}
+          lead={`Mỗi người một link, mở ra thấy đúng tên mình và câu mời riêng. Đã mời ${list.length}/${MAX} người, ${confirmed} đã xác nhận.`}
         />
       </div>
 
@@ -62,7 +61,7 @@ export default async function InvitesPage({ params }: Props) {
             <div className={s.tableWrap}>
               <table className={s.table}>
                 <thead>
-                  <tr><th>Người nhận</th><th>Nhóm</th><th className={s.num}>Đã mở</th><th>Xác nhận</th><th><span className="sr-only">Thao tác</span></th></tr>
+                  <tr><th>Người nhận</th><th>Câu mời</th><th className={s.num}>Đã mở</th><th>Xác nhận</th><th><span className="sr-only">Thao tác</span></th></tr>
                 </thead>
                 <tbody>
                   {list.map((i) => (
@@ -71,7 +70,7 @@ export default async function InvitesPage({ params }: Props) {
                         <div className={s.name}>{i.recipientName}</div>
                         <div className={s.code}>/{card.slug}/{i.code}</div>
                       </td>
-                      <td>{i.groupKey ? getGreetingGroup(i.groupKey)?.label ?? i.groupKey : '—'}</td>
+                      <td>{i.greeting ?? <span className={s.no}>Như thiệp</span>}</td>
                       <td className={s.num}>{i.viewCount}</td>
                       <td>{i.rsvp ? <span className={s.yes}>✓ {i.rsvp.headcount} người</span> : <span className={s.no}>Chưa</span>}</td>
                       <td><InviteRowActions token={token} id={i.id} url={i.url} name={i.recipientName} /></td>
@@ -90,10 +89,9 @@ export default async function InvitesPage({ params }: Props) {
           </Surface>
           <Surface tone="tint" pad="sm">
             <div className={s.help}>
-              <p>Mỗi dòng: <code>Tên, Nhóm, Lời chào riêng, Mẫu</code>. Chỉ cần Tên, còn lại tuỳ chọn. Dán thẳng từ Excel (Tab) cũng được.</p>
-              <p>Nhóm: {groups.map((g) => <code key={g.key}>{g.key}</code>).reduce<React.ReactNode[]>((a, c, i) => (i ? [...a, ' ', c] : [c]), [])}</p>
+              <p>Mỗi dòng: <code>Tên, Câu mời, Mẫu</code>. Chỉ cần Tên, còn lại tuỳ chọn. Dán thẳng từ Excel (Tab) cũng được.</p>
+              <p>Câu mời ví dụ: <code>Kính mời</code> <code>Thân mời</code>. Bỏ trống thì dùng câu mời của thiệp.</p>
               <p>Mẫu: {templates.map((t) => <code key={t.id}>{t.id}</code>).reduce<React.ReactNode[]>((a, c, i) => (i ? [...a, ' ', c] : [c]), [])}</p>
-              <p>Lời chào có dấu phẩy thì phân cách bằng Tab hoặc dấu chấm phẩy.</p>
             </div>
           </Surface>
         </aside>

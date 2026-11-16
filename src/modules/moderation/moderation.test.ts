@@ -7,7 +7,7 @@ import { verifyTurnstile } from './turnstile';
 import { AUTO_LOCK_THRESHOLD, cleanupExpiredCards, hashIp, listReports, submitReport } from './report.service';
 
 const mk = (slug: string) =>
-  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {}, slug });
+  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', slug });
 
 describe('rate limit', () => {
   it('đếm theo cửa sổ và reset', () => {

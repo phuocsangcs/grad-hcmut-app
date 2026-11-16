@@ -5,7 +5,7 @@ import { deleteByToken, getOverview, requireCardByToken, sendRecoveryEmail, upda
 import { hashToken } from './token';
 
 const mk = (slug: string, ownerEmail?: string) =>
-  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', greetings: {}, slug, ownerEmail });
+  createCard({ displayName: 'Sang', facultyId: 'cse', templateId: 'print', message: '', slug, ownerEmail });
 
 describe('manage.service', () => {
   const sent: EmailMessage[] = [];
@@ -26,8 +26,8 @@ describe('manage.service', () => {
 
   it('sửa và xoá qua token', async () => {
     const { manageToken } = await mk('mng-b');
-    const u = await updateByToken(manageToken, { templateId: 'airy', message: 'Mới' });
-    expect(u.templateId).toBe('airy');
+    const u = await updateByToken(manageToken, { templateId: 'royal', message: 'Mới' });
+    expect(u.templateId).toBe('royal');
     expect(u.message).toBe('Mới');
     await deleteByToken(manageToken);
     expect(await getPublicCard('mng-b')).toEqual({ status: 'not_found' });

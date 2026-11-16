@@ -30,7 +30,6 @@ export async function bulkCreateInvites(cardId: string, input: BulkCreateInput):
   } else {
     rows = input.rows.map((r) => ({
       recipientName: r.recipientName,
-      groupKey: r.groupKey ?? null,
       greeting: r.greeting ?? null,
       templateId: r.templateId ?? null,
     }));
@@ -52,7 +51,6 @@ export async function bulkCreateInvites(cardId: string, input: BulkCreateInput):
       cardId,
       code: codes[i],
       recipientName: r.recipientName,
-      groupKey: r.groupKey,
       greeting: r.greeting,
       templateId: r.templateId,
       sortOrder: startOrder + i,
@@ -86,7 +84,6 @@ export async function updateInvite(cardId: string, id: string, patch: UpdateInvi
   if (patch.templateId && !getTemplate(patch.templateId)) throw badRequest('template_not_found');
   const row = await inviteRepo.update(cardId, id, {
     ...(patch.recipientName !== undefined && { recipientName: patch.recipientName }),
-    ...(patch.groupKey !== undefined && { groupKey: patch.groupKey }),
     ...(patch.greeting !== undefined && { greeting: patch.greeting || null }),
     ...(patch.templateId !== undefined && { templateId: patch.templateId || null }),
   });
@@ -103,15 +100,15 @@ export async function removeInvite(cardId: string, id: string): Promise<void> {
 export async function exportInvitesCsv(cardSlug: string, cardId: string): Promise<string> {
   const list = await listInvites(cardSlug, cardId);
   const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const header = ['Tên', 'Nhóm', 'Link', 'Đã mở', 'Đã xác nhận', 'Số người', 'Lời chúc'];
+  const header = ['Tên', 'Câu mời', 'Link', 'Đã mở', 'Đã xác nhận', 'Số người', 'Lời chúc'];
   const lines = list.map((i) =>
-    [i.recipientName, i.groupKey ?? '', i.url, i.viewCount > 0 ? 'x' : '', i.rsvp ? 'x' : '', i.rsvp?.headcount ?? '', i.rsvp?.wish ?? ''].map(esc).join(','),
+    [i.recipientName, i.greeting ?? '', i.url, i.viewCount > 0 ? 'x' : '', i.rsvp ? 'x' : '', i.rsvp?.headcount ?? '', i.rsvp?.wish ?? ''].map(esc).join(','),
   );
   return '﻿' + [header.map(esc).join(','), ...lines].join('\r\n');
 }
 
 /** Thiệp cá nhân hoá: /[slug]/[code]. Code sai → not_found (thiệp chung vẫn mở được qua /[slug]). */
-export async function getPublicCardByInvite(slug: string, code: string, opts: Omit<PublicViewOptions, 'invite' | 'to'> = {}): Promise<PublicCardResult> {
+export async function getPublicCardByInvite(slug: string, code: string, opts: Omit<PublicViewOptions, 'invite'> = {}): Promise<PublicCardResult> {
   if (!isInviteCode(code)) return { status: 'not_found' };
   const card = await cardRepo.findBySlug(normalizeSlug(slug));
   if (!card) return { status: 'not_found' };
@@ -120,6 +117,6 @@ export async function getPublicCardByInvite(slug: string, code: string, opts: Om
   if (!opts.skipView) await inviteRepo.incrementView(inv.id).catch((e) => console.error('incrementView(invite) lỗi', e));
   return getPublicCard(slug, {
     ...opts,
-    invite: { recipientName: inv.recipientName, groupKey: inv.groupKey, greeting: inv.greeting, templateId: inv.templateId },
+    invite: { recipientName: inv.recipientName, greeting: inv.greeting, templateId: inv.templateId },
   });
 }
