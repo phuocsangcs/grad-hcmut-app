@@ -67,7 +67,7 @@ export default function HomePage() {
           </div>
           <div className={`container ${s.heroInner}`}>
             <div className={`${s.heroText} rise`}>
-              <p className={s.heroKicker}>Lễ tốt nghiệp Bách Khoa · 26–29.11.2026</p>
+              <p className={s.heroKicker}>Lễ tốt nghiệp Bách Khoa · <span style={{ whiteSpace: 'nowrap' }}>26–29.11.2026</span></p>
               <h1 className={s.title}>
                 Mời cả nhà đến ngày con thành <em>Tân Cử nhân</em>
               </h1>

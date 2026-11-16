@@ -21,6 +21,18 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+/* Tránh rớt một chữ lẻ xuống dòng cuối: tiêu đề cân đều, đoạn văn tránh dòng cụt */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
 h1,
 h2,
 h3,

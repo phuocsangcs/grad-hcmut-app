@@ -91,6 +91,15 @@
   background: var(--bk-100);
 }
 
+@media (max-width: 400px) {
+  .bar {
+    padding-left: var(--space-3);
+  }
+  .actions {
+    gap: 0;
+  }
+}
+
 @media (min-width: 900px) {
   .links {
     display: flex;

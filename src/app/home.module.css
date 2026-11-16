@@ -48,8 +48,14 @@
 .heroKicker {
   font-family: var(--font-display);
   font-style: italic;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   color: var(--bk-600);
+}
+@media (max-width: 520px) {
+  .heroKicker {
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
 }
 .title {
   font-size: clamp(1.9rem, 3.6vw, 3rem);
@@ -65,6 +71,11 @@
   font-size: var(--text-lg);
   color: var(--fg-muted);
   margin-top: var(--space-2);
+}
+@media (max-width: 520px) {
+  .quote {
+    font-size: 0.9rem;
+  }
 }
 .meta {
   font-size: var(--text-sm);
@@ -137,6 +148,7 @@
 }
 .title em,
 .h2 em {
+  white-space: nowrap; /* không tách "Tân / Cử nhân" */
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 500;
