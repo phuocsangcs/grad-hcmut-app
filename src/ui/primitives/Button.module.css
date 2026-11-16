@@ -30,17 +30,17 @@
 
 /* ---- Kích cỡ ---- */
 .sm {
-  min-height: 36px;
+  min-height: 32px;
   padding: 0 var(--space-4);
   font-size: var(--text-xs);
 }
 .md {
-  min-height: 48px;
+  min-height: 40px;
   font-size: var(--text-sm);
 }
 .lg {
-  min-height: 58px;
-  padding: 0 var(--space-8);
+  min-height: 48px;
+  padding: 0 var(--space-6);
   font-size: var(--text-md);
   font-weight: 700;
 }

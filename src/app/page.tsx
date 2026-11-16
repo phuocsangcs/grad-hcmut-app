@@ -21,8 +21,8 @@ export const revalidate = 3600;
  *  - max:   quãng trôi tối đa (px).
  */
 const HERO = [
-  { templateId: 'riso', facultyId: 'me', displayName: 'Lê Quốc Bảo', scale: 0.56, speed: 0.1, max: 60 },
-  { templateId: 'print', facultyId: 'cse', displayName: 'Nguyễn Minh Anh', scale: 0.62, speed: 0.35, max: 150 },
+  { templateId: 'riso', facultyId: 'me', displayName: 'Lê Quốc Bảo', scale: 0.4, speed: 0.1, max: 50 },
+  { templateId: 'print', facultyId: 'cse', displayName: 'Nguyễn Minh Anh', scale: 0.46, speed: 0.35, max: 120 },
 ];
 
 /** Danh sách "mỗi thiệp là một trang riêng". Thêm/bớt dòng ở đây. */

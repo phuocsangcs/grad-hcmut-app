@@ -15,6 +15,7 @@
   --bk-200: #cfe7fa;
   --bk-100: #e8f3fc;
   --bk-50: #f3f6fa;
+  --page: #dde5f1; /* nền riêng cho trang điền form: đậm hơn bề mặt trắng để khối nổi lên (1.27:1) */
 
   /* ---- Điểm nhấn (liều lượng nhỏ) ---- */
   --leaf: #1f9d68;
@@ -34,6 +35,7 @@
   --muted: #3d5a80;
   --line: rgba(3, 43, 145, 0.12);
   --line-strong: rgba(3, 43, 145, 0.28);
+  --line-card: rgba(3, 43, 145, 0.36); /* viền khối/thẻ trên nền trang, ~2:1 so với trắng */
   --white: #ffffff;
 
   /* ---- Vai trò ---- */
@@ -52,14 +54,14 @@
   --font-display: 'Playfair Display Variable', 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Menlo, monospace;
   --font-script: 'Dancing Script Variable', 'Dancing Script', cursive;
-  --text-xs: 0.8125rem; /* 13 */
-  --text-sm: 0.9375rem; /* 15 */
-  --text-md: 1.0625rem; /* 17 – thân bài, đủ to cho người lớn tuổi */
-  --text-lg: 1.25rem;
-  --text-xl: 1.625rem;
-  --text-2xl: 2.125rem;
-  --text-3xl: clamp(2.5rem, 5vw, 4.5rem);
-  --leading: 1.6;
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.875rem; /* 14 */
+  --text-md: 1rem; /* 16 – thân bài */
+  --text-lg: 1.125rem; /* 18 */
+  --text-xl: 1.375rem; /* 22 */
+  --text-2xl: 1.75rem; /* 28 */
+  --text-3xl: clamp(2rem, 4vw, 3.4rem);
+  --leading: 1.55;
 
   /* ---- Khoảng cách & bo góc ---- */
   --space-1: 4px;
@@ -69,9 +71,9 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
+  --space-10: 32px;
+  --space-12: 40px;
+  --space-16: 48px;
   --radius-xs: 4px;
   --radius-s: 6px;
   --radius-m: 6px;

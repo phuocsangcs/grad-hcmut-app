@@ -34,8 +34,9 @@
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-8);
-  min-height: 640px;
-  padding-block: var(--space-12);
+  /* Vừa một màn hình (trừ header). Đổi 520px để hero cao/thấp hơn. */
+  min-height: min(520px, calc(100svh - 96px));
+  padding-block: var(--space-8);
 }
 .heroText {
   display: flex;
@@ -51,8 +52,8 @@
   color: var(--bk-600);
 }
 .title {
-  font-size: clamp(2.4rem, 5vw, 4.2rem);
-  line-height: 1.06;
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.08;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--bk-900);
@@ -75,7 +76,7 @@
 /* Chiều cao vùng chứa hai điện thoại: tăng/giảm cùng lúc đổi scale ở page.tsx (HERO). */
 .heroPhones {
   position: relative;
-  height: 520px;
+  height: 400px;
 }
 /* Lớp parallax: đặt vị trí + trôi theo cuộn (biến --py do ParallaxLayer ghi). */
 .phoneBack,
@@ -86,10 +87,11 @@
   will-change: translate;
 }
 .phoneBack {
-  left: 6%;
+  /* Hai điện thoại sát nhau quanh tâm; đổi 2 số này để xa/gần (âm = lệch trái). */
+  left: calc(50% - 160px);
 }
 .phoneFront {
-  right: 4%;
+  left: calc(50% - 24px);
   z-index: 1;
 }
 /* Góc nghiêng của từng điện thoại */
@@ -111,7 +113,7 @@
    * Khi đổi scale: width ≈ 100% / scale; margin-bottom = chiều cao × (scale − 1).
    */
   .heroPhones {
-    height: 460px;
+    height: 380px;
     width: 143%;
     justify-self: center;
     overflow: hidden;
@@ -119,18 +121,12 @@
     scale: 0.7;
     transform-origin: top center;
     margin-top: var(--space-4);
-    margin-bottom: -138px;
+    margin-bottom: -114px;
   }
   .phoneBack,
   .phoneFront {
     top: 8%;
     translate: 0 calc(var(--py, 0px) * 0.25);
-  }
-  .phoneBack {
-    left: 11%;
-  }
-  .phoneFront {
-    right: 9%;
   }
   .phoneBack .phoneTilt {
     transform: rotate(-9deg);
@@ -239,8 +235,8 @@
   margin-bottom: var(--space-8);
 }
 .h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.08;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  line-height: 1.1;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--bk-700);
@@ -287,8 +283,8 @@
   gap: var(--space-4);
 }
 .bandTitle {
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.08;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  line-height: 1.1;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
@@ -466,7 +462,22 @@
 }
 @media (max-width: 520px) {
   .guides {
-    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .guide {
+    padding: var(--space-3);
+    gap: 4px;
+  }
+  .guideIcon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0;
+  }
+  .guide h3 {
+    font-size: var(--text-md);
+  }
+  .guide p {
+    font-size: var(--text-xs);
   }
 }
 .guide {
@@ -532,7 +543,7 @@
   gap: var(--space-3);
 }
 .finalTitle {
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.2;

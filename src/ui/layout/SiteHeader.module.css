@@ -1,5 +1,5 @@
 .wrap {
-  padding: var(--space-4) 0;
+  padding: var(--space-3) 0;
 }
 .overlay {
   position: absolute;
@@ -29,7 +29,7 @@
   gap: var(--space-1);
 }
 .link {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: var(--radius-pill);
   font-size: var(--text-sm);
   font-weight: 500;
