@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api, ApiError } from '@/components/api';
-import type { Faculty, GreetingGroup, Poi, Template } from '@/modules/content';
+import { canBeOisp, DEGREES, resolveProgram, type DegreeId, type Faculty, type GreetingGroup, type Poi, type Template } from '@/modules/content';
 import { vi } from '@/lib/i18n';
-import { formatDateVi, formatTimeVi, fromVnLocalInput, vnDate } from '@/lib/time';
+import { formatDateVi, formatTimeVi, fromVnLocalInput } from '@/lib/time';
 import { Button, Field, FormSection, Icon, Input, Select, Textarea } from '@/ui';
 import { PhotoUploader, type UploadedPhoto } from './photo-uploader';
 import { PhonePreview, type PreviewDraft } from './preview';
@@ -68,18 +68,18 @@ function slugFromName(name: string): string {
 export function CreateForm(p: Props) {
   const router = useRouter();
   const [d, setD] = useState<Draft>({
-    displayName: '', facultyId: p.faculties[0]?.id ?? '', templateId: p.initialTemplateId ?? p.defaultTemplateId, message: '',
+    displayName: '', facultyId: p.faculties[0]?.id ?? '', degree: 'bachelor', oisp: false, templateId: p.initialTemplateId ?? p.defaultTemplateId, message: '',
     slug: '', meetingPoiId: '', meetingTime: '', phone: '', ownerEmail: '', greetings: {},
     sections: { message: false, meeting: false, contact: false, photos: false, times: false, music: false, rsvp: true },
     uploads: [], beforeTime: '', afterTime: '', musicId: '', rsvpDeadline: '', rsvpMaxHeadcount: 20, guestbookEnabled: false,
   });
-  const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, ceremony: false, message: false, photos: false, times: false, meeting: false, music: false, contact: false, rsvp: false, link: true });
+  const [open, setOpen] = useState<Record<SectionKey, boolean>>({ basic: true, ceremony: true, message: true, photos: true, times: true, meeting: true, music: true, contact: true, rsvp: true, link: true });
   const [slugResult, setSlugResult] = useState<{ q: string; r: SlugState } | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewTo, setPreviewTo] = useState(p.groups[0]?.key ?? 'parents');
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [view, setView] = useState<'edit' | 'preview'>('edit');
 
   // khôi phục nháp sau hydrate (trì hoãn một frame để không setState đồng bộ trong effect)
   useEffect(() => {
@@ -89,6 +89,7 @@ export function CreateForm(p: Props) {
         if (raw) {
           const saved = JSON.parse(raw) as Partial<Draft>;
           // Gộp công tắc để nháp cũ (thiếu khoá mới) vẫn giữ giá trị mặc định của khoá mới.
+          if (saved.facultyId && !p.faculties.some((f) => f.id === saved.facultyId)) delete saved.facultyId;
           setD((cur) => ({ ...cur, ...saved, sections: { ...cur.sections, ...saved.sections }, ...(p.initialTemplateId ? { templateId: p.initialTemplateId } : {}) }));
           if (saved.slug) setSlugTouched(true);
         }
@@ -102,7 +103,10 @@ export function CreateForm(p: Props) {
   }, [d]);
 
   const faculty = useMemo(() => p.faculties.find((f) => f.id === d.facultyId), [p.faculties, d.facultyId]);
-  const ceremonyAt = useMemo(() => (faculty ? vnDate(faculty.date, faculty.time) : null), [faculty]);
+  const oispOn = d.oisp && canBeOisp(d.degree);
+  const program = useMemo(() => resolveProgram(d.facultyId, d.degree, oispOn), [d.facultyId, d.degree, oispOn]);
+  const ceremonyAt = program?.at ?? null;
+  const shown = program?.faculty;
   const set = <K extends keyof Draft>(k: K, v: Draft[K]) => setD((cur) => ({ ...cur, [k]: v }));
 
   // đổi tên → gợi ý đường dẫn, nếu người dùng chưa tự gõ
@@ -156,7 +160,7 @@ export function CreateForm(p: Props) {
         method: 'POST',
         json: {
           displayName: eff.displayName, facultyId: eff.facultyId, templateId: eff.templateId, message: eff.message,
-          slug: eff.slug, greetings: eff.greetings,
+          slug: eff.slug, greetings: eff.greetings, degree: eff.degree, oisp: oispOn,
           meetingPoiId: eff.meetingPoiId || null, meetingTime: eff.meetingTime || null,
           phone: eff.phone || null, ownerEmail: eff.ownerEmail || null,
           photos: p.photosEnabled && d.sections.photos ? d.uploads.map((u) => u.key) : [],
@@ -178,33 +182,66 @@ export function CreateForm(p: Props) {
       };
       setError(map[code] ?? vi.errors.server);
       if (code === 'photo_missing') set('uploads', []);
+      setView('edit');
       if (code.startsWith('slug')) setOpen((cur) => ({ ...cur, link: true }));
     } finally { setBusy(false); }
   }
 
-  const previewProps = { draft: eff, to: previewTo };
+  const tplName = p.templates.find((t) => t.id === d.templateId)?.name;
+  const seg = (
+    <div className={s.seg} role="group" aria-label="Chế độ">
+      <button type="button" aria-pressed={view === 'edit'} onClick={() => setView('edit')}><Icon name="edit" size={14} />Chỉnh sửa</button>
+      <button type="button" aria-pressed={view === 'preview'} onClick={() => setView('preview')}><Icon name="eye" size={14} />Xem trước</button>
+    </div>
+  );
 
   return (
     <div className={s.layout}>
-      <form onSubmit={submit} className={s.form} noValidate>
+      <div className={s.toolbar}>
+        <Link href="/templates" className={s.back} aria-label="Quay lại chọn mẫu"><Icon name="arrow" size={18} /></Link>
+        <Link href="/templates" className={s.tplChip} title="Đổi mẫu">
+          <span className={s.tplLabel}>Đổi mẫu</span>
+          <strong>{tplName}</strong>
+          <Icon name="chevron" size={14} />
+        </Link>
+        <div className={s.segTop}>{seg}</div>
+        <Button className={s.publish} type="submit" form="create-form" size="sm" disabled={busy || !canSubmit} title={canSubmit ? undefined : 'Cần tên hiển thị và đường dẫn'}>
+          {busy ? 'Đang xuất bản…' : 'Xuất bản'}
+        </Button>
+      </div>
+
+      <form id="create-form" onSubmit={submit} className={s.form} noValidate hidden={view === 'preview'}>
         <FormSection id="sec-basic" title="Thông tin cơ bản" icon="heart" hint="Tên và khoa" open={open.basic} onOpenChange={openSection('basic')}>
           <Field label="Tên hiển thị" hint="Tên đầy đủ hoặc tên thân mật, tối đa 60 ký tự.">
             <Input required maxLength={60} autoFocus value={d.displayName} placeholder="Nguyễn Minh Anh" onChange={(e) => setName(e.target.value)} />
           </Field>
-          <Field label="Khoa">
-            <Select value={d.facultyId} onChange={(e) => set('facultyId', e.target.value)}>
-              {p.faculties.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-            </Select>
-          </Field>
+          <div className={s.row}>
+            <Field label="Khoa" hint="Quyết định màu và hoạ tiết thiệp.">
+              <Select value={d.facultyId} onChange={(e) => set('facultyId', e.target.value)}>
+                {p.faculties.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
+              </Select>
+            </Field>
+            <Field label="Trình độ" hint="Thạc sĩ, Tiến sĩ dự lễ Sau đại học chung.">
+              <Select value={d.degree} onChange={(e) => set('degree', e.target.value as DegreeId)}>
+                {DEGREES.map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+              </Select>
+            </Field>
+          </div>
+          {canBeOisp(d.degree) ? (
+            <label className={s.check}>
+              <input type="checkbox" checked={d.oisp} onChange={(e) => set('oisp', e.target.checked)} />
+              <span>Chương trình OISP (Đào tạo Quốc tế). Dự lễ OISP chung cho mọi khoa, vào ngày riêng.</span>
+            </label>
+          ) : null}
         </FormSection>
 
-        <FormSection id="sec-ceremony" title="Lễ và thời gian" icon="calendar" hint={faculty && ceremonyAt ? `${formatDateVi(ceremonyAt)} · ${formatTimeVi(ceremonyAt)}` : undefined} open={open.ceremony} onOpenChange={openSection('ceremony')}>
-          {faculty && ceremonyAt ? (
+        <FormSection id="sec-ceremony" title="Lễ và thời gian" icon="calendar" hint={shown && ceremonyAt ? `${formatDateVi(ceremonyAt)} · ${formatTimeVi(ceremonyAt)}` : undefined} open={open.ceremony} onOpenChange={openSection('ceremony')}>
+          {shown && ceremonyAt ? (
             <dl className={s.ceremony}>
               <div><dt>Ngày lễ</dt><dd>{formatDateVi(ceremonyAt)}</dd></div>
               <div><dt>Giờ</dt><dd>{formatTimeVi(ceremonyAt)}</dd></div>
-              <div><dt>Nơi</dt><dd>{faculty.venue ?? 'Hội trường A5'}</dd></div>
-              <p className={s.ceremonyNote}>Tự điền theo lịch chính thức của trường, không sửa được. {faculty.degreeTitle} · {faculty.tagline}</p>
+              <div><dt>Nơi</dt><dd>{program?.venue}</dd></div>
+              <p className={s.ceremonyNote}>{program?.shared === 'graduate' ? 'Lễ Sau đại học chung cho mọi khoa. ' : program?.shared === 'oisp' ? 'Lễ OISP chung cho mọi khoa. ' : ''}Tự điền theo lịch chính thức của trường, không sửa được. {shown.degreeTitle} · {shown.tagline}</p>
             </dl>
           ) : null}
         </FormSection>
@@ -216,7 +253,7 @@ export function CreateForm(p: Props) {
           {d.sections.message ? (
             <>
               <Field label="Lời nhắn chung" hint={`${d.message.length}/500`}>
-                <Textarea maxLength={500} rows={3} value={d.message} placeholder={faculty?.invitation} onChange={(e) => set('message', e.target.value)} />
+                <Textarea maxLength={500} rows={3} value={d.message} placeholder={shown?.invitation} onChange={(e) => set('message', e.target.value)} />
               </Field>
               <div className={s.chips} aria-label="Gợi ý lời nhắn">
                 {p.suggestions.map((sg) => (
@@ -237,13 +274,13 @@ export function CreateForm(p: Props) {
               </details>
             </>
           ) : (
-            <p className={s.defaultNote}>Đang dùng lời mời mặc định của khoa:<br /><strong>{faculty?.invitation}</strong></p>
+            <p className={s.defaultNote}>Đang dùng lời mời mặc định của khoa:<br /><strong>{shown?.invitation}</strong></p>
           )}
         </FormSection>
 
         {p.photosEnabled ? (
           <FormSection
-            id="sec-photos" title="Ảnh" icon="camera" hint={d.sections.photos ? `${d.uploads.length} ảnh` : 'Không hiện trên thiệp'}
+            id="sec-photos" offNote="Phần này hiển thị album ảnh trên thiệp. Bật công tắc ở trên nếu bạn muốn hiện phần này trên thiệp!" title="Ảnh" icon="camera" hint={d.sections.photos ? `${d.uploads.length} ảnh` : 'Không hiện trên thiệp'}
             open={open.photos} onOpenChange={openSection('photos')} enabled={d.sections.photos} onEnabledChange={(v) => setSection('photos', v)} switchLabel="Hiện"
           >
             <PhotoUploader value={d.uploads} onChange={(next) => set('uploads', next)} />
@@ -251,7 +288,7 @@ export function CreateForm(p: Props) {
         ) : null}
 
         <FormSection
-          id="sec-times" title="Giờ trước lễ và sau lễ" icon="clock" hint={d.sections.times ? 'Hiện trên thiệp' : 'Không bắt buộc'}
+          id="sec-times" offNote="Phần này hiển thị giờ đón khách trước lễ và giờ gặp sau lễ trên thiệp. Bật công tắc ở trên nếu bạn muốn hiện phần này trên thiệp!" title="Giờ trước lễ và sau lễ" icon="clock" hint={d.sections.times ? 'Hiện trên thiệp' : 'Không bắt buộc'}
           open={open.times} onOpenChange={openSection('times')} enabled={d.sections.times} onEnabledChange={(v) => setSection('times', v)} switchLabel="Hiện"
         >
           <div className={s.row}>
@@ -265,7 +302,7 @@ export function CreateForm(p: Props) {
         </FormSection>
 
         <FormSection
-          id="sec-meeting" title="Điểm hẹn sau lễ" icon="pin" hint={d.sections.meeting ? 'Nơi gặp nhau để chụp ảnh' : 'Không hiện trên thiệp'}
+          id="sec-meeting" offNote="Phần này hiển thị điểm hẹn chụp ảnh sau lễ kèm chỉ đường trên thiệp. Bật công tắc ở trên nếu bạn muốn hiện phần này trên thiệp!" title="Điểm hẹn sau lễ" icon="pin" hint={d.sections.meeting ? 'Nơi gặp nhau để chụp ảnh' : 'Không hiện trên thiệp'}
           open={open.meeting} onOpenChange={openSection('meeting')} enabled={d.sections.meeting} onEnabledChange={(v) => setSection('meeting', v)} switchLabel="Hiện"
         >
           <div className={s.row}>
@@ -283,7 +320,7 @@ export function CreateForm(p: Props) {
 
         {p.music && p.music.length > 0 ? (
           <FormSection
-            id="sec-music" title="Nhạc nền" icon="sparkle" hint={d.sections.music ? p.music.find((m) => m.id === d.musicId)?.title ?? 'Chọn một bài' : 'Không dùng nhạc'}
+            id="sec-music" offNote="Phần này phát nhạc nền khi khách mở thiệp. Bật công tắc ở trên nếu bạn muốn dùng nhạc nền!" title="Nhạc nền" icon="sparkle" hint={d.sections.music ? p.music.find((m) => m.id === d.musicId)?.title ?? 'Chọn một bài' : 'Không dùng nhạc'}
             open={open.music} onOpenChange={openSection('music')} enabled={d.sections.music} onEnabledChange={(v) => setSection('music', v)} switchLabel="Bật"
           >
             <Field label="Bài nhạc" hint="Khách bấm vào thiệp thì nhạc bắt đầu phát, tắt được bất cứ lúc nào.">
@@ -296,7 +333,7 @@ export function CreateForm(p: Props) {
         ) : null}
 
         <FormSection
-          id="sec-contact" title="Liên hệ" icon="phone" hint={d.sections.contact ? 'Hiện nút Gọi trên thiệp' : 'Không hiện trên thiệp'}
+          id="sec-contact" offNote="Phần này hiển thị nút Gọi trên thiệp. Bật công tắc ở trên nếu bạn muốn hiện phần này trên thiệp!" title="Liên hệ" icon="phone" hint={d.sections.contact ? 'Hiện nút Gọi trên thiệp' : 'Không hiện trên thiệp'}
           open={open.contact} onOpenChange={openSection('contact')} enabled={d.sections.contact} onEnabledChange={(v) => setSection('contact', v)} switchLabel="Hiện"
         >
           <Field label="Số điện thoại" hint="Hiện nút Gọi trên thiệp cho người lớn tuổi.">
@@ -305,7 +342,7 @@ export function CreateForm(p: Props) {
         </FormSection>
 
         <FormSection
-          id="sec-rsvp" title="Xác nhận tham dự và lưu bút" icon="users" hint={d.sections.rsvp ? 'Đang nhận xác nhận' : 'Đã tắt'}
+          id="sec-rsvp" offNote="Phần này cho khách xác nhận tham dự và gửi lời chúc. Bật công tắc ở trên nếu bạn muốn nhận xác nhận!" title="Xác nhận tham dự và lưu bút" icon="users" hint={d.sections.rsvp ? 'Đang nhận xác nhận' : 'Đã tắt'}
           open={open.rsvp} onOpenChange={openSection('rsvp')} enabled={d.sections.rsvp} onEnabledChange={(v) => setSection('rsvp', v)} switchLabel="Nhận"
         >
           <div className={s.row}>
@@ -361,32 +398,20 @@ export function CreateForm(p: Props) {
         </FormSection>
 
         {error && <p role="alert" className={s.error}>{error}</p>}
-
-        <div className={s.nav}>
-          <Button type="submit" size="lg" disabled={busy || !canSubmit} trailing={<Icon name="check" size={16} />}>{busy ? 'Đang tạo…' : 'Tạo thiệp'}</Button>
-        </div>
       </form>
 
-      <aside className={s.aside} aria-label="Xem trước">
-        <div className={s.asideBar}>
-          <span>Mẫu <strong>{p.templates.find((t) => t.id === d.templateId)?.name}</strong> · <Link href="/templates" className={s.changeTpl}>Đổi mẫu</Link></span>
-          <span className={s.toSelect} role="group" aria-label="Xem với tư cách">
+      {view === 'preview' ? (
+        <section className={s.previewPane} aria-label="Xem trước">
+          <div className={s.toSelect} role="group" aria-label="Xem với tư cách">
             {p.groups.map((g) => (
               <button type="button" key={g.key} aria-pressed={previewTo === g.key} onClick={() => setPreviewTo(g.key)}>{g.label}</button>
             ))}
-          </span>
-        </div>
-        <PhonePreview {...previewProps} scale={0.92} />
-      </aside>
+          </div>
+          <div className={s.cardBox}><PhonePreview draft={eff} to={previewTo} frame={false} /></div>
+        </section>
+      ) : null}
 
-      <Button className={s.mobilePreviewBtn} variant="secondary" type="button" onClick={() => setSheetOpen(true)} leading={<Icon name="eye" size={16} />}>Xem trước</Button>
-      <div className={s.sheet} data-open={sheetOpen} role="dialog" aria-modal="true" aria-label="Xem trước thiệp">
-        <div className={s.sheetBar}>
-          <span>Xem trước</span>
-          <Button variant="white" size="sm" type="button" onClick={() => setSheetOpen(false)}>Đóng</Button>
-        </div>
-        <div className={s.sheetBody}>{sheetOpen ? <PhonePreview {...previewProps} frame={false} /> : null}</div>
-      </div>
+      <div className={s.segBottom}>{seg}</div>
     </div>
   );
 }

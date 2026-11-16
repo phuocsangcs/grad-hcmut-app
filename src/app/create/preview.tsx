@@ -4,14 +4,16 @@ import { useMemo } from 'react';
 import type { PublicCard } from '@/modules/card/card.service';
 import { countdown, resolveMode } from '@/modules/card/mode';
 import { resolveGreeting } from '@/modules/card/greeting';
-import { getFaculty, getMusic, getPoi, getTemplate, type Faculty, type Template } from '@/modules/content';
-import { vnDate } from '@/lib/time';
+import { resolveProgram, canBeOisp, type DegreeId, getMusic, getPoi, getTemplate, type Faculty, type Template } from '@/modules/content';
+
 import { InvitationCard, type TemplateLinks } from '@/templates';
 import { PhoneFrame } from '@/ui';
 
 export type PreviewDraft = {
   displayName: string;
   facultyId: string;
+  degree: DegreeId;
+  oisp: boolean;
   templateId: string;
   message: string;
   slug: string;
@@ -35,10 +37,11 @@ const LINKS: TemplateLinks = { card: '#', ics: '#', qr: '#', googleCalendar: '#'
 
 /** Dựng PublicCard giả từ nháp để render đúng template thật, không cần server. */
 export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string } = {}): PublicCard | null {
-  const faculty: Faculty | undefined = getFaculty(d.facultyId);
+  const program = resolveProgram(d.facultyId, d.degree, d.oisp && canBeOisp(d.degree));
+  const faculty: Faculty | undefined = program?.faculty;
   const template: Template | undefined = getTemplate(d.templateId);
   if (!faculty || !template) return null;
-  const at = vnDate(faculty.date, faculty.time);
+  const at = program!.at;
   const now = new Date();
   const poi = d.meetingPoiId ? getPoi(d.meetingPoiId) : undefined;
   const to = opts.to ?? 'parents';
@@ -46,8 +49,10 @@ export function draftToCard(d: PreviewDraft, opts: { to?: string; mode?: string 
     slug: d.slug.trim() || 'ten-cua-ban',
     displayName: d.displayName.trim() || 'Tên của bạn',
     faculty: { id: faculty.id, name: faculty.name, shortName: faculty.shortName },
+    degree: d.degree,
+    oisp: d.oisp && canBeOisp(d.degree),
     ceremonyAt: at.toISOString(),
-    venue: faculty.venue ?? 'Hội trường A5',
+    venue: program!.venue,
     template,
     message: d.message,
     greeting: resolveGreeting({ groupKey: to, cardGreetings: d.greetings }),

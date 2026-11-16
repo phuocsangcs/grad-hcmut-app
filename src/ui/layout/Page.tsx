@@ -11,16 +11,20 @@ type Props = {
   /** Bỏ header/footer (trang thiệp có bố cục riêng). */
   bare?: boolean;
   className?: string;
+  /** Ẩn footer (trang làm việc như form tạo thiệp). */
+  noFooter?: boolean;
+  /** Class bọc header, ví dụ để ẩn header trên điện thoại. */
+  headerClassName?: string;
 };
 
 /** Khung trang chuẩn cho các trang thông tin: header + nội dung + footer. */
-export function Page({ children, width = 'default', bare, className }: Props) {
+export function Page({ children, width = 'default', bare, className, noFooter, headerClassName }: Props) {
   if (bare) return <>{children}</>;
   return (
     <>
-      <SiteHeader />
+      {headerClassName ? <div className={headerClassName}><SiteHeader /></div> : <SiteHeader />}
       <main className={cx(s.main, width === 'narrow' && s.narrow, className)}>{children}</main>
-      <SiteFooter />
+      {noFooter ? null : <SiteFooter />}
     </>
   );
 }

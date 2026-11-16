@@ -1,7 +1,8 @@
-import { defaultTemplateId, getTemplate, listMusic, greetingsFile, listFaculties, listGreetingGroups, listMeetingPois, listTemplates } from '@/modules/content';
+import { defaultTemplateId, getTemplate, listMusic, greetingsFile, listRealFaculties, listGreetingGroups, listMeetingPois, listTemplates } from '@/modules/content';
 import { isStorageEnabled } from '@/lib/storage';
-import { Page, PageHeading } from '@/ui';
+import { Page } from '@/ui';
 import { CreateForm } from './create-form';
+import s from './create.module.css';
 
 export const metadata = { title: 'Tạo thiệp tốt nghiệp' };
 
@@ -9,10 +10,9 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
   const { template } = await searchParams;
   const initialTemplateId = template && getTemplate(template) ? template : undefined;
   return (
-    <Page>
-      <PageHeading title="Tạo thiệp mời" lead="Điền thông tin, thiệp tự cập nhật ngày giờ theo khoa và đổi giao diện trong ngày lễ." />
+    <Page noFooter headerClassName={s.siteHeader}>
       <CreateForm
-        faculties={listFaculties()}
+        faculties={listRealFaculties()}
         templates={listTemplates()}
         pois={listMeetingPois()}
         groups={listGreetingGroups()}

@@ -18,15 +18,21 @@ type Props = {
   onEnabledChange?: (enabled: boolean) => void;
   /** Chữ cạnh công tắc, ví dụ "Hiện trên thiệp". */
   switchLabel?: string;
+  /** Chữ cạnh công tắc khi đang tắt. Mặc định suy ra từ switchLabel (Hiện→Ẩn, Bật→Tắt…). */
+  switchOffLabel?: string;
+  /** Khi tắt mà xổ ra xem: hiện câu này thay cho các ô nhập. */
+  offNote?: string;
   children: ReactNode;
   className?: string;
 };
+
+const OFF_LABELS: Record<string, string> = { Hiện: 'Ẩn', Bật: 'Tắt', Nhận: 'Không nhận', 'Tự viết': 'Mặc định' };
 
 /**
  * Một khối của form: tiêu đề bấm để xổ xuống, kèm công tắc bật/tắt (tuỳ chọn).
  * Mục bắt buộc thì không truyền `enabled`, không có công tắc.
  */
-export function FormSection({ id, title, icon, hint, open, onOpenChange, enabled, onEnabledChange, switchLabel, children, className }: Props) {
+export function FormSection({ id, title, icon, hint, open, onOpenChange, enabled, onEnabledChange, switchLabel, switchOffLabel, offNote, children, className }: Props) {
   const hasSwitch = enabled !== undefined && !!onEnabledChange;
   const off = hasSwitch && !enabled;
   return (
@@ -42,7 +48,7 @@ export function FormSection({ id, title, icon, hint, open, onOpenChange, enabled
         </button>
         {hasSwitch ? (
           <span className={s.switchWrap}>
-            {switchLabel ? <span className={s.switchLabel}>{switchLabel}</span> : null}
+            {switchLabel ? <span className={s.switchLabel}>{enabled ? switchLabel : switchOffLabel ?? OFF_LABELS[switchLabel] ?? 'Tắt'}</span> : null}
             <button
               type="button"
               role="switch"
@@ -55,7 +61,7 @@ export function FormSection({ id, title, icon, hint, open, onOpenChange, enabled
         ) : null}
       </div>
       <div id={`${id}-body`} className={s.body} hidden={!open}>
-        {children}
+        {off && offNote ? <p className={s.offNote}>{offNote}</p> : children}
       </div>
     </section>
   );

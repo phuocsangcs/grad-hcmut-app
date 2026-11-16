@@ -1,5 +1,5 @@
 .card {
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-card);
   border-radius: var(--radius-l);
   background: var(--surface);
 }
@@ -15,7 +15,7 @@
   align-items: center;
   gap: var(--space-3);
   min-width: 0;
-  min-height: 56px;
+  min-height: 46px;
   padding: var(--space-3) var(--space-4);
   background: none;
   border-radius: var(--radius-l);
@@ -54,11 +54,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.card[data-off='true'] .title,
-.card[data-off='true'] .icon {
-  opacity: 0.6;
-}
-
 .switchWrap {
   display: inline-flex;
   align-items: center;
@@ -108,4 +103,13 @@
 }
 .body[hidden] {
   display: none;
+}
+
+.offNote {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-s);
+  background: var(--surface-tint);
+  color: var(--fg-muted);
+  font-size: var(--text-sm);
+  line-height: 1.6;
 }
