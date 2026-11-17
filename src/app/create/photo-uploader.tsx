@@ -8,7 +8,8 @@ import s from './photo-uploader.module.css';
 
 export type UploadedPhoto = { key: string; url: string };
 
-const MAX_SIDE = 1600;
+/** Cạnh dài tối đa: đủ nét cho ảnh bìa tràn màn hình trên điện thoại 3x và máy tính. */
+const MAX_SIDE = 2048;
 
 type Decoded = { source: CanvasImageSource; width: number; height: number; release: () => void };
 
@@ -43,17 +44,47 @@ async function decode(file: File): Promise<Decoded> {
   return decodeWithImg(file);
 }
 
-/** Co ảnh về tối đa 1600px, xuất WebP (hoặc JPEG) và hạ chất lượng dần nếu vẫn quá nặng. */
+function canvas2d(w: number, h: number) {
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const ctx = c.getContext('2d')!;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  return { c, ctx };
+}
+
+/**
+ * Thu nhỏ giữ nét: giảm một nửa mỗi bước cho tới gần kích thước đích rồi mới vẽ lần cuối.
+ * Vẽ thẳng 4000px → 2048px một lần làm trình duyệt bỏ bớt điểm ảnh → răng cưa, mất nét (lỗi cũ).
+ */
+function resize(source: CanvasImageSource, w: number, h: number, tw: number, th: number): HTMLCanvasElement {
+  let cur: CanvasImageSource = source;
+  let cw = w;
+  let ch = h;
+  while (cw / 2 >= tw && ch / 2 >= th) {
+    const step = canvas2d(Math.round(cw / 2), Math.round(ch / 2));
+    step.ctx.drawImage(cur, 0, 0, step.c.width, step.c.height);
+    cur = step.c;
+    cw = step.c.width;
+    ch = step.c.height;
+  }
+  const out = canvas2d(tw, th);
+  out.ctx.drawImage(cur, 0, 0, tw, th);
+  return out.c;
+}
+
+/** Co ảnh về tối đa 2048px (giữ nét), xuất WebP (hoặc JPEG) và chỉ hạ chất lượng khi vẫn quá nặng. */
 async function compress(file: File): Promise<Blob> {
   const img = await decode(file);
   const k = Math.min(1, MAX_SIDE / Math.max(img.width, img.height));
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.max(1, Math.round(img.width * k));
-  canvas.height = Math.max(1, Math.round(img.height * k));
-  canvas.getContext('2d')!.drawImage(img.source, 0, 0, canvas.width, canvas.height);
+  const tw = Math.max(1, Math.round(img.width * k));
+  const th = Math.max(1, Math.round(img.height * k));
+  const canvas = resize(img.source, img.width, img.height, tw, th);
   img.release();
+  // Bắt đầu ở chất lượng cao; giới hạn 3MB còn dư nhiều nên hiếm khi phải hạ.
   // Safari không xuất được WebP (trả về PNG) → tự rơi xuống JPEG ở dưới.
-  for (const q of [0.82, 0.7, 0.55]) {
+  for (const q of [0.9, 0.85, 0.78, 0.7, 0.6]) {
     const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/webp', q));
     if (blob && blob.type === 'image/webp' && blob.size <= PHOTO_MAX_BYTES) return blob;
     const jpg = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/jpeg', q));
