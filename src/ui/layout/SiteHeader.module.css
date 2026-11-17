@@ -1,4 +1,7 @@
+/* Lớp riêng, cao hơn nội dung trang (hero, carousel z-index 20) để menu thả xuống không bị đè. */
 .wrap {
+  position: relative;
+  z-index: 50;
   padding: var(--space-3) 0;
 }
 .overlay {
@@ -6,7 +9,6 @@
   left: 0;
   right: 0;
   top: 0;
-  z-index: 5;
   padding-top: var(--space-5);
 }
 .bar {

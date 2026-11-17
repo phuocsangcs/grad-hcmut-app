@@ -5,6 +5,7 @@ import { cx } from '../cx';
 import s from './SiteHeader.module.css';
 
 const NAV = [
+  { href: '/templates', label: 'Mẫu thiệp' },
   { href: '/guide', label: 'Lịch theo khoa' },
   { href: '/guide/map', label: 'Bản đồ trường' },
   { href: '/eat', label: 'Ăn gì' },
