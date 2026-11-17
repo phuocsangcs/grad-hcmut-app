@@ -1,5 +1,6 @@
-import { facultiesFile, scheduleByDay } from '@/modules/content';
-import { facultyVars } from '@/templates/shared/vars';
+import { facultiesFile } from '@/modules/content';
+import { OFFICIAL_NOTICE_URL, ScheduleList } from '@/components/schedule/ScheduleList';
+import { NOTICE_NOTES, PROGRAMS } from './program';
 import { Button, Icon, Page, PageHeading, Surface, type IconName } from '@/ui';
 import s from './guide.module.css';
 
@@ -23,28 +24,67 @@ export default function GuidePage() {
     <Page>
       <PageHeading title="Lễ tốt nghiệp 26–29.11.2026" lead="Lịch từng khoa tại Hội trường A5, mẹo cho người nhà, bản đồ và quán ăn quanh trường." />
 
-      <section aria-labelledby="h-schedule">
-        <h2 id="h-schedule" className={s.h2}>Lịch theo khoa</h2>
-        <div className={s.days}>
-          {scheduleByDay().map((d) => (
-            <div key={d.date} className={s.day}>
-              <div className={s.dayHead}>
-                <b>{d.date.slice(8, 10)}.{d.date.slice(5, 7)}</b>
-                <span>{d.label.replace(/,.*$/, '')}</span>
+      <section aria-labelledby="h-schedule" className={s.schedule}>
+        <header className={s.scheduleHead}>
+          <h2 id="h-schedule" className={s.h2}>Lịch theo khoa</h2>
+          <p className={s.source}>Tất cả tổ chức tại Hội trường A5. Lịch lấy theo thông báo của Trường, cập nhật {facultiesFile.updatedAt}.</p>
+          <a className={s.official} href={OFFICIAL_NOTICE_URL} target="_blank" rel="noopener noreferrer">
+            <Icon name="external" size={16} />
+            Xem thông báo chính thức trên hcmut.edu.vn
+          </a>
+        </header>
+        <div className={s.scheduleBody}>
+          <ScheduleList />
+
+          <div className={s.programs}>
+            <p className={s.programsHead}>Chương trình chi tiết từng buổi lễ</p>
+            {PROGRAMS.map((p) => (
+              <details key={p.id} className={s.program}>
+                <summary>
+                  <span className={s.programTitle}>{p.title}</span>
+                  <span className={s.programWhen}>{p.when}</span>
+                  <Icon name="chevron" size={18} className={s.chev} />
+                </summary>
+                <div className={s.programBody}>
+                  <p className={s.programMeta}>
+                    <b>Địa điểm:</b> {p.venue}. <b>Tham dự:</b> {p.attendees}
+                  </p>
+                  <table className={s.table}>
+                    <thead>
+                      <tr>
+                        <th scope="col">Thời gian</th>
+                        <th scope="col">Sự kiện</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {p.rows.map((r) => (
+                        <tr key={r.time}>
+                          <td>{r.time}</td>
+                          <td>{r.event}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p className={s.source}>Chương trình dự kiến, theo thông báo của Trường.</p>
+                </div>
+              </details>
+            ))}
+            <details className={s.program}>
+              <summary>
+                <span className={s.programTitle}>Lưu ý quan trọng từ Trường</span>
+                <span className={s.programWhen}>Thư mời, lễ phục, chỗ ngồi, ảnh lễ</span>
+                <Icon name="chevron" size={18} className={s.chev} />
+              </summary>
+              <div className={s.programBody}>
+                <ol className={s.notes}>
+                  {NOTICE_NOTES.map((n) => (
+                    <li key={n}>{n}</li>
+                  ))}
+                </ol>
               </div>
-              <ul className={s.rows}>
-                {d.items.map((f) => (
-                  <li key={f.id} className={s.row} style={facultyVars(f)}>
-                    <span className={s.time}>{f.time.replace(':', 'h')}</span>
-                    <span className={s.name}>{f.name}<small>{f.venue}{f.note ? ` · ${f.note}` : ''}</small></span>
-                    <span className={s.degree}>{f.degreeTitle}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            </details>
+          </div>
         </div>
-        <p className={s.source} style={{ marginTop: 16 }}>{facultiesFile.source} · Cập nhật {facultiesFile.updatedAt}</p>
       </section>
 
       <section aria-labelledby="tips">

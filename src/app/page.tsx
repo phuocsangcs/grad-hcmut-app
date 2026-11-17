@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { countdown } from '@/modules/card/mode';
-import { listTemplates, nextCeremony, scheduleByDay } from '@/modules/content';
+import { listTemplates, nextCeremony } from '@/modules/content';
+import { OFFICIAL_NOTICE_URL, ScheduleList } from '@/components/schedule/ScheduleList';
 import { formatTimeVi } from '@/lib/time';
 import { Countdown } from '@/templates/shared/Countdown';
 import { InvitationCard, SAMPLE_LINKS, sampleCard } from '@/templates';
@@ -21,7 +22,8 @@ export const revalidate = 3600;
  *  - max:   quãng trôi tối đa (px).
  */
 const HERO = [
-  { templateId: 'ticket', facultyId: 'me', displayName: 'Lê Quốc Bảo', scale: 0.4, speed: 0.1, max: 50 },
+  // Bưu thiếp có ảnh bìa: lấy luôn ảnh mẫu AI + tên/khoa mẫu của nó.
+  { ...sampleOptionsFor('postcard'), scale: 0.4, speed: 0.1, max: 50 },
   { templateId: 'print', facultyId: 'cse', displayName: 'Nguyễn Minh Anh', scale: 0.46, speed: 0.35, max: 120 },
 ];
 
@@ -49,7 +51,6 @@ const GUIDES: { href: string; icon: IconName; title: string; body: string }[] = 
 
 export default function HomePage() {
   const next = nextCeremony();
-  const days = scheduleByDay();
   const templates = listTemplates();
   // cùng một người, ba mẫu khác nhau -> minh hoạ "đổi mẫu không cần nhập lại"
   const SAME = { facultyId: 'cse', displayName: 'Nguyễn Minh Anh' };
@@ -107,25 +108,11 @@ export default function HomePage() {
                 Tất cả tổ chức tại Hội trường A5. Lễ gần nhất: {next.faculty.shortName},{' '}
                 <Countdown ceremonyAt={next.at.toISOString()} initial={countdown(next.at)} variant="inline" />.
               </p>
+              <a className={s.scheduleLink} href={OFFICIAL_NOTICE_URL} target="_blank" rel="noopener noreferrer">
+                Thông báo chính thức của Trường ↗
+              </a>
             </header>
-            <dl className={s.days}>
-              {days.map((d) => (
-                <div key={d.date} className={s.day}>
-                  <dt className={s.dayLabel}>
-                    <b>{d.date.slice(8, 10)}/{d.date.slice(5, 7)}</b>
-                    <span>{d.label.replace(/,.*$/, '')}</span>
-                  </dt>
-                  <dd className={s.dayItems}>
-                    {d.items.map((f) => (
-                      <span key={f.id} className={s.dayItem}>
-                        <span className={s.dayTime}>{f.time}</span>
-                        <span>{f.name}</span>
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <ScheduleList />
           </div>
         </section>
 

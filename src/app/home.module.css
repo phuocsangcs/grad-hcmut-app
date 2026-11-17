@@ -183,55 +183,18 @@
   color: var(--fg-muted);
   line-height: 1.6;
 }
-.days {
-  display: grid;
-  border-top: 1px solid var(--line);
-}
-.day {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: var(--space-4);
-  padding-block: var(--space-4);
-  border-bottom: 1px solid var(--line);
-}
-.dayLabel {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.dayLabel b {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--bk-900);
-  font-variant-numeric: tabular-nums;
-}
-.dayLabel span {
-  font-size: var(--text-xs);
-  color: var(--fg-muted);
-}
-.dayItems {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-}
-.dayItem {
-  display: flex;
-  gap: var(--space-3);
-  color: var(--bk-900);
-}
-.dayTime {
-  flex: none;
-  width: 3.2em;
-  color: var(--fg-muted);
-  font-variant-numeric: tabular-nums;
+.scheduleLink {
+  align-self: flex-start;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--bk-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 @media (max-width: 760px) {
   .schedule {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-4);
-  }
-  .day {
-    grid-template-columns: 84px 1fr;
   }
 }
 
