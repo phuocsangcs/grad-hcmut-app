@@ -1,4 +1,5 @@
 import { cleanupExpiredCards } from '@/modules/moderation';
+import { cleanupOldContactMessages, cleanupOrphanConsents } from '@/modules/legal';
 import { getEnv } from '@/lib/env';
 import { handle, ok, HttpError } from '@/lib/http';
 
@@ -14,5 +15,7 @@ export const GET = handle(async (req: Request) => {
     throw new HttpError(401, 'unauthorized');
   }
   const deleted = await cleanupExpiredCards();
-  return ok({ deleted });
+  const contactMessages = await cleanupOldContactMessages();
+  const consentLogs = await cleanupOrphanConsents();
+  return ok({ deleted, contactMessages, consentLogs });
 });

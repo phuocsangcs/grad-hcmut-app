@@ -8,7 +8,7 @@ export default defineConfig({
     maxWorkers: 4,
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
     setupFiles: ['src/test/setup.ts'],
-    env: { DATABASE_URL: 'postgres://test', NEXT_PUBLIC_SITE_URL: 'http://localhost:3000', ADMIN_EMAIL: 'admin@example.com' },
+    env: { DATABASE_URL: 'postgres://test', NEXT_PUBLIC_SITE_URL: 'http://localhost:3000', ADMIN_EMAIL: 'admin@example.com', ADMIN_TOKEN: 'test-admin-token-1234567890' },
   },
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },

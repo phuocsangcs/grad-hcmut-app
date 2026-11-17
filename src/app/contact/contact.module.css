@@ -1,0 +1,52 @@
+.form {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 640px;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Ô bẫy cho bot: đẩy ra ngoài màn hình thay vì display:none (một số bot bỏ qua ô bị ẩn hẳn) */
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.error {
+  color: #b42318;
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+.done {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 640px;
+  padding: var(--space-5);
+  border-radius: var(--radius-m);
+  background: var(--leaf-soft, #e7f6ee);
+  color: var(--leaf-ink, #0f5132);
+}
+.done p {
+  font-size: var(--text-sm);
+}
+.again {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}

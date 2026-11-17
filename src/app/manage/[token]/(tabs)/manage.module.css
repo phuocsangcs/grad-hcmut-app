@@ -97,3 +97,21 @@
   flex: none;
   accent-color: var(--bk-700);
 }
+.consent {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+.consent svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--leaf, #1f9d68);
+}
+.consent a {
+  color: var(--bk-600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

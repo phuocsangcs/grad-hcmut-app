@@ -3,7 +3,9 @@ import { toVnLocalInput } from '@/lib/time';
 import { isStorageEnabled, publicUrl } from '@/lib/storage';
 import { getEnv } from '@/lib/env';
 import { greetingsFile, listInviteLeads, listMeetingPois, listMusic, listTemplates } from '@/modules/content';
+import { getConsentForCard, TERMS_VERSION } from '@/modules/legal';
 import { InvitationCard, type TemplateLinks } from '@/templates';
+import Link from 'next/link';
 import { Icon, PhoneFrame, Surface } from '@/ui';
 import { CardActions } from './card-actions';
 import { loadManagedCard } from './load-card';
@@ -20,6 +22,8 @@ export default async function ManageCardTab({ params }: Props) {
   if (!card) return null; // layout đã hiện thông báo không tìm thấy
 
   const preview = toPublicCard(card, { skipView: true }, new Date(), await loadWishes(card));
+  const consent = await getConsentForCard(card.id);
+  const fmtVn = (d: Date) => new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', dateStyle: 'short', timeStyle: 'short' }).format(d);
   const previewLinks: TemplateLinks = {
     card: `${getEnv().NEXT_PUBLIC_SITE_URL}/${card.slug}`,
     qr: '#',
@@ -71,6 +75,19 @@ export default async function ManageCardTab({ params }: Props) {
             <Icon name="lock" size={16} /> Giữ link trang này riêng tư. Ai có link đều sửa hoặc xoá được thiệp.
           </p>
         </Surface>
+        <p className={s.consent}>
+          <Icon name="check" size={14} />
+          {consent ? (
+            <span>
+              Bạn đã đồng ý <Link href="/terms">Điều khoản sử dụng</Link> (bản {consent.termsVersion.split('-').reverse().join('/')}) lúc {fmtVn(consent.acceptedAt)}.
+              {consent.termsVersion !== TERMS_VERSION ? ' Điều khoản đã có bản mới, mời bạn xem lại.' : ''}
+            </span>
+          ) : (
+            <span>
+              Thiệp tạo trước khi có bước xác nhận điều khoản. Xem <Link href="/terms">Điều khoản sử dụng</Link> và <Link href="/privacy">Quyền riêng tư</Link>.
+            </span>
+          )}
+        </p>
       </aside>
     </div>
   );

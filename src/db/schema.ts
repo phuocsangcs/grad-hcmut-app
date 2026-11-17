@@ -129,6 +129,46 @@ export const reports = pgTable(
   (t) => [index('reports_card_id_idx').on(t.cardId)],
 );
 
+/**
+ * Nhật ký đồng ý điều khoản khi tạo thiệp (bằng chứng người tạo đã đọc và chấp nhận).
+ * Xoá thiệp → card_id thành null, dòng log vẫn còn nhưng không còn dữ liệu cá nhân; cron xoá sau 12 tháng.
+ */
+export const consentLogs = pgTable(
+  'consent_logs',
+  {
+    id: text('id').primaryKey(),
+    cardId: text('card_id').references(() => cards.id, { onDelete: 'set null' }),
+    /** Phiên bản điều khoản đã đồng ý (TERMS_VERSION trong modules/legal/terms.ts). */
+    termsVersion: text('terms_version').notNull(),
+    /** IP băm một chiều, không lưu IP thô. */
+    ipHash: text('ip_hash'),
+    /** Trình duyệt (cắt ngắn), để đối chiếu khi có tranh chấp. */
+    userAgent: text('user_agent'),
+    acceptedAt: ts('accepted_at').notNull().defaultNow(),
+  },
+  (t) => [index('consent_logs_card_id_idx').on(t.cardId), index('consent_logs_accepted_at_idx').on(t.acceptedAt)],
+);
+
+/** Tin nhắn gửi qua trang Liên hệ. Chủ dự án đọc ở /admin/inbox (và qua email nếu bật Resend). */
+export const contactMessages = pgTable(
+  'contact_messages',
+  {
+    id: text('id').primaryKey(),
+    name: text('name'),
+    /** Cách liên lạc lại do người gửi tự nhập (email, Zalo, Facebook…). Tuỳ chọn. */
+    replyTo: text('reply_to'),
+    /** feedback | bug | content | other (xem contact.validators.ts). */
+    topic: text('topic').notNull(),
+    message: text('message').notNull(),
+    /** Thiệp liên quan (slug), nếu người gửi điền. */
+    cardSlug: text('card_slug'),
+    ipHash: text('ip_hash'),
+    readAt: ts('read_at'),
+    createdAt: ts('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('contact_messages_created_at_idx').on(t.createdAt)],
+);
+
 export type Card = typeof cards.$inferSelect;
 export type NewCard = typeof cards.$inferInsert;
 export type Invite = typeof invites.$inferSelect;
@@ -136,3 +176,5 @@ export type NewInvite = typeof invites.$inferInsert;
 export type Rsvp = typeof rsvps.$inferSelect;
 export type NewRsvp = typeof rsvps.$inferInsert;
 export type Report = typeof reports.$inferSelect;
+export type ConsentLog = typeof consentLogs.$inferSelect;
+export type ContactMessage = typeof contactMessages.$inferSelect;

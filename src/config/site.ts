@@ -7,7 +7,9 @@ export const site = {
   contactEmail: null as string | null,
   donate: {
     /** Đặt ảnh QR vào public/images/site/ rồi điền đường dẫn, ví dụ '/images/site/donate-qr.png'. null → ẩn ảnh. */
-    qrImage: null as string | null,
+    qrImage: '/images/site/donate-qr.jpg' as string | null,
+    /** Kích thước gốc của ảnh QR (để giữ đúng tỉ lệ). */
+    qrSize: { width: 828, height: 873 },
     note: 'Tiền cà phê dùng để trả VPS và tên miền. Cảm ơn bạn!',
   },
 } as const;

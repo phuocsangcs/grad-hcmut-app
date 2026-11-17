@@ -17,6 +17,8 @@ const schema = z.object({
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
   ADMIN_EMAIL: z.string().email().optional(),
+  /** Mật khẩu vào /admin/inbox (đọc tin nhắn liên hệ). Không đặt → trang quản trị tắt. Tối thiểu 16 ký tự. */
+  ADMIN_TOKEN: z.string().min(16, 'ADMIN_TOKEN cần ít nhất 16 ký tự').optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
   CRON_SECRET: z.string().optional(),
   // Cloudflare R2 (ảnh thiệp). Thiếu một biến thì tính năng ảnh tự tắt.

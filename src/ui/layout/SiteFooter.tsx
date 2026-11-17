@@ -16,7 +16,9 @@ export function SiteFooter() {
         <nav className={s.links} aria-label="Chân trang">
           <Link href="/guide">Cẩm nang</Link>
           <Link href="/privacy">Quyền riêng tư</Link>
+          <Link href="/terms">Điều khoản</Link>
           <Link href="/about">Về dự án</Link>
+          <Link href="/contact">Liên hệ</Link>
           <Link href="/about#donate" className={s.coffee}>
             Mời dev ly cà phê
           </Link>

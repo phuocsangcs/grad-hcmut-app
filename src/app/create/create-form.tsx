@@ -1,11 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api, ApiError } from '@/components/api';
 import { canBeOisp, DEGREES, resolveProgram, type DegreeId, type Faculty, type Poi, type Template } from '@/modules/content';
 import { vi } from '@/lib/i18n';
+// Import thẳng file điều khoản (chỉ là chữ), không qua '@/modules/legal' để code server không lọt vào trình duyệt.
+import { TERMS_SUMMARY, TERMS_VERSION, TERMS_VERSION_LABEL } from '@/modules/legal/terms';
 import { formatDateVi, formatTimeVi, fromVnLocalInput } from '@/lib/time';
 import { Button, Field, FormSection, Icon, Input, Select, Textarea } from '@/ui';
 import { PhotoUploader, type UploadedPhoto } from './photo-uploader';
@@ -153,9 +155,19 @@ export function CreateForm(p: Props) {
   const infoOk = d.displayName.trim().length >= 2 && !!faculty;
   const canSubmit = infoOk && d.slug.trim().length > 0 && (slugState === null || slugState.available);
 
-  async function submit(e: React.FormEvent) {
+  // Bấm Xuất bản → mở hộp xác nhận điều khoản; chỉ khi tích đồng ý mới gửi lên server (server ghi log).
+  const consentRef = useRef<HTMLDialogElement>(null);
+  const [agreed, setAgreed] = useState(false);
+  function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || busy) return;
+    setAgreed(false);
+    consentRef.current?.showModal();
+  }
+
+  async function publish() {
+    if (!canSubmit || !agreed) return;
+    consentRef.current?.close();
     setBusy(true); setError(null);
     try {
       const r = await api<{ slug: string; url: string; manageToken: string; manageUrl: string }>('/api/cards', {
@@ -170,6 +182,7 @@ export function CreateForm(p: Props) {
           musicId: eff.musicId || null,
           rsvpEnabled: d.sections.rsvp, rsvpDeadline: d.sections.rsvp ? fromVnLocalInput(d.rsvpDeadline) : null, rsvpMaxHeadcount: d.rsvpMaxHeadcount,
           guestbookEnabled: eff.guestbookEnabled ?? false,
+          acceptTerms: true, termsVersion: TERMS_VERSION,
         },
       });
       try { localStorage.removeItem(DRAFT_KEY); sessionStorage.setItem('grad.created', JSON.stringify(r)); } catch {}
@@ -181,6 +194,7 @@ export function CreateForm(p: Props) {
         invalid_input: vi.errors.invalidInput, rate_limited: vi.errors.rateLimited,
         photo_missing: 'Có ảnh đã hết hạn lưu tạm, bạn tải lại ảnh nhé.',
         storage_disabled: 'Tính năng ảnh đang tạm tắt, hãy tắt khối Ảnh rồi thử lại.',
+        terms_outdated: 'Điều khoản vừa được cập nhật. Tải lại trang để đọc bản mới rồi xuất bản lại (nháp vẫn được giữ).',
       };
       setError(map[code] ?? vi.errors.server);
       if (code === 'photo_missing') set('uploads', []);
@@ -423,6 +437,28 @@ export function CreateForm(p: Props) {
       ) : null}
 
       <div className={s.segBottom}>{seg}</div>
+
+      <dialog ref={consentRef} className={s.consent} aria-labelledby="consent-title" onClose={() => setAgreed(false)}>
+        <form method="dialog" className={s.consentBody} onSubmit={(e) => { e.preventDefault(); void publish(); }}>
+          <h2 id="consent-title" className={s.consentTitle}>Trước khi xuất bản</h2>
+          <p className={s.consentLead}>Vui lòng đọc các điểm chính về bảo mật và quyền riêng tư của trang:</p>
+          <ul className={s.consentList}>
+            {TERMS_SUMMARY.map((line) => <li key={line}>{line}</li>)}
+          </ul>
+          <p className={s.consentLinks}>
+            Bản đầy đủ: <Link href="/terms" target="_blank">Điều khoản sử dụng</Link> · <Link href="/privacy" target="_blank">Quyền riêng tư</Link>
+          </p>
+          <label className={s.consentCheck}>
+            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
+            <span>Tôi đã đọc và đồng ý với Điều khoản sử dụng và Chính sách quyền riêng tư (bản {TERMS_VERSION_LABEL}).</span>
+          </label>
+          <p className={s.consentNote}>Lần đồng ý này được ghi lại cùng thiệp, bạn xem lại được trong trang quản lý.</p>
+          <div className={s.consentBtns}>
+            <Button type="button" variant="secondary" onClick={() => consentRef.current?.close()}>Quay lại</Button>
+            <Button type="submit" disabled={!agreed || busy}>Đồng ý và xuất bản</Button>
+          </div>
+        </form>
+      </dialog>
     </div>
   );
 }

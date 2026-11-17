@@ -29,7 +29,8 @@ Bật **branch protection** cho `main` (Settings → Branches): yêu cầu job `
 | `NEXT_PUBLIC_SITE_URL` | URL production, ví dụ `https://ngayratruong.vn`, không có `/` cuối. Nên đặt khi có tên miền riêng. Không đặt thì code tự lấy tên miền Vercel (`VERCEL_PROJECT_PRODUCTION_URL` ở production, `VERCEL_URL` ở preview), không bao giờ ra `localhost` trên Vercel |
 | `CRON_SECRET` | Chuỗi ngẫu nhiên dài. **Bắt buộc** ở production, thiếu thì cron bị từ chối. Vercel tự gửi kèm khi gọi cron |
 | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_URL` | Ảnh thiệp, xem STORAGE.md |
-| `RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_EMAIL` | Tuỳ chọn: email lấy lại link và báo cáo vi phạm |
+| `RESEND_API_KEY`, `EMAIL_FROM`, `ADMIN_EMAIL` | Tuỳ chọn: email lấy lại link, báo cáo vi phạm, và báo tin nhắn mới từ trang Liên hệ về `ADMIN_EMAIL` (email này không hiện trên web) |
+| `ADMIN_TOKEN` | Tuỳ chọn: mật khẩu vào `/admin/inbox` để đọc tin nhắn Liên hệ. Chuỗi ngẫu nhiên ≥ 16 ký tự. Không đặt thì trang quản trị tắt (tin nhắn vẫn được lưu) |
 | `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | Tuỳ chọn: chống bot khi tạo thiệp |
 
 Với bản **Preview**, nên dùng một DB Supabase riêng (hoặc chấp nhận preview dùng chung DB), đừng để preview ghi vào dữ liệu thật mà không biết.

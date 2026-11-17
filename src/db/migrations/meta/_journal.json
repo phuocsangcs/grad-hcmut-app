@@ -43,6 +43,13 @@
       "when": 1794849776725,
       "tag": "0005_invite_message",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794893589438,
+      "tag": "0006_legal_contact",
+      "breakpoints": true
     }
   ]
 }
