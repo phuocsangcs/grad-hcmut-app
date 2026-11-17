@@ -2,11 +2,12 @@ import type { TemplateProps } from '../types';
 import { FacultyMotif } from '../motifs/FacultyMotif';
 import { facultyVars } from '../shared/vars';
 import { formatTimeVi } from '@/lib/time';
+import { CAMPUS } from '../shared/campus';
 import s from './blueprint.module.css';
 
 /**
  * BẢN VẼ KỸ THUẬT — giấy xanh Bách Khoa có lưới ô, hình vẽ nét trắng,
- * đường kích thước vàng, khung tên bản vẽ ở cuối; mục DUYỆT là chữ ký của khách.
+ * đường kích thước vàng, ảnh hiện trạng phủ xanh bản vẽ, khung tên bản vẽ ở cuối; mục DUYỆT là chữ ký của khách.
  */
 export function BlueprintTemplate({ card, inviteeName, faculty, blocks, message, preview }: TemplateProps) {
   const at = new Date(card.ceremonyAt);
@@ -31,6 +32,17 @@ export function BlueprintTemplate({ card, inviteeName, faculty, blocks, message,
             <span>
               {formatTimeVi(at)} · {dd}.{mm}.{card.ceremonyAt.slice(0, 4)}
             </span>
+          </figcaption>
+        </figure>
+
+        <figure className={s.survey}>
+          <div className={s.surveyImg}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- ảnh tĩnh của mẫu */}
+            <img src={CAMPUS.library.src} alt={CAMPUS.library.alt} loading="lazy" decoding="async" />
+          </div>
+          <figcaption>
+            <span>Hiện trạng · {CAMPUS.library.place}</span>
+            <span>TL 1:1</span>
           </figcaption>
         </figure>
 

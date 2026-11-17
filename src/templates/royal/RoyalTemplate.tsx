@@ -2,6 +2,7 @@ import Image from 'next/image';
 import type { TemplateProps } from '../types';
 import { poisFile } from '@/modules/content';
 import { Icon } from '@/ui';
+import { CAMPUS } from '../shared/campus';
 import s from './royal.module.css';
 
 const part = (opt: Intl.DateTimeFormatOptions, d: Date) => new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', ...opt }).format(d);
@@ -23,7 +24,7 @@ function Ornament() {
 
 /**
  * TRANG TRỌNG — thư mời nền lụa kem, khung viền vàng, dải ruy băng xanh đậm ghi tên khoa,
- * huy hiệu Trường ở giữa. Bố cục theo thư mời tốt nghiệp truyền thống:
+ * huy hiệu Trường ở giữa, ảnh khuôn viên trong khung vòm viền vàng. Bố cục theo thư mời tốt nghiệp truyền thống:
  * Thư mời → tên → lời mời (Thương mời: …) → ngày (Tháng | ngày | Năm) → giờ → địa điểm → liên hệ.
  */
 export function RoyalTemplate({ card, faculty, blocks, message, preview }: TemplateProps) {
@@ -66,6 +67,12 @@ export function RoyalTemplate({ card, faculty, blocks, message, preview }: Templ
 
         <div className={s.invitee}>{blocks.invitee}</div>
         <p className={s.message}>{message}</p>
+
+        <figure className={s.vignette}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- ảnh tĩnh của mẫu */}
+          <img src={CAMPUS.hall.src} alt={CAMPUS.hall.alt} loading="lazy" decoding="async" />
+          <figcaption>Khuôn viên Trường · cơ sở Lý Thường Kiệt</figcaption>
+        </figure>
 
         <div className={s.date} aria-label="Ngày lễ">
           <span>Tháng {month}</span>

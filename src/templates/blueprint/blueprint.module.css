@@ -173,3 +173,47 @@
   margin: var(--space-6) auto 0;
   padding: 0 var(--space-6);
 }
+
+/* Ảnh hiện trạng công trình: ảnh xám nhuộm xanh bản vẽ, lưới phủ lên, nhãn mono vàng */
+.survey {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.surveyImg {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: var(--bk-700);
+  overflow: hidden;
+}
+.surveyImg img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.15) brightness(1.1);
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+.surveyImg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.18) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.survey figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sun);
+  white-space: nowrap;
+}
+.survey figcaption span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

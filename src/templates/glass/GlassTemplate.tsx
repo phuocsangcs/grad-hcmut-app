@@ -2,10 +2,12 @@ import type { TemplateProps } from '../types';
 import { FacultyMotif } from '../motifs/FacultyMotif';
 import { facultyVars } from '../shared/vars';
 import { Countdown } from '../shared/Countdown';
+import { CAMPUS } from '../shared/campus';
 import s from './glass.module.css';
 
 /**
- * KÍNH — hình vẽ của khoa nằm sau, một tấm kính mờ trượt lên che nửa dưới.
+ * KÍNH — ảnh toà B9 nắng sớm phủ màu khoa làm nền, hình vẽ khoa nét trắng,
+ * một tấm kính mờ trượt lên che nửa dưới.
  * Chiều sâu đến từ lớp chồng lớp; bóng hai tầng tông xanh, viền sáng 1px.
  * Tối đa 3 lớp kính trên một màn để không giật trên máy yếu.
  */
@@ -13,7 +15,10 @@ export function GlassTemplate({ card, faculty, blocks, message, preview }: Templ
   return (
     <main className={s.root} style={facultyVars(faculty)}>
       <div className={s.stage}>
-        <div className={s.tint} aria-hidden="true" />
+        <div className={s.tint} aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element -- ảnh tĩnh của mẫu */}
+          <img src={CAMPUS.b9.src} alt="" decoding="async" />
+        </div>
         <div className={s.motif}>
           <FacultyMotif motif={faculty.motif} />
         </div>

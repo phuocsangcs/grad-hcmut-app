@@ -99,3 +99,32 @@
     padding: 0 var(--space-8) var(--space-8);
   }
 }
+
+/* Ảnh khuôn viên tràn ngang tờ giấy, chú thích kiểu sách */
+.photo {
+  margin: var(--space-2) calc(-1 * var(--space-5)) 0;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-block: 6px solid var(--t-soft);
+}
+.photo figcaption {
+  padding: 8px var(--space-5) 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+.photo b {
+  color: var(--t-accent);
+}
+@media (min-width: 720px) {
+  .photo {
+    margin-inline: calc(-1 * var(--space-8));
+  }
+  .photo figcaption {
+    padding-inline: var(--space-8);
+  }
+}
