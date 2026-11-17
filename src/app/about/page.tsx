@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { site } from '@/config/site';
+import { listMusic } from '@/modules/content';
 import { Page, PageHeading, Prose, Surface } from '@/ui';
 import { RecoverForm } from './recover-form';
 
@@ -23,6 +24,14 @@ export default function AboutPage() {
       <RecoverForm />
 
       <Prose>
+        <h2 id="music">Nguồn nhạc nền</h2>
+        <p>Nhạc nền trên thiệp đều có giấy phép dùng công khai:</p>
+        <ul>
+          {listMusic().map((m) => (
+            <li key={m.id}>{m.license}</li>
+          ))}
+        </ul>
+
         <h2 id="donate">Mời dev ly cà phê</h2>
         <p>{site.donate.note}</p>
       </Prose>

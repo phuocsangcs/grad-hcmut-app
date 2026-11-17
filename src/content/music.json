@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-16",
+  "updatedAt": "2026-11-17",
   "items": [
     {
       "id": "carefree",
@@ -7,6 +7,48 @@
       "artist": "Kevin MacLeod",
       "src": "/music/carefree.mp3",
       "license": "CC BY 4.0 — \"Carefree\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "id": "inspired",
+      "title": "Inspired",
+      "artist": "Kevin MacLeod",
+      "src": "/music/inspired.mp3",
+      "license": "CC BY 4.0 — \"Inspired\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "id": "heartwarming",
+      "title": "Heartwarming",
+      "artist": "Kevin MacLeod",
+      "src": "/music/heartwarming.mp3",
+      "license": "CC BY 4.0 — \"Heartwarming\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "id": "dreamer",
+      "title": "Dreamer",
+      "artist": "Kevin MacLeod",
+      "src": "/music/dreamer.mp3",
+      "license": "CC BY 4.0 — \"Dreamer\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "id": "wholesome",
+      "title": "Wholesome",
+      "artist": "Kevin MacLeod",
+      "src": "/music/wholesome.mp3",
+      "license": "CC BY 4.0 — \"Wholesome\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "id": "life-of-riley",
+      "title": "Life of Riley",
+      "artist": "Kevin MacLeod",
+      "src": "/music/life-of-riley.mp3",
+      "license": "CC BY 4.0 — \"Life of Riley\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "id": "bright-wish",
+      "title": "Bright Wish",
+      "artist": "Kevin MacLeod",
+      "src": "/music/bright-wish.mp3",
+      "license": "CC BY 4.0 — \"Bright Wish\" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/"
     }
   ]
 }

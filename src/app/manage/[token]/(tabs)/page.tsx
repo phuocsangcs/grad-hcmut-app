@@ -61,7 +61,7 @@ export default async function ManageCardTab({ params }: Props) {
           }}
           inviteLeads={listInviteLeads()}
           defaultInvitee={greetingsFile.defaultInvitee}
-          music={listMusic().map((m) => ({ id: m.id, title: m.artist ? `${m.title} · ${m.artist}` : m.title }))}
+          music={listMusic().map((m) => ({ id: m.id, title: m.title, artist: m.artist, src: m.src }))}
           photosEnabled={isStorageEnabled()}
         />
       </div>

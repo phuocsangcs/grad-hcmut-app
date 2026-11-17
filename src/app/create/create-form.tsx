@@ -11,6 +11,7 @@ import { TERMS_SUMMARY, TERMS_VERSION, TERMS_VERSION_LABEL } from '@/modules/leg
 import { formatDateVi, formatTimeVi, fromVnLocalInput } from '@/lib/time';
 import { Button, Field, FormSection, Icon, Input, Select, Textarea } from '@/ui';
 import { PhotoUploader, type UploadedPhoto } from './photo-uploader';
+import { MusicPicker, type MusicOption } from './music-picker';
 import { PhonePreview, type PreviewDraft } from './preview';
 import s from './create.module.css';
 
@@ -29,7 +30,7 @@ type Props = {
   /** Đã cấu hình R2 chưa. Chưa thì ẩn khối Ảnh. */
   photosEnabled?: boolean;
   /** Danh sách nhạc nền có sẵn. Rỗng thì ẩn khối Nhạc nền. */
-  music?: { id: string; title: string }[];
+  music?: MusicOption[];
 };
 
 /** Công tắc của các khối tuỳ chọn. Tắt = không gửi và không hiện trên thiệp. */
@@ -353,12 +354,8 @@ export function CreateForm(p: Props) {
             id="sec-music" offNote="Phần này phát nhạc nền khi khách mở thiệp. Bật công tắc ở trên nếu bạn muốn dùng nhạc nền!" title="Nhạc nền" icon="sparkle" hint={d.sections.music ? p.music.find((m) => m.id === d.musicId)?.title ?? 'Chọn một bài' : 'Không dùng nhạc'}
             open={open.music} onOpenChange={openSection('music')} enabled={d.sections.music} onEnabledChange={(v) => setSection('music', v)} switchLabel="Bật"
           >
-            <Field label="Bài nhạc" hint="Khách bấm vào thiệp thì nhạc bắt đầu phát, tắt được bất cứ lúc nào.">
-              <Select value={d.musicId} onChange={(e) => set('musicId', e.target.value)}>
-                <option value="">— Chọn bài —</option>
-                {p.music.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
-              </Select>
-            </Field>
+            <p className={s.defaultNote}>Bấm ▶ để nghe thử rồi chọn một bài. Khách bấm vào thiệp thì nhạc bắt đầu phát, tắt được bất cứ lúc nào.</p>
+            <MusicPicker options={p.music} value={d.musicId} onChange={(id) => set('musicId', id)} name="c-music" />
           </FormSection>
         ) : null}
 

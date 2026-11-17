@@ -22,7 +22,7 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
         defaultTemplateId={defaultTemplateId}
         initialTemplateId={initialTemplateId}
         photosEnabled={isStorageEnabled()}
-        music={listMusic().map((m) => ({ id: m.id, title: m.artist ? `${m.title} · ${m.artist}` : m.title }))}
+        music={listMusic().map((m) => ({ id: m.id, title: m.title, artist: m.artist, src: m.src }))}
       />
     </Page>
   );

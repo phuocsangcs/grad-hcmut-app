@@ -1,0 +1,125 @@
+.list {
+  display: grid;
+  gap: 6px;
+}
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 8px 12px 8px 8px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-m);
+  background: var(--surface, #fff);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.row:hover {
+  border-color: var(--line-strong);
+}
+.row[data-selected] {
+  border-color: var(--bk-600);
+  background: var(--bk-50, #f3f7fd);
+}
+.row input[type='radio'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--bk-700);
+  cursor: pointer;
+}
+.play {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bk-100, #e5eefb);
+  color: var(--bk-700);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.play:hover {
+  background: var(--bk-200, #cddff7);
+}
+.play:active {
+  transform: scale(0.94);
+}
+.play[data-playing] {
+  background: var(--bk-700);
+  color: #fff;
+}
+.play[data-empty] {
+  background: transparent;
+  color: var(--fg-muted);
+  font-size: 20px;
+  cursor: inherit;
+}
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.text b {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--bk-900);
+}
+.text small {
+  font-size: var(--text-xs);
+  color: var(--fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Ba vạch nhảy khi đang phát */
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.bars i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--bk-600);
+  animation: bar 0.9s ease-in-out infinite;
+  transform-origin: bottom;
+}
+.bars i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.bars i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+@keyframes bar {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bars i,
+  .spinner {
+    animation: none;
+  }
+}

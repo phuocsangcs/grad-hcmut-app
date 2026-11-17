@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { api, ApiError } from '@/components/api';
 import { fromVnLocalInput } from '@/lib/time';
 import { PhotoUploader, type UploadedPhoto } from '@/app/create/photo-uploader';
+import { MusicPicker, type MusicOption } from '@/app/create/music-picker';
 import { Button, Field, FormSection, Icon, Input, Select, Surface, Textarea } from '@/ui';
 import s from './manage.module.css';
 
@@ -33,7 +34,7 @@ type Props = {
   token: string;
   templates: { id: string; name: string; description: string }[];
   pois: { id: string; name: string }[];
-  music: { id: string; title: string }[];
+  music: MusicOption[];
   inviteLeads: string[];
   defaultInvitee: string;
   photosEnabled: boolean;
@@ -176,12 +177,8 @@ export function CardActions({ token, templates, pois, music, inviteLeads, defaul
 
           {music.length > 0 ? (
             <FormSection id="m-music" title="Nhạc nền" icon="sparkle" hint={music.find((m) => m.id === v.musicId)?.title ?? 'Không dùng nhạc'} open={open.music} onOpenChange={openSection('music')}>
-              <Field label="Bài nhạc" optional hint="Khách bấm vào thiệp thì nhạc bắt đầu phát, tắt được bất cứ lúc nào.">
-                <Select value={v.musicId} onChange={(e) => set('musicId', e.target.value)}>
-                  <option value="">— Không dùng nhạc —</option>
-                  {music.map((m) => <option key={m.id} value={m.id}>{m.title}</option>)}
-                </Select>
-              </Field>
+              <p className={s.musicHint}>Bấm ▶ để nghe thử. Khách bấm vào thiệp thì nhạc bắt đầu phát, tắt được bất cứ lúc nào.</p>
+              <MusicPicker options={music} value={v.musicId} onChange={(id) => set('musicId', id)} allowNone name="m-music" />
             </FormSection>
           ) : null}
 

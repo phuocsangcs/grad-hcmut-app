@@ -1,7 +1,8 @@
 # Nhạc nền
 
-Danh sách bài nằm ở `src/content/music.json`. **Hiện để trống**, nên khối "Nhạc nền" tự ẩn ở form tạo thiệp và trang quản lý.
-Thêm bài thì khối này tự hiện.
+Danh sách bài nằm ở `src/content/music.json` (hiện 7 bài của Kevin MacLeod, CC BY 4.0). Danh sách rỗng thì khối "Nhạc nền" tự ẩn ở form tạo thiệp và trang quản lý.
+Dòng `license` của mọi bài được liệt kê ở trang Về dự án (mục Nguồn nhạc nền) để đáp ứng yêu cầu ghi công của CC BY.
+File được nén về MP3 128 kbps, bài dài hơn ~3 phút 45 giây được cắt và nhỏ dần ở cuối (`ffmpeg ... -t 225 -af afade=t=out:st=219:d=6 -b:a 128k`).
 
 ## Thêm một bài
 
