@@ -10,15 +10,49 @@ export type UploadedPhoto = { key: string; url: string };
 
 const MAX_SIDE = 1600;
 
+type Decoded = { source: CanvasImageSource; width: number; height: number; release: () => void };
+
+/** Đọc ảnh bằng <img>: Safari (iPhone) đọc được HEIC theo cách này và tự xoay theo EXIF. */
+function decodeWithImg(file: File): Promise<Decoded> {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.decoding = 'async';
+  return new Promise<Decoded>((resolve, reject) => {
+    img.onload = () => resolve({ source: img, width: img.naturalWidth, height: img.naturalHeight, release: () => URL.revokeObjectURL(url) });
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('decode_failed'));
+    };
+    img.src = url;
+  });
+}
+
+/**
+ * Giải mã ảnh. createImageBitmap nhanh và nhẹ bộ nhớ nhưng trên Safari iPhone hay lỗi với ảnh HEIC
+ * (định dạng mặc định của camera iPhone) hoặc ảnh quá lớn → khi lỗi thì chuyển sang <img>.
+ */
+async function decode(file: File): Promise<Decoded> {
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      return { source: bmp, width: bmp.width, height: bmp.height, release: () => bmp.close() };
+    } catch {
+      // rơi xuống cách dùng <img>
+    }
+  }
+  return decodeWithImg(file);
+}
+
 /** Co ảnh về tối đa 1600px, xuất WebP (hoặc JPEG) và hạ chất lượng dần nếu vẫn quá nặng. */
 async function compress(file: File): Promise<Blob> {
-  const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
-  const k = Math.min(1, MAX_SIDE / Math.max(bmp.width, bmp.height));
+  const img = await decode(file);
+  const k = Math.min(1, MAX_SIDE / Math.max(img.width, img.height));
   const canvas = document.createElement('canvas');
-  canvas.width = Math.round(bmp.width * k);
-  canvas.height = Math.round(bmp.height * k);
-  canvas.getContext('2d')!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
-  bmp.close();
+  canvas.width = Math.max(1, Math.round(img.width * k));
+  canvas.height = Math.max(1, Math.round(img.height * k));
+  canvas.getContext('2d')!.drawImage(img.source, 0, 0, canvas.width, canvas.height);
+  img.release();
+  // Safari không xuất được WebP (trả về PNG) → tự rơi xuống JPEG ở dưới.
   for (const q of [0.82, 0.7, 0.55]) {
     const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, 'image/webp', q));
     if (blob && blob.type === 'image/webp' && blob.size <= PHOTO_MAX_BYTES) return blob;
@@ -36,6 +70,21 @@ async function upload(blob: Blob): Promise<UploadedPhoto> {
   const res = await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': blob.type }, body: blob });
   if (!res.ok) throw new Error('put_failed');
   return { key, url: publicUrl };
+}
+
+const isHeic = (f: File) => /heic|heif/i.test(f.type) || /\.(heic|heif)$/i.test(f.name);
+
+/** Câu báo lỗi theo đúng nguyên nhân (trước đây mọi lỗi đều báo "sai định dạng"). */
+function errorMessage(e: unknown, f: File): string {
+  if (e instanceof ApiError && e.code === 'rate_limited') return 'Bạn tải ảnh quá nhanh, thử lại sau một chút.';
+  const code = e instanceof Error ? e.message : '';
+  if (code === 'decode_failed') {
+    return isHeic(f)
+      ? 'Trình duyệt này chưa đọc được ảnh HEIC của iPhone. Mở trang bằng Safari trên iPhone, hoặc đổi ảnh sang JPG rồi thử lại.'
+      : 'Không đọc được ảnh này. Thử chọn ảnh khác (JPG, PNG, HEIC hoặc WebP).';
+  }
+  if (code === 'too_large') return 'Ảnh quá nặng sau khi nén. Thử chọn ảnh khác.';
+  return 'Không tải được một ảnh. Kiểm tra kết nối mạng rồi thử lại.';
 }
 
 /**
@@ -58,11 +107,7 @@ export function PhotoUploader({ value, onChange }: { value: UploadedPhoto[]; onC
       try {
         done.push(await upload(await compress(f)));
       } catch (e) {
-        setError(
-          e instanceof ApiError && e.code === 'rate_limited'
-            ? 'Bạn tải ảnh quá nhanh, thử lại sau một chút.'
-            : 'Không tải được một ảnh. Dùng ảnh JPG, PNG hoặc WebP rồi thử lại.',
-        );
+        setError(errorMessage(e, f));
       } finally {
         setBusy((n) => n - 1);
       }
@@ -101,7 +146,7 @@ export function PhotoUploader({ value, onChange }: { value: UploadedPhoto[]; onC
         ) : null}
       </ul>
       <input ref={input} type="file" accept="image/*" multiple hidden onChange={(e) => pick(e.target.files)} />
-      <p className={s.hint}>Tối đa {MAX_PHOTOS} ảnh. Ảnh được nén tự động trước khi tải lên.</p>
+      <p className={s.hint}>Tối đa {MAX_PHOTOS} ảnh, nhận cả ảnh chụp từ iPhone. Ảnh được nén tự động trước khi tải lên.</p>
       {error ? <p role="alert" className={s.error}>{error}</p> : null}
     </div>
   );
