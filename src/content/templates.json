@@ -1,8 +1,13 @@
 {
-  "updatedAt": "2026-11-15",
+  "updatedAt": "2026-11-17",
   "defaultId": "royal",
   "items": [
     { "id": "dossier", "name": "Hồ sơ tốt nghiệp", "description": "Bìa mở thiệp: ảnh khuôn viên mờ, tổ ong Bách Khoa, ảnh lục giác. Bấm Mở hồ sơ là đóng mộc Đã tốt nghiệp rồi lộ thư mời đánh số từng mục.", "tone": "modern", "cover": true, "ogImage": "/images/og/print.png" },
+    { "id": "feed", "name": "Bài đăng", "description": "Thiệp như một bài đăng mạng xã hội: hàng tin nổi bật, ảnh vuốt ngang, thả tim, hashtag. Lời chúc của khách hiện thành bình luận, xác nhận tham dự ngay dưới bài.", "tone": "fun", "cover": true, "ogImage": "/images/og/print.png" },
+    { "id": "scrapbook", "name": "Sổ kỷ niệm", "description": "Trang sổ kỷ yếu dán tay: ảnh polaroid dán băng keo, giấy nhớ vàng ghi lời mời, thư viết tay trên giấy kẻ dòng, tem Class of. Ảnh còn lại thành chồng polaroid.", "tone": "warm", "cover": true, "ogImage": "/images/og/print.png" },
+    { "id": "journey", "name": "Hành trình", "description": "Cuộn trang là đi lại bốn năm qua khuôn viên: mã hành trình, bốn chặng ảnh cảnh trường thật trên một đường đi, chặng cuối là lễ tốt nghiệp kèm lời mời.", "tone": "warm", "cover": true, "ogImage": "/images/og/print.png" },
+    { "id": "postcard", "name": "Bưu thiếp", "description": "Tấm bưu thiếp gửi từ Bách Khoa: mặt trước là ảnh của bạn, bấm lật ra lời nhắn viết tay, tem hoa kèn và dấu bưu điện ngày lễ. Thông tin trong phong bì thư máy bay.", "tone": "warm", "cover": true, "ogImage": "/images/og/print.png" },
+    { "id": "magazine", "name": "Tạp chí", "description": "Ảnh của bạn lên bìa số đặc biệt: tên tạp chí lớn, dòng tít, mã vạch. Bên trong có mục lục, thư toà soạn, câu trích và phóng sự ảnh khuôn viên.", "tone": "modern", "cover": true, "ogImage": "/images/og/print.png" },
     { "id": "portrait", "name": "Ảnh bìa", "description": "Ảnh chân dung của bạn làm bìa: máy tính chia đôi màn hình, điện thoại ảnh tràn ngang. Hợp dùng ảnh kỷ yếu.", "tone": "modern", "cover": true, "ogImage": "/images/og/print.png" },
     { "id": "royal", "name": "Trang trọng", "description": "Nền lụa kem, khung viền vàng, ruy băng xanh đậm và huy hiệu Trường. Thư mời tốt nghiệp truyền thống, hợp gửi người lớn.", "tone": "formal", "ogImage": "/images/og/print.png" },
     { "id": "print", "name": "In ấn", "description": "Giấy sáng, nét vẽ theo khoa, khối thông tin kiểu bản vẽ. Rõ ràng, hợp mọi người.", "tone": "modern", "ogImage": "/images/og/print.png" },

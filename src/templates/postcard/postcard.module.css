@@ -1,0 +1,460 @@
+.root {
+  --t-ink: #1f2a44;
+  --t-muted: #677089;
+  --t-paper: #fdfbf5;
+  --t-surface: #fff;
+  --t-line: rgba(31, 42, 68, 0.16);
+  --t-radius: 8px;
+  --p-red: #d64545;
+  --p-blue: #2f5bb7;
+  --p-pen: #23408e;
+  position: relative;
+  container-type: inline-size;
+  min-height: 100dvh;
+  background: linear-gradient(#cfe6fb 0, #eaf4fd 420px, #f6f3ea 900px);
+  color: var(--t-ink);
+  overflow-x: clip;
+}
+
+/* Dải trời hoa kèn mờ phía trên */
+.sky {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 460px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(#000 40%, transparent);
+  mask-image: linear-gradient(#000 40%, transparent);
+}
+.sky img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.wrap {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4) var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+}
+.kicker {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--p-pen);
+}
+.invitee {
+  padding: 8px 18px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* ---- Bưu thiếp lật ---- */
+.flipWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  perspective: 1800px;
+}
+/*
+ * Tấm thiệp luôn nằm ngang 3:2, bố cục giống nhau ở mọi màn hình: điện thoại chỉ thu nhỏ cả tấm.
+ * Mọi kích thước bên trong tính theo --u = 1/780 bề rộng tấm thiệp (đơn vị cqw của .card).
+ */
+.card {
+  position: relative;
+  width: min(100%, 780px);
+  aspect-ratio: 3 / 2;
+  container-type: inline-size;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+.card[data-flipped] {
+  transform: rotateY(180deg);
+}
+.face {
+  --u: calc(100cqw / 780);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 6);
+  background: var(--t-paper);
+  box-shadow: 0 2px 4px rgba(20, 30, 60, 0.08), 0 18px 40px rgba(20, 30, 60, 0.22);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.back {
+  transform: rotateY(180deg);
+}
+.flipBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 99px;
+  background: var(--p-pen);
+  color: #fff;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(35, 64, 142, 0.3);
+}
+.flipBtn:hover {
+  background: #1b3275;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+/* Mặt trước: ảnh chân dung nửa trái, cảnh trường + chữ "Thân gửi từ Bách Khoa" nửa phải */
+.front {
+  position: absolute;
+  inset: calc(var(--u) * 12);
+  overflow: hidden;
+  border-radius: calc(var(--u) * 3);
+}
+.front img {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  object-fit: cover;
+}
+.frontPhoto {
+  left: 0;
+  width: 42%;
+  object-position: 50% 28%;
+  border-right: calc(var(--u) * 8) solid var(--t-paper);
+}
+.frontScene {
+  left: 42%;
+  width: 58%;
+  object-position: 50% 50%;
+}
+.frontShade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 42%;
+  background: linear-gradient(to top, rgba(10, 20, 50, 0.7), rgba(10, 20, 50, 0.15) 60%, rgba(10, 20, 50, 0.05));
+}
+.greeting {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 42%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--u) * 24);
+  color: #fff;
+  text-align: center;
+}
+.greetSmall {
+  font-family: var(--font-script);
+  font-size: calc(var(--u) * 34);
+  font-weight: 600;
+  line-height: 1;
+}
+.greetBig {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: calc(var(--u) * 66);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #ffd84d;
+  -webkit-text-stroke: calc(var(--u) * 2) #1b3275;
+  paint-order: stroke fill;
+  text-shadow: calc(var(--u) * 4) calc(var(--u) * 4) 0 #1b3275, calc(var(--u) * 6) calc(var(--u) * 6) 0 rgba(0, 0, 0, 0.25);
+}
+.greetSub {
+  margin-top: calc(var(--u) * 12);
+  font-size: calc(var(--u) * 16);
+  font-weight: 600;
+  opacity: 0.95;
+}
+
+/* Mặt sau: lời nhắn trái, tem + địa chỉ phải */
+.backInner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: calc(var(--u) * 28);
+  padding: calc(var(--u) * 36);
+}
+.note {
+  align-self: center;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+}
+.noteText {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: calc(var(--u) * 26);
+  line-height: 1.5;
+  color: var(--p-pen);
+  white-space: pre-line;
+}
+.noteSign {
+  margin: calc(var(--u) * 14) 0 0;
+  text-align: right;
+  font-family: var(--font-script);
+  font-size: calc(var(--u) * 26);
+  font-weight: 700;
+  color: var(--p-pen);
+}
+.address {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding-left: calc(var(--u) * 28);
+  border-left: calc(var(--u) * 2) solid var(--t-line);
+}
+.stampRow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.postmark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 96);
+  height: calc(var(--u) * 96);
+  color: rgba(35, 64, 142, 0.7);
+  transform: rotate(-14deg);
+  margin-right: calc(var(--u) * -30);
+  z-index: 1;
+}
+.postmark svg {
+  position: absolute;
+  inset: 0;
+}
+.postmark circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+.postmark text {
+  fill: currentColor;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.06em;
+}
+.postmark b {
+  font-family: var(--font-mono);
+  font-size: calc(var(--u) * 11);
+}
+.stamp {
+  position: relative;
+  width: calc(var(--u) * 72);
+  height: calc(var(--u) * 88);
+  padding: calc(var(--u) * 7);
+  /* răng cưa tem: nền trắng có lỗ tròn, ảnh che phần giữa nên chỉ thấy lỗ ở viền */
+  background: radial-gradient(circle, var(--t-paper) calc(var(--u) * 2.4), #fff calc(var(--u) * 2.9)) calc(var(--u) * -4.5) calc(var(--u) * -4.5) / calc(var(--u) * 9) calc(var(--u) * 9);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+.stamp img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.stamp i {
+  position: absolute;
+  left: calc(var(--u) * 10);
+  bottom: calc(var(--u) * 9);
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: calc(var(--u) * 11);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.lines {
+  display: grid;
+  gap: calc(var(--u) * 10);
+  margin: 0;
+}
+.lines div {
+  display: flex;
+  align-items: baseline;
+  gap: calc(var(--u) * 10);
+  padding-bottom: calc(var(--u) * 5);
+  border-bottom: calc(var(--u) * 2) dotted rgba(31, 42, 68, 0.35);
+}
+.lines dt {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: calc(var(--u) * 12);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--t-muted);
+}
+.lines dd {
+  margin: 0;
+  min-width: 0;
+  font-family: var(--font-script);
+  font-size: calc(var(--u) * 22);
+  font-weight: 600;
+  color: var(--p-pen);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Tấm thiệp hẹp (điện thoại): giữ bố cục, nhưng phóng to riêng chữ cho dễ đọc */
+@container (max-width: 520px) {
+  .backInner {
+    gap: calc(var(--u) * 22);
+    padding: calc(var(--u) * 28);
+  }
+  .noteText {
+    font-size: calc(var(--u) * 34);
+    line-height: 1.38;
+  }
+  .noteSign {
+    font-size: calc(var(--u) * 34);
+    margin-top: calc(var(--u) * 8);
+  }
+  .address {
+    padding-left: calc(var(--u) * 20);
+  }
+  .lines dt {
+    font-size: calc(var(--u) * 15);
+  }
+  .lines dd {
+    font-size: calc(var(--u) * 28);
+  }
+  .greetSmall {
+    font-size: calc(var(--u) * 40);
+  }
+  .greetSub {
+    font-size: calc(var(--u) * 22);
+  }
+}
+
+/* ---- Phong bì thư máy bay ---- */
+.sections {
+  display: grid;
+  gap: var(--space-6);
+}
+.airmail {
+  padding: 7px;
+  border-radius: 6px;
+  background: repeating-linear-gradient(135deg, var(--p-red) 0 14px, #fff 14px 22px, var(--p-blue) 22px 36px, #fff 36px 44px);
+  box-shadow: 0 10px 24px rgba(20, 30, 60, 0.12);
+  min-width: 0;
+}
+.airmailInner {
+  display: grid;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--space-5);
+  border-radius: 3px;
+  background: var(--t-paper);
+}
+.airTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.2;
+}
+.airTitle span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--p-red);
+}
+
+/* ---- Bộ bưu thiếp ---- */
+.set {
+  display: grid;
+  gap: var(--space-4);
+}
+.setTitle {
+  text-align: center;
+  font-family: var(--font-script);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--p-pen);
+}
+.setRow {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  padding: var(--space-4) var(--space-2) var(--space-5);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+.mini {
+  flex: 0 0 min(72%, 260px);
+  margin: 0;
+  padding: 8px 8px 0;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(20, 30, 60, 0.15);
+  scroll-snap-align: center;
+  transition: rotate 0.25s, transform 0.25s;
+}
+.mini:hover {
+  rotate: 0deg !important;
+  transform: translateY(-4px);
+}
+.mini img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.mini figcaption {
+  padding: 6px 2px 10px;
+  font-family: var(--font-script);
+  font-size: 1.15rem;
+  color: var(--p-pen);
+}
+.tail {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* ---- Máy tính ---- */
+@container (min-width: 760px) {
+  .wrap {
+    padding-top: var(--space-12);
+    gap: var(--space-10);
+  }
+  .sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .mini {
+    flex-basis: 240px;
+  }
+}

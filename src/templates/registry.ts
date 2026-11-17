@@ -6,6 +6,11 @@ import { TicketTemplate } from './ticket/TicketTemplate';
 import { RoyalTemplate } from './royal/RoyalTemplate';
 import { PortraitTemplate } from './portrait/PortraitTemplate';
 import { DossierTemplate } from './dossier/DossierTemplate';
+import { FeedTemplate } from './feed/FeedTemplate';
+import { ScrapbookTemplate } from './scrapbook/ScrapbookTemplate';
+import { JourneyTemplate } from './journey/JourneyTemplate';
+import { PostcardTemplate } from './postcard/PostcardTemplate';
+import { MagazineTemplate } from './magazine/MagazineTemplate';
 
 /**
  * Danh bạ template. id phải trùng với `src/content/templates.json`
@@ -18,6 +23,11 @@ import { DossierTemplate } from './dossier/DossierTemplate';
  */
 export const TEMPLATES: TemplateDefinition[] = [
   { id: 'dossier', scheme: 'light', Component: DossierTemplate },
+  { id: 'feed', scheme: 'light', Component: FeedTemplate },
+  { id: 'scrapbook', scheme: 'light', Component: ScrapbookTemplate },
+  { id: 'journey', scheme: 'light', Component: JourneyTemplate },
+  { id: 'postcard', scheme: 'light', Component: PostcardTemplate },
+  { id: 'magazine', scheme: 'light', Component: MagazineTemplate },
   { id: 'portrait', scheme: 'light', Component: PortraitTemplate },
   { id: 'royal', scheme: 'light', Component: RoyalTemplate },
   { id: 'print', scheme: 'light', Component: PrintTemplate },
