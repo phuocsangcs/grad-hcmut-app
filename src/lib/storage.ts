@@ -42,6 +42,9 @@ function s3(c: Config): S3Client {
     region: 'auto',
     endpoint: `https://${c.accountId}.r2.cloudflarestorage.com`,
     credentials: { accessKeyId: c.accessKeyId, secretAccessKey: c.secretAccessKey },
+    // SDK mới tự gắn x-amz-checksum-crc32 của body RỖNG vào link presign → R2 từ chối file thật.
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED',
   }));
 }
 
