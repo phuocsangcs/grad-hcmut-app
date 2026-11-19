@@ -1,0 +1,425 @@
+/*
+ * LỊCH BLOC — tường vôi kem, bìa lịch xanh BK, giấy pơ-luya trắng ngà, số đỏ ngày lễ.
+ */
+.root {
+  --blue: var(--bk-700);
+  --red: #c8102e;
+  --paper: #fffdf7;
+  --wall: #efe6d2;
+  --ink: #1d2340;
+  --t-ink: var(--bk-700);
+  --t-muted: #55607a;
+  --t-surface: #f5efe0;
+  --t-paper: var(--paper);
+  --t-line: rgba(29, 35, 64, 0.16);
+  --t-radius: 4px;
+  min-height: 100svh;
+  background: #e2d6bd;
+  color: var(--ink);
+}
+.gate {
+  max-width: 720px;
+  margin: 0 auto;
+  background:
+    radial-gradient(rgba(120, 90, 40, 0.06) 1px, transparent 1.5px) 0 0 / 14px 14px,
+    var(--wall);
+}
+
+/* ============ Bìa: tường + lịch ============ */
+.wall {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 22px 18px 14px;
+  background:
+    radial-gradient(rgba(120, 90, 40, 0.07) 1px, transparent 1.5px) 0 0 / 14px 14px,
+    radial-gradient(ellipse at 50% 30%, #fbf5e6, var(--wall) 70%);
+}
+.kicker {
+  font-size: 1.02rem;
+  color: var(--t-muted);
+  margin-bottom: 8px;
+}
+.kicker b {
+  color: var(--blue);
+  font-size: 1.15rem;
+}
+.hang {
+  position: relative;
+  width: 140px;
+  height: 46px;
+}
+.nail {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #d8dde6, #6b7385);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+.string {
+  position: absolute;
+  inset: 7px 0 0;
+  border-top: 2px solid #6b5a3c;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  background: linear-gradient(to bottom right, transparent 49%, #6b5a3c 49.5%, #6b5a3c 51%, transparent 51.5%) left / 50% 100% no-repeat,
+    linear-gradient(to bottom left, transparent 49%, #6b5a3c 49.5%, #6b5a3c 51%, transparent 51.5%) right / 50% 100% no-repeat;
+  border: 0;
+}
+.calendar {
+  width: min(100%, 360px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  transform-origin: top center;
+  animation: sway 5s ease-in-out infinite;
+}
+@keyframes sway {
+  50% {
+    transform: rotate(0.8deg);
+  }
+}
+.board {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  background: linear-gradient(to bottom, #0a3bb5, var(--blue));
+  color: #fff;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+.board span {
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.board b {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--sun);
+}
+.pad {
+  position: relative;
+  aspect-ratio: 0.78;
+}
+.padEdge {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: -8px;
+  height: 8px;
+  background: repeating-linear-gradient(to bottom, #e9e2d0 0 1px, #fffdf7 1px 2px);
+  border-radius: 0 0 6px 6px;
+}
+.sheet {
+  position: absolute;
+  inset: 0;
+  transform-origin: top left;
+  transition: transform 700ms cubic-bezier(0.5, 0, 0.7, 0.5), opacity 700ms ease;
+}
+.sheet[data-state='top'] {
+  cursor: pointer;
+}
+.sheet[data-state='top']:hover .page {
+  transform: rotate(-0.6deg);
+}
+.sheet[data-state='torn'] {
+  transform: translate(30%, 70%) rotate(38deg);
+  opacity: 0;
+  pointer-events: none;
+}
+.page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 26px 16px 16px;
+  background: var(--paper);
+  border: 1px solid rgba(29, 35, 64, 0.08);
+  text-align: center;
+  transition: transform 200ms ease;
+  position: relative;
+}
+.holes {
+  position: absolute;
+  top: 6px;
+  left: 14px;
+  right: 14px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(29, 35, 64, 0.22) 2.5px, transparent 3px) 0 0 / 16px 8px repeat-x;
+}
+.pTop {
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.pBig {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(6rem, 36cqw, 9rem);
+  line-height: 0.9;
+  color: var(--blue);
+}
+.page[data-red] .pBig,
+.page[data-red] .pTop {
+  color: var(--red);
+}
+.pFoot {
+  font-weight: 800;
+  font-size: 1.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pNote {
+  margin-top: auto;
+  font-size: 0.98rem;
+  color: var(--t-muted);
+  text-wrap: balance;
+}
+.pEvent {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.goodBad {
+  margin: 2px 0 0;
+  width: 100%;
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+.goodBad div {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 8px;
+  padding: 4px 0;
+  border-top: 1px dashed var(--t-line);
+}
+.goodBad dt {
+  font-weight: 800;
+  color: var(--red);
+}
+.goodBad dd {
+  margin: 0;
+  font-weight: 600;
+}
+.openBtn {
+  margin-top: auto;
+  width: 100%;
+  min-height: 50px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--red);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #7d0a1d;
+}
+.openBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #7d0a1d;
+}
+.openBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 4px 0 #7d0a1d, var(--focus);
+}
+.tearBtn {
+  margin-top: 22px;
+  min-height: 50px;
+  padding: 0 22px;
+  border: 2px solid var(--blue);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.02rem;
+  cursor: pointer;
+}
+.tearBtn small {
+  font-weight: 600;
+  color: var(--t-muted);
+}
+.tearBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+.skip {
+  margin-top: 4px;
+  color: var(--blue);
+}
+[data-gate-phase='opening'] .calendar {
+  animation: none;
+}
+
+/* ============ Nội dung ============ */
+.hero {
+  padding: 26px 16px 8px;
+}
+.heroSheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 30px 20px 24px;
+  background: var(--paper);
+  border-top: 10px solid var(--blue);
+  text-align: center;
+}
+.heroSheet .pTop {
+  color: var(--red);
+}
+.heroDay {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(7rem, 40cqw, 11rem);
+  line-height: 0.9;
+  color: var(--red);
+}
+.heroName {
+  margin-top: 10px;
+  font-weight: 800;
+  font-size: clamp(1.7rem, 8.5cqw, 2.6rem);
+  line-height: 1.1;
+  color: var(--blue);
+  text-wrap: balance;
+}
+.heroDeg {
+  color: var(--t-muted);
+  text-wrap: balance;
+}
+.heroTime {
+  margin-top: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #fff;
+  background: var(--blue);
+  border-radius: 4px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px 16px 30px;
+}
+.back {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 20px;
+  background: #f8f1df;
+  border: 1px solid rgba(29, 35, 64, 0.1);
+}
+.backKicker {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--red);
+}
+.quote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--blue);
+  text-align: center;
+  text-wrap: balance;
+}
+.to {
+  font-size: 1.08rem;
+}
+.to b {
+  color: var(--blue);
+}
+.text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.sign {
+  align-self: flex-end;
+  font-family: var(--font-script);
+  font-size: 2rem;
+  color: var(--blue);
+}
+.sec {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 18px 20px;
+  background: var(--paper);
+  border: 1px solid rgba(29, 35, 64, 0.08);
+}
+.secHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.secHead b {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--red);
+}
+.secHead span {
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.secTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+@container (min-width: 600px) {
+  .hero {
+    padding: 40px 48px 10px;
+  }
+  .body {
+    padding: 18px 48px 44px;
+    gap: 22px;
+  }
+  .back,
+  .sec {
+    padding: 30px 32px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendar {
+    animation: none;
+  }
+  .sheet {
+    transition: none;
+  }
+}

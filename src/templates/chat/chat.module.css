@@ -1,0 +1,445 @@
+/*
+ * TIN NHẮN — màn hình khoá ảnh hoa kèn, ứng dụng nhắn tin xanh BK.
+ */
+.root {
+  --blue: var(--bk-700);
+  --bubble: #ffffff;
+  --mine: var(--bk-500);
+  --ink: var(--bk-900);
+  --t-ink: var(--bk-700);
+  --t-muted: var(--muted);
+  --t-surface: var(--bk-100);
+  --t-paper: #fff;
+  --t-line: rgba(3, 43, 145, 0.14);
+  --t-radius: 12px;
+  min-height: 100svh;
+  background: #c9d6e8;
+  color: var(--ink);
+}
+.gate {
+  max-width: 640px;
+  margin: 0 auto;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(20, 136, 219, 0.12), transparent 40%),
+    #eef2f8;
+}
+
+/* ============ Bìa: màn hình khoá ============ */
+.lock {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 14px 10px;
+  color: #fff;
+  isolation: isolate;
+  overflow: hidden;
+}
+.wall {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+.wall img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  transform: scale(1.05);
+}
+.wall::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(4, 12, 40, 0.55), rgba(4, 12, 40, 0.2) 40%, rgba(4, 12, 40, 0.65));
+}
+.status {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.battery {
+  width: 26px;
+  height: 13px;
+  border: 1.5px solid #fff;
+  border-radius: 4px;
+  padding: 1.5px;
+}
+.battery i {
+  display: block;
+  width: 80%;
+  height: 100%;
+  border-radius: 2px;
+  background: #fff;
+}
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 26px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.25);
+}
+.clockDate {
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.clockTime {
+  font-size: clamp(4.6rem, 26cqw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.notifs {
+  margin-top: auto;
+  width: min(100%, 440px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.notifs:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+  border-radius: 18px;
+}
+.notif {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(245, 247, 252, 0.94);
+  color: var(--ink);
+  animation: drop 600ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+}
+.notif[data-second] {
+  animation-delay: 500ms;
+  opacity: 0.94;
+}
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.96);
+  }
+}
+.notifs:hover .notif:first-child {
+  background: #fff;
+}
+.appIcon {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: #fff;
+  border: 1px solid rgba(3, 43, 145, 0.12);
+}
+.appIcon img {
+  width: 30px;
+  height: auto;
+}
+.appIcon[data-cal] {
+  background: #fff;
+  color: #d7263d;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.notifBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+.notifTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.notifTop b {
+  font-weight: 800;
+}
+.notifTop small {
+  flex: none;
+  color: var(--muted);
+}
+.unlock {
+  margin: 18px 0 8px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-height: 56px;
+  padding: 6px 20px;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.unlock svg {
+  animation: up 1.4s ease-in-out infinite;
+}
+@keyframes up {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.unlock:focus-visible {
+  outline: 3px solid #fff;
+  border-radius: 10px;
+}
+.homeBar {
+  width: 130px;
+  height: 5px;
+  border-radius: 3px;
+  background: #fff;
+  margin-bottom: 4px;
+}
+[data-gate-phase='opening'] .notif:first-child {
+  transform: scale(1.04);
+  transition: transform 300ms ease;
+}
+
+/* ============ Nội dung: ứng dụng nhắn tin ============ */
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.97);
+  border-bottom: 1px solid var(--t-line);
+}
+.avatar {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  container-type: size;
+  outline: 2px solid var(--mine);
+  outline-offset: 2px;
+}
+.who {
+  flex: 1;
+  min-width: 0;
+}
+.who h1 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.who span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.who i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--leaf);
+}
+.callBtn {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--blue);
+  background: var(--bk-100);
+}
+.callBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 12px 30px;
+}
+.day {
+  align-self: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: rgba(3, 43, 145, 0.07);
+  padding: 3px 12px;
+  border-radius: 999px;
+}
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.item {
+  display: flex;
+  animation: msg 350ms cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+.item[hidden] {
+  display: none;
+}
+@keyframes msg {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+}
+.bubble {
+  max-width: 84%;
+  padding: 10px 14px;
+  border-radius: 20px 20px 20px 6px;
+  background: var(--bubble);
+  font-size: 1.06rem;
+  line-height: 1.5;
+  border: 1px solid rgba(3, 43, 145, 0.08);
+}
+.bubble b {
+  color: var(--blue);
+}
+.bubble[data-tail] {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}
+.photo {
+  margin: 0;
+  max-width: 72%;
+  border-radius: 20px 20px 20px 6px;
+  overflow: hidden;
+  border: 3px solid #fff;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.rich {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 14px 16px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(3, 43, 145, 0.1);
+}
+.item .rich {
+  max-width: 94%;
+}
+.richLabel {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--bk-600);
+}
+.richTitle {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--blue);
+}
+.typingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.typing {
+  display: inline-flex;
+  gap: 5px;
+  padding: 14px 16px;
+  border-radius: 20px 20px 20px 6px;
+  background: #fff;
+}
+.typing i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9fb0cc;
+  animation: dot 1s ease-in-out infinite;
+}
+.typing i:nth-child(2) {
+  animation-delay: 150ms;
+}
+.typing i:nth-child(3) {
+  animation-delay: 300ms;
+}
+@keyframes dot {
+  30% {
+    transform: translateY(-5px);
+    background: var(--blue);
+  }
+}
+.skipAll {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.reply {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  background: #fff;
+  border: 2px solid var(--mine);
+}
+.replyLabel {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--bk-600);
+}
+
+@container (min-width: 600px) {
+  .body {
+    padding: 20px 24px 40px;
+  }
+  .bubble {
+    max-width: 70%;
+  }
+  .photo {
+    max-width: 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notif,
+  .item,
+  .typing i,
+  .unlock svg {
+    animation: none;
+  }
+}

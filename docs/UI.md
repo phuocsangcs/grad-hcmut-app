@@ -66,6 +66,25 @@ khám phá) được dựng sẵn thành `blocks` trong `InvitationCard`, mẫu 
 Ngày lễ (`mode = dayof`) mọi mẫu dùng chung `shared/DayOfView` để người lớn tuổi luôn thấy cùng một
 giao diện chỉ dẫn rõ ràng. Muốn mẫu tự vẽ ngày lễ, sửa nhánh `dayof` trong `InvitationCard.tsx`.
 
+### Trang mở thiệp (bìa tương tác)
+
+Các mẫu bộ Sắc màu BK / Sáng tạo / Theo ngành dùng chung `shared/Gate.tsx`:
+
+```tsx
+<Gate cover={cover} duration={1800} exit="fade">{nội dung}</Gate>
+```
+
+- `cover` là bìa một màn hình (server render). Đặt `<GateButton>` để mở, hoặc trong client component
+  gọi `useGate().open()` khi khách hoàn tất thao tác (cào, xé lịch, giữ nút…). Bìa cần thao tác thì thêm
+  `<GateSkip>` ("Mở thiệp luôn") cho người lớn tuổi.
+- Hiệu ứng riêng của mẫu viết bằng CSS `[data-gate-phase='opening'] .xxx { … }`; Gate lo phần bìa phủ
+  nội dung và rời đi trong 600ms cuối (`exit`: `fade` | `up` | `zoom` | `none`).
+- Nội dung đã render sẵn (ẩn) nên form RSVP, đếm ngược sẵn sàng ngay khi mở; giảm chuyển động thì mở ngay.
+- `shared/sections.tsx` → `sectionList(blocks, labels)` trả danh sách mục chuẩn (ảnh, buổi lễ, RSVP, lưu bút,
+  điểm hẹn, đường đến) để mẫu tự vẽ khung; `shared/date.ts` có `dateParts()` và các hàm tên ngắn.
+- Ảnh khuôn viên cố định của mẫu nằm ở `shared/campus.ts` (`public/images/campus`, đã nén ~1600px).
+- `collection` trong `templates.json` (`bk` | `creative` | `major` | `classic`) quyết định nhóm lọc ở `/templates`.
+
 ## 4. Hoạ tiết theo khoa
 
 `src/templates/motifs/FacultyMotif.tsx` — mỗi `motif` là một SVG nét, màu lấy từ biến

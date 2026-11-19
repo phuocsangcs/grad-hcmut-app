@@ -38,7 +38,7 @@ const PAGE_FEATURES: { icon: IconName; title: string; body: string }[] = [
 
 const STEPS = [
   { title: 'Chọn khoa', body: 'Ngày giờ lễ tự điền theo lịch chính thức của trường.' },
-  { title: 'Chọn mẫu, viết lời nhắn', body: 'Bảy mẫu, mẫu nào cũng đổi màu và hoạ tiết theo khoa.' },
+  { title: 'Chọn mẫu, viết lời nhắn', body: 'Hơn 25 mẫu: sắc màu Bách Khoa, sáng tạo, theo ngành. Mẫu nào cũng đổi màu theo khoa.' },
   { title: 'Gửi link', body: 'Thương mời Ba Mẹ, Kính mời Ông Bà… hoặc mỗi người một link riêng. Ai sẽ đến, bạn biết ngay.' },
 ];
 

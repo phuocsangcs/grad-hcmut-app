@@ -15,6 +15,7 @@ export default function TemplatesPage() {
     return {
       id: t.id,
       cover: t.cover,
+      collection: t.collection,
       name: t.name,
       description: t.description,
       thumb: <FitScreen>{inner}</FitScreen>,

@@ -18,4 +18,11 @@ export const CAMPUS = {
   yellowPath: P('san-b2-hoa-vang', 'Sân B2 hoa vàng', 'Mặt sân phủ đầy hoa vàng rụng trước toà B2'),
   hall: P('hoa-truoc-giang-duong', 'Hoa trước giảng đường', 'Hoa vàng nở trước dãy giảng đường'),
   b10: P('duong-b10', 'Đường trước B10', 'Con đường vắng trước toà B10, lá rơi hai bên'),
+  gate: P('cong-truong', 'Cổng trường', 'Cổng trường 268 Lý Thường Kiệt, cột biểu tượng xanh dưới hàng cây'),
+  libraryFront: P('thu-vien-mat-tien', 'Thư viện', 'Mặt tiền toà thư viện trắng xanh, chữ Trường Đại học Bách Khoa'),
+  libraryGold: P('thu-vien-hoa-vang', 'Thảm hoa vàng', 'Thảm hoa vàng rụng trước thư viện'),
+  blossomA5: P('hoa-ken-san-a5', 'Hoa kèn sân A5', 'Cây hoa kèn hồng nở rộ trên bãi cỏ, hàng ghế trắng'),
+  a5: P('san-a5', 'Sân A5', 'Sân trước Hội trường A5 và thư viện dưới tán cây'),
+  pitch: P('san-bong', 'Sân bóng', 'Sân bóng cỏ xanh, khung thành trắng, trời nhiều mây'),
+  goldenCampus: P('hoa-vang-san-truong', 'Mùa hoa vàng', 'Hoa vàng phủ sân trước dãy nhà kính xanh'),
 } as const;

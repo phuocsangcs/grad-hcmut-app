@@ -10,6 +10,8 @@ export type PickerItem = {
   id: string;
   /** Mẫu có chỗ đặt ảnh bìa. */
   cover: boolean;
+  /** Bộ sưu tập: bk | creative | major | classic. */
+  collection: string;
   name: string;
   description: string;
   /** Xem trước nhỏ trong lưới (server render sẵn). */
@@ -18,22 +20,25 @@ export type PickerItem = {
   large: ReactNode;
 };
 
-type Filter = 'all' | 'cover' | 'plain';
+type Filter = 'all' | 'bk' | 'creative' | 'major' | 'classic';
 const FILTERS: { id: Filter; label: string }[] = [
   { id: 'all', label: 'Tất cả' },
-  { id: 'cover', label: 'Có ảnh bìa' },
-  { id: 'plain', label: 'Không cần ảnh' },
+  { id: 'bk', label: 'Sắc màu Bách Khoa' },
+  { id: 'creative', label: 'Sáng tạo' },
+  { id: 'major', label: 'Theo ngành' },
+  { id: 'classic', label: 'Bộ đầu tiên' },
 ];
+const match = (t: PickerItem, f: Filter) => f === 'all' || t.collection === f;
 
 /**
- * Lưới mẫu thiệp, lọc nhanh theo có/không ảnh bìa. Bấm một mẫu → hộp xác nhận (kính mờ) → "Dùng mẫu này" mới sang trang nhập thông tin.
+ * Lưới mẫu thiệp, lọc theo bộ sưu tập (Sắc BK, Sáng tạo, Theo ngành, Bộ đầu tiên). Bấm một mẫu → hộp xác nhận (kính mờ) → "Dùng mẫu này" mới sang trang nhập thông tin.
  */
 export function TemplatePicker({ items }: { items: PickerItem[] }) {
   const router = useRouter();
   const [picked, setPicked] = useState<PickerItem | null>(null);
   const [filter, setFilter] = useState<Filter>('all');
-  const count = (f: Filter) => items.filter((t) => f === 'all' || (f === 'cover') === t.cover).length;
-  const list = items.filter((t) => filter === 'all' || (filter === 'cover') === t.cover);
+  const count = (f: Filter) => items.filter((t) => match(t, f)).length;
+  const list = items.filter((t) => match(t, filter));
   const confirmRef = useRef<HTMLButtonElement>(null);
   const lastFocus = useRef<HTMLElement | null>(null);
 
@@ -73,7 +78,10 @@ export function TemplatePicker({ items }: { items: PickerItem[] }) {
           <li key={t.id} className={s.card}>
             <div className={s.thumb} aria-hidden="true">{t.thumb}</div>
             <div className={s.cardBody}>
-              <h2 className={s.cardName}>{t.name}</h2>
+              <h2 className={s.cardName}>
+                {t.name}
+                {t.cover ? <span className={s.badge}>Có ảnh</span> : null}
+              </h2>
               <p className={s.cardDesc}>{t.description}</p>
               <Link href={`/templates/${t.id}`} className={s.demoLink}>
                 <Icon name="eye" size={14} /> Xem demo

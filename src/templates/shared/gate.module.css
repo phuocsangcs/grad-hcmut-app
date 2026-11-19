@@ -1,0 +1,109 @@
+/*
+ * Khung "mở thiệp" dùng chung. Mẫu tự vẽ bìa + hiệu ứng riêng bằng
+ * [data-gate-phase='opening'] .xxx { … }; ở đây chỉ lo bìa phủ nội dung và rời đi.
+ */
+.gate {
+  position: relative;
+  container-type: inline-size;
+  min-height: 100svh;
+  overflow: clip;
+}
+:global([data-preview]) .gate {
+  min-height: 780px;
+}
+
+.cover {
+  position: relative;
+  z-index: 5;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  overflow: hidden;
+}
+:global([data-preview]) .cover {
+  min-height: 780px;
+  height: 780px;
+}
+
+/* Đang mở: bìa nổi lên trên nội dung (đã hiện phía sau) và rời đi ở cuối */
+.gate[data-gate-phase='opening'] .cover {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 100svh;
+  animation: gate-exit 600ms var(--ease-out) forwards;
+  animation-delay: calc(var(--gate-ms, 1400ms) - 600ms);
+  pointer-events: none;
+}
+:global([data-preview]) .gate[data-gate-phase='opening'] .cover {
+  height: 780px;
+}
+.gate[data-exit='up'][data-gate-phase='opening'] .cover {
+  animation-name: gate-exit-up;
+}
+.gate[data-exit='zoom'][data-gate-phase='opening'] .cover {
+  animation-name: gate-exit-zoom;
+}
+.gate[data-exit='none'][data-gate-phase='opening'] .cover {
+  animation: none;
+}
+@keyframes gate-exit {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes gate-exit-up {
+  to {
+    transform: translateY(-100%);
+  }
+}
+@keyframes gate-exit-zoom {
+  to {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+.gate[data-gate-phase='open'] .content {
+  animation: gate-enter 500ms var(--ease-out) both;
+}
+@keyframes gate-enter {
+  from {
+    opacity: 0.4;
+  }
+}
+
+.skip {
+  align-self: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: inherit;
+  opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.skip:hover {
+  opacity: 1;
+}
+.skip:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate[data-gate-phase='opening'] .cover,
+  .gate[data-gate-phase='open'] .content {
+    animation: none;
+  }
+}

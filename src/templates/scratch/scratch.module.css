@@ -1,0 +1,430 @@
+/*
+ * VÉ CÀO MAY MẮN — vàng nắng, xanh BK, đỏ "trúng giải"; giấy vé răng cưa.
+ */
+.root {
+  --blue: var(--bk-700);
+  --gold: #ffcf4a;
+  --gold-2: #f4b740;
+  --red: #d7263d;
+  --ink: var(--bk-900);
+  --t-ink: var(--bk-700);
+  --t-muted: var(--muted);
+  --t-surface: #fff4d6;
+  --t-paper: #fffdf6;
+  --t-line: rgba(3, 43, 145, 0.18);
+  --t-radius: 6px;
+  min-height: 100svh;
+  background: #062a8f;
+  color: var(--ink);
+}
+.gate {
+  max-width: 760px;
+  margin: 0 auto;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 207, 74, 0.35), transparent 50%),
+    repeating-conic-gradient(from 0deg at 50% 0%, #0a36ab 0 6deg, #0b3db9 6deg 12deg);
+}
+
+/* ============ Bìa: tấm vé ============ */
+.coverInner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 26px 16px 20px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 207, 74, 0.4), transparent 55%),
+    repeating-conic-gradient(from 0deg at 50% 0%, #0a36ab 0 6deg, #0b3db9 6deg 12deg);
+}
+.ticket {
+  position: relative;
+  width: min(100%, 460px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 16px 16px;
+  background:
+    radial-gradient(circle at 0 50%, transparent 12px, var(--gold) 12.5px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 12px, var(--gold) 12.5px) right / 51% 100% no-repeat;
+  border-radius: 14px;
+  animation: hop 3s ease-in-out infinite;
+}
+.ticket::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 2px dashed rgba(3, 43, 145, 0.35);
+  border-radius: 10px;
+  pointer-events: none;
+}
+/* chỉ nhún dọc (không xoay) để toạ độ cào luôn khớp */
+@keyframes hop {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.ticket:hover,
+.ticket:active {
+  animation-play-state: paused;
+}
+.tHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 10px;
+  border-bottom: 2px solid var(--blue);
+}
+.tLogo {
+  width: 42px;
+  height: auto;
+  padding: 4px;
+  border-radius: 8px;
+  background: #fff;
+}
+.tHead b {
+  display: block;
+  font-weight: 800;
+  font-size: clamp(1.35rem, 7cqw, 1.9rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--red);
+  letter-spacing: -0.01em;
+}
+.tHead span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--blue);
+}
+.tMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 0.82rem;
+  color: var(--blue);
+}
+.tMeta b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+.tMeta span:last-child {
+  text-align: right;
+}
+.scratchBox {
+  position: relative;
+  height: 190px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fffdf6;
+  border: 3px solid var(--blue);
+}
+.prize {
+  position: absolute;
+  inset: 0;
+}
+.foil {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+  transition: opacity 500ms ease;
+}
+.scratchBox[data-done] .foil {
+  opacity: 0;
+  pointer-events: none;
+}
+.win {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  padding: 10px;
+  background: repeating-conic-gradient(from 0deg, #fff6d6 0 10deg, #fffdf6 10deg 20deg);
+}
+.winTag {
+  font-weight: 800;
+  font-size: 0.88rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--red);
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+.winPrize {
+  font-weight: 800;
+  font-size: clamp(2rem, 10cqw, 2.8rem);
+  line-height: 1.1;
+  color: var(--blue);
+}
+.winSub {
+  font-weight: 700;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.sparks {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+.sparks i {
+  position: absolute;
+  width: 6px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--c);
+  opacity: 0;
+  transform: rotate(var(--a)) translateY(0);
+}
+.scratchBox[data-done] .sparks i {
+  animation: spark 900ms ease-out forwards;
+  animation-delay: var(--d);
+}
+@keyframes spark {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--a)) translateY(-20px);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--a)) translateY(-150px);
+  }
+}
+.scratchCtl {
+  display: flex;
+  justify-content: center;
+}
+.helper,
+.claim {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.helper {
+  border: 2px solid var(--blue);
+  background: #fff;
+  color: var(--blue);
+}
+.helper:hover {
+  background: #eef4ff;
+}
+.claim {
+  border: 0;
+  background: var(--red);
+  color: #fff;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0 #8f1424;
+  animation: pop 400ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes pop {
+  from {
+    transform: scale(0.8);
+  }
+}
+.helper:focus-visible,
+.claim:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+.tFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 6px 2px;
+  border-top: 2px solid var(--blue);
+  font-size: 0.85rem;
+  color: var(--blue);
+}
+.tFoot b {
+  color: var(--ink);
+}
+.coverNote {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* ============ Nội dung: phiếu lĩnh thưởng ============ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px 16px 12px;
+  color: #fff;
+}
+.heroTag {
+  align-self: center;
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--gold);
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+.heroRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.heroPhoto {
+  flex: none;
+  width: 116px;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 4px solid var(--gold);
+  container-type: size;
+}
+.heroLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.heroName {
+  font-weight: 800;
+  font-size: clamp(1.6rem, 8cqw, 2.6rem);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+.heroDeg {
+  opacity: 0.9;
+}
+.prizeBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--red);
+}
+.prizeBar span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.prizeBar b {
+  font-size: 1.35rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px 16px 30px;
+}
+.coupon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 20px 22px;
+  background:
+    radial-gradient(circle at 0 40px, transparent 11px, #fffdf6 11.5px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 40px, transparent 11px, #fffdf6 11.5px) right / 51% 100% no-repeat;
+  border-radius: 10px;
+}
+.coupon::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 40px;
+  border-top: 2px dashed rgba(3, 43, 145, 0.22);
+  pointer-events: none;
+}
+.cKicker {
+  min-height: 22px;
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.cNo {
+  color: var(--blue);
+}
+.cTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--blue);
+  text-wrap: balance;
+}
+.lead {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--blue);
+}
+.coupon > p:not(.cKicker) {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+.sign {
+  align-self: flex-end;
+  font-family: var(--font-script);
+  font-size: 1.9rem !important;
+  color: var(--blue);
+}
+.rules {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+.rules li::marker {
+  font-weight: 800;
+  color: var(--red);
+}
+
+@container (min-width: 600px) {
+  .scratchBox {
+    height: 220px;
+  }
+  .hero {
+    padding: 44px 48px 16px;
+  }
+  .heroPhoto {
+    width: 150px;
+    height: 180px;
+  }
+  .body {
+    padding: 18px 48px 44px;
+    gap: 22px;
+  }
+  .coupon {
+    padding: 22px 32px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket,
+  .claim {
+    animation: none;
+  }
+}

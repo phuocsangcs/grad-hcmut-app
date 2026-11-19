@@ -1,0 +1,441 @@
+/*
+ * NGHIỆM THU CÔNG TRÌNH — trời xanh, cẩu tháp vàng, sọc an toàn vàng đen, bảng công trình xanh dương.
+ */
+.root {
+  --blue: #0b4fb3;
+  --navy: var(--bk-700);
+  --yellow: #ffc62b;
+  --orange: #ff7a1a;
+  --black: #1d1d1f;
+  --concrete: #c9ccd2;
+  --ink: #1d2340;
+  --t-ink: var(--bk-700);
+  --t-muted: #4a5670;
+  --t-surface: #f3f4f6;
+  --t-paper: #fff;
+  --t-line: rgba(29, 35, 64, 0.16);
+  --t-radius: 4px;
+  --hazard: repeating-linear-gradient(-45deg, var(--yellow) 0 14px, var(--black) 14px 28px);
+  min-height: 100svh;
+  background: #b8d3ee;
+  color: var(--ink);
+}
+.gate {
+  max-width: 740px;
+  margin: 0 auto;
+  background: #eef1f5;
+}
+
+/* ============ Bìa: công trường ============ */
+.coverInner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 16px 12px;
+  background: linear-gradient(to bottom, #7fc0f2, #cfe6fa 62%, #e9e1cf 62%);
+}
+.coverHead {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--black);
+  background: var(--yellow);
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.coverName {
+  margin-top: 4px;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 9cqw, 2.8rem);
+  line-height: 1.05;
+  color: var(--navy);
+  text-wrap: balance;
+}
+.coverSub {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.site {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 0;
+}
+.scene {
+  position: relative;
+  flex: 1;
+  width: min(100%, 380px);
+  min-height: 300px;
+  max-height: 440px;
+}
+.crane {
+  position: absolute;
+  left: 0;
+  bottom: 22px;
+  width: 64%;
+  height: auto;
+  max-height: calc(100% - 22px);
+}
+.mast,
+.jib {
+  stroke: var(--yellow);
+  stroke-width: 6;
+}
+.mastSide {
+  stroke: #e0a800;
+  stroke-width: 2;
+  fill: none;
+}
+.weight {
+  fill: #6b7385;
+}
+.cab {
+  fill: var(--orange);
+}
+.cable {
+  stroke: #3a3f4a;
+  stroke-width: 2;
+}
+.hookHead {
+  fill: #3a3f4a;
+}
+.hook {
+  animation: swing 2.6s ease-in-out infinite;
+  transform-origin: 150px 34px;
+}
+@keyframes swing {
+  50% {
+    transform: rotate(3deg);
+  }
+}
+.tower {
+  position: absolute;
+  right: 6%;
+  bottom: 22px;
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.base {
+  height: 12px;
+  background: #8a8f99;
+}
+.floor {
+  height: 54px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 24px 8px 0;
+  background:
+    linear-gradient(90deg, transparent 12%, rgba(20, 136, 219, 0.55) 12% 30%, transparent 30% 41%, rgba(20, 136, 219, 0.55) 41% 59%, transparent 59% 70%, rgba(20, 136, 219, 0.55) 70% 88%, transparent 88%) 0 5px / 100% 14px no-repeat,
+    #f2f2ee;
+  border: 2px solid #8a8f99;
+  border-bottom-width: 4px;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(-340px);
+  transition: transform 650ms cubic-bezier(0.5, 0, 0.6, 1.4), opacity 150ms;
+}
+.floor[data-on] {
+  opacity: 1;
+  transform: none;
+}
+.floor b {
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.floor span {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--t-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.flag {
+  align-self: center;
+  position: relative;
+  height: 54px;
+  width: 4px;
+  background: #3a3f4a;
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 400ms ease 500ms, opacity 100ms 500ms;
+}
+.flag span {
+  position: absolute;
+  left: 4px;
+  top: 0;
+  padding: 4px 10px;
+  background: #d7263d;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+  clip-path: polygon(0 0, 100% 0, 88% 50%, 100% 100%, 0 100%);
+  animation: wave 1.2s ease-in-out infinite;
+  transform-origin: left;
+}
+@keyframes wave {
+  50% {
+    transform: skewY(4deg);
+  }
+}
+.site[data-done] .flag {
+  opacity: 1;
+  transform: none;
+}
+.ground {
+  position: absolute;
+  left: -16px;
+  right: -16px;
+  bottom: 0;
+  height: 22px;
+  background: var(--hazard);
+}
+.ctl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.progress {
+  font-weight: 800;
+  color: var(--ink);
+}
+.buildBtn,
+.accept {
+  min-height: 54px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+.buildBtn {
+  background: var(--yellow);
+  color: var(--black);
+  box-shadow: 0 4px 0 #b88a00;
+}
+.buildBtn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #b88a00;
+}
+.accept {
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 4px 0 #062e6b;
+  animation: pop 400ms cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+@keyframes pop {
+  from {
+    transform: scale(0.8);
+  }
+}
+.buildBtn:focus-visible,
+.accept:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
+}
+.skip {
+  color: var(--navy);
+}
+
+/* ============ Nội dung ============ */
+.hero {
+  padding: 24px 14px 8px;
+}
+.board {
+  padding: 8px;
+  background: var(--hazard);
+  border-radius: 6px;
+}
+.boardTitle {
+  padding: 14px 12px 10px;
+  background: var(--blue);
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: clamp(1.15rem, 5.6cqw, 1.6rem);
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid #fff;
+}
+.boardList {
+  margin: 0;
+  padding: 6px 14px 14px;
+  background: var(--blue);
+  color: #fff;
+}
+.boardList div {
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 10px;
+  padding: 9px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.35);
+}
+.boardList div:last-child {
+  border-bottom: 0;
+}
+.boardList dt {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #cfe0ff;
+}
+.boardList dd {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.02rem;
+}
+.boardList div:nth-child(2) dd {
+  color: var(--yellow);
+  font-size: 1.2rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 14px 14px 30px;
+}
+.sec {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 18px 22px;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid var(--t-line);
+  overflow: hidden;
+}
+.secKicker {
+  margin: 0 -18px 4px;
+  padding: 10px 18px;
+  background: linear-gradient(var(--black), var(--black)) bottom / 100% 0 no-repeat, var(--yellow);
+  border-bottom: 6px solid transparent;
+  border-image: var(--hazard) 6;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--black);
+}
+.secTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--navy);
+  text-wrap: balance;
+}
+.to {
+  font-size: 1.08rem;
+}
+.to b {
+  color: var(--navy);
+}
+.text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.sign {
+  align-self: flex-end;
+  font-family: var(--font-script);
+  font-size: 1.7rem;
+  color: var(--navy);
+}
+.photo {
+  margin: 0;
+  position: relative;
+  border: 6px solid var(--yellow);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.photo figcaption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 6px 12px;
+  background: var(--black);
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+.safety {
+  text-align: center;
+  padding: 10px;
+  background: var(--black);
+  color: var(--yellow);
+  font-weight: 800;
+  border-radius: 4px;
+}
+
+@container (min-width: 600px) {
+  .hero {
+    padding: 40px 48px 12px;
+  }
+  .boardList div {
+    grid-template-columns: 180px 1fr;
+  }
+  .body {
+    padding: 18px 48px 44px;
+    gap: 22px;
+  }
+  .sec {
+    padding: 0 30px 28px;
+  }
+  .secKicker {
+    margin: 0 -30px 6px;
+    padding: 12px 30px;
+  }
+  .floor {
+    height: 62px;
+    padding-top: 26px;
+  }
+  .floor b {
+    font-size: 0.9rem;
+  }
+  .floor span {
+    font-size: 0.72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hook,
+  .flag span {
+    animation: none;
+  }
+  .floor {
+    transition: none;
+  }
+}

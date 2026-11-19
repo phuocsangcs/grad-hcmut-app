@@ -98,6 +98,8 @@ export const templateSchema = z.object({
   name: z.string().min(1),
   description: z.string(),
   tone: z.enum(['formal', 'warm', 'modern', 'fun']),
+  /** Bộ sưu tập để lọc ở trang chọn mẫu: bk = sắc màu Bách Khoa, creative = sáng tạo, major = theo ngành, classic = mẫu cũ. */
+  collection: z.enum(['bk', 'creative', 'major', 'classic']).default('classic'),
   /** true = mẫu có chỗ đặt ảnh bìa (ảnh đầu tiên người tạo tải lên). false = không cần ảnh. */
   cover: z.boolean().default(false),
   ogImage: z.string(),

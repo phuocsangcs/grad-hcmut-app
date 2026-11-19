@@ -1,0 +1,410 @@
+/*
+ * BÁNH RĂNG — thép xước xám xanh, đồng thau, đinh tán; xanh BK cho chữ chính.
+ */
+.root {
+  --steel: #8e99ad;
+  --steel-dark: #3d5a80;
+  --brass: #c9a03f;
+  --plate: #e6eaf0;
+  --ink: #1d2340;
+  --blue: var(--bk-700);
+  --t-ink: var(--bk-700);
+  --t-muted: #4a5670;
+  --t-surface: #f2f4f8;
+  --t-paper: #fbfcfd;
+  --t-line: rgba(29, 35, 64, 0.16);
+  --t-radius: 4px;
+  min-height: 100svh;
+  background: #2b3445;
+  color: var(--ink);
+}
+.gate {
+  max-width: 740px;
+  margin: 0 auto;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px),
+    linear-gradient(to bottom, #4a566d, #333d52);
+}
+/* 4 đinh tán ở 4 góc */
+.rivets {
+  position: absolute;
+  inset: 10px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 6px 6px, #fff 0 1.5px, #9aa3b5 2px 5px, #5b6478 5.5px, transparent 6.5px) top left / 12px 12px no-repeat,
+    radial-gradient(circle at 6px 6px, #fff 0 1.5px, #9aa3b5 2px 5px, #5b6478 5.5px, transparent 6.5px) top right / 12px 12px no-repeat,
+    radial-gradient(circle at 6px 6px, #fff 0 1.5px, #9aa3b5 2px 5px, #5b6478 5.5px, transparent 6.5px) bottom left / 12px 12px no-repeat,
+    radial-gradient(circle at 6px 6px, #fff 0 1.5px, #9aa3b5 2px 5px, #5b6478 5.5px, transparent 6.5px) bottom right / 12px 12px no-repeat;
+}
+
+/* ============ Bìa ============ */
+.plate {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 26px 18px 20px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, #dfe4ec, #b9c2d0 60%, #a3adbd);
+  text-align: center;
+}
+.tag {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 14px 16px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 6px;
+}
+.tag > p:first-child {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sun);
+}
+.coverName {
+  font-weight: 800;
+  font-size: clamp(1.7rem, 8.5cqw, 2.6rem);
+  line-height: 1.08;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
+}
+.coverSub {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.crank {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.machine {
+  position: relative;
+  width: min(100%, 420px);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.gears {
+  width: 100%;
+  max-height: 300px;
+}
+.gear {
+  transform: rotate(calc(var(--p, 0) * 720deg * var(--dir) * var(--ratio)));
+}
+.crank:not([data-holding]) .gear {
+  transition: transform 300ms ease-out;
+}
+.gearText {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 20px;
+  fill: var(--sun);
+  paint-order: stroke;
+  stroke: #1d2340;
+  stroke-width: 4px;
+}
+.gauge {
+  position: absolute;
+  left: 4px;
+  bottom: 0;
+  width: 132px;
+  padding: 8px 8px 6px;
+  border-radius: 10px;
+  background: #f7f8fb;
+  border: 3px solid #59627a;
+}
+.gauge svg {
+  display: block;
+  width: 100%;
+}
+.gaugeFill {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--p, 0));
+}
+.needle {
+  transform-origin: 60px 70px;
+  transform: rotate(calc(-90deg + var(--p, 0) * 180deg));
+}
+.years {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  color: #9aa3b5;
+}
+.yearsCap {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--t-muted);
+}
+.crank[data-year='1'] .years li:nth-child(-n + 1),
+.crank[data-year='2'] .years li:nth-child(-n + 2),
+.crank[data-year='3'] .years li:nth-child(-n + 3),
+.crank[data-year='4'] .years li {
+  color: var(--blue);
+}
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.hold {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #3a6fe0, var(--blue) 60%, #021d63);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  box-shadow: 0 8px 0 #021444, 0 0 0 8px rgba(255, 255, 255, 0.6);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.hold b {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.hold small {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--sun);
+}
+.crank[data-holding] .hold {
+  transform: translateY(6px);
+  box-shadow: 0 2px 0 #021444, 0 0 0 8px rgba(244, 183, 64, 0.8);
+}
+.hold:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 10px;
+}
+.holdRing {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(var(--sun) calc(var(--p, 0) * 360deg), transparent 0);
+  -webkit-mask: radial-gradient(circle, transparent 64px, #000 65px);
+  mask: radial-gradient(circle, transparent 64px, #000 65px);
+}
+.auto {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  color: var(--blue);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.coverTo {
+  font-size: 0.98rem;
+  color: var(--ink);
+}
+.coverTo b {
+  color: var(--blue);
+}
+/* cửa cuốn: các nan thép hiện khi bìa kéo lên */
+.shutter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 18px;
+  background: repeating-linear-gradient(to bottom, #8e99ad 0 8px, #6b7690 8px 9px);
+}
+
+/* ============ Nội dung ============ */
+.hero {
+  padding: 26px 16px 8px;
+}
+.nameplate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 28px 22px 24px;
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.35) 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, #f0d58a, var(--brass) 55%, #a57e25);
+  color: #2a1f05;
+  text-align: center;
+}
+.npKicker {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.npName {
+  font-weight: 800;
+  font-size: clamp(1.8rem, 9cqw, 2.8rem);
+  line-height: 1.08;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-wrap: balance;
+}
+.npDeg {
+  font-weight: 600;
+  text-wrap: balance;
+}
+.spec {
+  width: 100%;
+  margin: 8px 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 2px solid rgba(42, 31, 5, 0.5);
+}
+.spec div {
+  padding: 8px 4px 0;
+}
+.spec dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.spec dd {
+  margin: 2px 0 0;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px 16px 30px;
+}
+.sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 22px 24px;
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.015) 0 1px, transparent 1px 3px),
+    var(--plate);
+  border: 1px solid #9aa3b5;
+}
+.stamp {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--steel-dark);
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+.to {
+  font-size: 1.08rem;
+}
+.to b {
+  color: var(--blue);
+}
+.text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.sign {
+  align-self: flex-end;
+  font-family: var(--font-script);
+  font-size: 1.9rem;
+  color: var(--blue);
+}
+.secTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--blue);
+  text-wrap: balance;
+}
+.photo {
+  margin: 0;
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 4px solid var(--brass);
+}
+.photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.photo figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 26px 12px 10px;
+  background: linear-gradient(transparent, rgba(29, 35, 64, 0.85));
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+@container (min-width: 600px) {
+  .plate {
+    padding: 34px 44px 26px;
+  }
+  .gauge {
+    width: 160px;
+  }
+  .hero {
+    padding: 40px 48px 12px;
+  }
+  .body {
+    padding: 20px 48px 44px;
+    gap: 22px;
+  }
+  .sheet {
+    padding: 30px 32px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crank .gear {
+    transition: none;
+  }
+}

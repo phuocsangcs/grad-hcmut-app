@@ -11,6 +11,21 @@ import { ScrapbookTemplate } from './scrapbook/ScrapbookTemplate';
 import { JourneyTemplate } from './journey/JourneyTemplate';
 import { PostcardTemplate } from './postcard/PostcardTemplate';
 import { MagazineTemplate } from './magazine/MagazineTemplate';
+import { GateTemplate } from './gate/GateTemplate';
+import { EnvelopeTemplate } from './envelope/EnvelopeTemplate';
+import { MemoriesTemplate } from './memories/MemoriesTemplate';
+import { DiplomaTemplate } from './diploma/DiplomaTemplate';
+import { StageTemplate } from './stage/StageTemplate';
+import { CapflyTemplate } from './capfly/CapflyTemplate';
+import { ScratchTemplate } from './scratch/ScratchTemplate';
+import { ChatTemplate } from './chat/ChatTemplate';
+import { ArcadeTemplate } from './arcade/ArcadeTemplate';
+import { CalendarTemplate } from './calendar/CalendarTemplate';
+import { CircuitTemplate } from './circuit/CircuitTemplate';
+import { TerminalTemplate } from './terminal/TerminalTemplate';
+import { GearsTemplate } from './gears/GearsTemplate';
+import { LabTemplate } from './lab/LabTemplate';
+import { BuildTemplate } from './build/BuildTemplate';
 
 /**
  * Danh bạ template. id phải trùng với `src/content/templates.json`
@@ -34,6 +49,22 @@ export const TEMPLATES: TemplateDefinition[] = [
   { id: 'glass', scheme: 'light', Component: GlassTemplate },
   { id: 'blueprint', scheme: 'dark', Component: BlueprintTemplate },
   { id: 'ticket', scheme: 'light', Component: TicketTemplate },
+  // Sắc màu Bách Khoa
+  { id: 'gate', scheme: 'dark', Component: GateTemplate },
+  { id: 'envelope', scheme: 'dark', Component: EnvelopeTemplate },
+  { id: 'memories', scheme: 'light', Component: MemoriesTemplate },
+  { id: 'diploma', scheme: 'dark', Component: DiplomaTemplate },
+  { id: 'stage', scheme: 'dark', Component: StageTemplate },
+  { id: 'capfly', scheme: 'light', Component: CapflyTemplate },
+  { id: 'scratch', scheme: 'dark', Component: ScratchTemplate },
+  { id: 'chat', scheme: 'light', Component: ChatTemplate },
+  { id: 'arcade', scheme: 'dark', Component: ArcadeTemplate },
+  { id: 'calendar', scheme: 'light', Component: CalendarTemplate },
+  { id: 'circuit', scheme: 'dark', Component: CircuitTemplate },
+  { id: 'terminal', scheme: 'dark', Component: TerminalTemplate },
+  { id: 'gears', scheme: 'light', Component: GearsTemplate },
+  { id: 'lab', scheme: 'light', Component: LabTemplate },
+  { id: 'build', scheme: 'light', Component: BuildTemplate },
 ];
 
 const byId = new Map(TEMPLATES.map((t) => [t.id, t]));

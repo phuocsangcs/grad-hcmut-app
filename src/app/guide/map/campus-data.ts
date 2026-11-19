@@ -1,6 +1,6 @@
 /**
  * Mặt bằng khuôn viên cơ sở Lý Thường Kiệt, vẽ lại từ sơ đồ chính thức của Trường
- * (hcmut-photos/ban do*.{jpg,png}). Hệ toạ độ "nhìn từ trên xuống": x sang phải (Đông), y xuống dưới (Nam).
+ * (hcmut-photos/ban-do/). Hệ toạ độ "nhìn từ trên xuống": x sang phải (Đông), y xuống dưới (Nam).
  * Minh hoạ, không đúng tỉ lệ thật. Đơn vị tuỳ ý, khuôn viên nằm trong khoảng 1000 × 600.
  *
  * Sửa bản đồ: chỉ cần đổi số ở đây (vị trí, kích thước, số tầng), phần vẽ 3D tự tính.

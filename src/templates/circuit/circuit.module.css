@@ -1,0 +1,452 @@
+/*
+ * THÔNG MẠCH — bo mạch xanh BK đậm, đường mạch đồng/vàng, LED nhiều màu, màn hình OLED xanh lơ.
+ */
+.root {
+  --pcb: #0a2466;
+  --pcb-2: #0d2f80;
+  --copper: #8c7640;
+  --live: #ffd76a;
+  --cyan: #5fe3ff;
+  --panel: #f5f8ff;
+  --ink: var(--bk-900);
+  --t-ink: var(--bk-700);
+  --t-muted: var(--muted);
+  --t-surface: #e6eeff;
+  --t-paper: var(--panel);
+  --t-line: rgba(3, 43, 145, 0.16);
+  --t-radius: 4px;
+  min-height: 100svh;
+  background: #051238;
+  color: var(--ink);
+}
+.gate {
+  max-width: 720px;
+  margin: 0 auto;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.4px) 0 0 / 12px 12px,
+    linear-gradient(to bottom, var(--pcb-2), var(--pcb));
+}
+
+/* ============ Bìa: bo mạch ============ */
+.pcb {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 16px 18px;
+  color: #fff;
+  text-align: center;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.4px) 0 0 / 12px 12px,
+    radial-gradient(ellipse at 50% 40%, #12379a, var(--pcb) 75%);
+}
+.rev {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--live);
+}
+.oled {
+  width: min(100%, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: #020a1f;
+  border: 3px solid #1a2b55;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  color: var(--cyan);
+  text-align: left;
+}
+.oled b {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 7.5cqw, 2.2rem);
+  line-height: 1.1;
+  color: #fff;
+  text-wrap: balance;
+}
+.oled small {
+  font-size: 0.85rem;
+  color: var(--cyan);
+}
+.oledOff,
+.oledOn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.oledOff {
+  color: #ff8a8a;
+  animation: blink 1.2s steps(1) infinite;
+}
+.oledOn {
+  display: none;
+  color: #7cf29a;
+}
+.oled[data-on] .oledOn,
+[data-gate-phase='opening'] .oledOn {
+  display: block;
+}
+[data-gate-phase='opening'] .oledOff {
+  display: none;
+}
+[data-gate-phase='opening'] .pcb .oledOn {
+  opacity: 0;
+  animation: show 1ms forwards 1300ms;
+}
+@keyframes show {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.board {
+  width: min(100%, 420px);
+  flex: 1;
+  min-height: 220px;
+  max-height: 380px;
+}
+.tracesDim path,
+.tracesLive path {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.tracesDim path {
+  stroke: var(--copper);
+  opacity: 0.6;
+}
+.tracesLive path {
+  stroke: var(--live);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 215, 106, 0.8));
+}
+[data-gate-phase='opening'] .tracesLive path {
+  animation: flow 700ms ease-in forwards;
+  animation-delay: calc(250ms + min(var(--i), 1) * 500ms + var(--i) * 30ms);
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.pad {
+  fill: #c9a94f;
+  stroke: #5c4a1c;
+  stroke-width: 2;
+}
+.chip rect {
+  fill: #c0c6d4;
+}
+.chip .chipBody {
+  fill: #111;
+  stroke: #333;
+  stroke-width: 1.5;
+}
+.chipDot {
+  fill: #444;
+}
+.chip text {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 16px;
+  fill: #d9dde6;
+}
+.chip .chipYear {
+  font-size: 11px;
+  fill: var(--live);
+}
+.resistor {
+  fill: none;
+  stroke: #e6d3a3;
+  stroke-width: 3;
+  stroke-linejoin: round;
+}
+.ledBody {
+  fill: #3b4466;
+  stroke: #1a2140;
+  stroke-width: 2;
+}
+.ledGlow {
+  fill: var(--c);
+  opacity: 0;
+  filter: blur(6px);
+}
+[data-gate-phase='opening'] .ledBody {
+  animation: ledOn 200ms forwards;
+  animation-delay: calc(1150ms + var(--i) * 110ms);
+}
+[data-gate-phase='opening'] .ledGlow {
+  animation: glow 300ms forwards;
+  animation-delay: calc(1150ms + var(--i) * 110ms);
+}
+@keyframes ledOn {
+  to {
+    fill: var(--c);
+  }
+}
+@keyframes glow {
+  to {
+    opacity: 0.9;
+  }
+}
+.coverTo {
+  font-size: 1rem;
+}
+.coverTo b {
+  color: var(--live);
+  font-size: 1.2rem;
+}
+
+/* Công tắc gạt */
+.switch {
+  position: relative;
+  width: 210px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border: 3px solid #c0c6d4;
+  border-radius: 999px;
+  background: #1a2140;
+  color: #fff;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.switch:focus-visible {
+  outline: 3px solid var(--live);
+  outline-offset: 4px;
+}
+.switchLabel[data-v='on'] {
+  color: #7cf29a;
+}
+.switchLabel[data-v='off'] {
+  color: #ff8a8a;
+  opacity: 0;
+}
+.switchKnob {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 92px;
+  height: 46px;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #f2f4f8, #b9c0cf);
+  transition: transform 280ms cubic-bezier(0.5, 1.6, 0.5, 1);
+  animation: hintKnob 1.8s ease-in-out infinite;
+}
+@keyframes hintKnob {
+  0%,
+  70%,
+  100% {
+    transform: translateX(0);
+  }
+  80% {
+    transform: translateX(12px);
+  }
+}
+[data-gate-phase='opening'] .switchKnob {
+  animation: none;
+  transform: translateX(100px);
+}
+[data-gate-phase='opening'] .switchLabel[data-v='on'] {
+  opacity: 0;
+}
+[data-gate-phase='opening'] .switchLabel[data-v='off'] {
+  opacity: 0;
+}
+.switch:disabled {
+  border-color: #7cf29a;
+}
+.hint {
+  font-size: 0.95rem;
+  opacity: 0.85;
+}
+
+/* ============ Nội dung ============ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px 16px 16px;
+  color: #fff;
+  text-align: center;
+}
+.hero .oled {
+  width: 100%;
+}
+.tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--live);
+}
+.spec {
+  width: 100%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 2px solid var(--copper);
+  border-radius: 6px;
+}
+.spec div {
+  padding: 10px 8px;
+  border-left: 1px dashed var(--copper);
+}
+.spec div:first-child {
+  border-left: 0;
+}
+.spec dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+.spec dd {
+  margin: 2px 0 0;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: 12px 26px 34px;
+}
+/* chip có chân hai bên */
+.module {
+  position: relative;
+  background: var(--panel);
+  border-radius: 6px;
+}
+.module::before,
+.module::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  width: 10px;
+  background: repeating-linear-gradient(to bottom, #c0c6d4 0 8px, transparent 8px 22px);
+}
+.module::before {
+  left: -10px;
+}
+.module::after {
+  right: -10px;
+}
+.modHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #111;
+  color: #fff;
+  border-radius: 6px 6px 0 0;
+  font-family: var(--font-mono);
+}
+.modHead b {
+  color: var(--live);
+}
+.modHead span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.modBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 16px 20px;
+}
+.modTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  color: var(--bk-700);
+  text-wrap: balance;
+}
+.to {
+  font-size: 1.08rem;
+}
+.to b {
+  color: var(--bk-700);
+}
+.text {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.sign {
+  align-self: flex-end;
+  font-family: var(--font-script);
+  font-size: 1.9rem;
+  color: var(--bk-700);
+}
+.probe {
+  margin: 0;
+  position: relative;
+  border: 3px solid var(--copper);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.probe img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.probe figcaption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 6px 10px;
+  background: rgba(2, 10, 31, 0.85);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  border-radius: 4px;
+}
+.probe b {
+  color: var(--live);
+}
+
+@container (min-width: 600px) {
+  .hero {
+    padding: 44px 48px 20px;
+  }
+  .body {
+    padding: 16px 56px 48px;
+  }
+  .modBody {
+    padding: 24px 28px 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oledOff,
+  .switchKnob {
+    animation: none;
+  }
+}
